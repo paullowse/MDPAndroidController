@@ -1,9 +1,13 @@
 package com.example.mdpandroidcontroller;
 
+import android.bluetooth.BluetoothAdapter;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -14,6 +18,19 @@ import com.example.mdpandroidcontroller.databinding.FragmentSecondBinding;
 public class SecondFragment extends Fragment {
 
     private FragmentSecondBinding binding;
+
+    TextView mStatusBlueTv;
+    TextView mPairedTv;
+
+    ImageView mBlueIv;
+
+    Button mOnBtn;
+    Button mOffBtn;
+    Button mDiscoverBtn;
+    Button mPairedBtn;
+
+    BluetoothAdapter mBlueAdapter;
+
 
     @Override
     public View onCreateView(
