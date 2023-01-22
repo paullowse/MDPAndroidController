@@ -1,10 +1,12 @@
 package com.example.mdpandroidcontroller;
 
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -16,6 +18,9 @@ import com.example.mdpandroidcontroller.databinding.FragmentFirstBinding;
 public class FirstFragment extends Fragment {
 
     private FragmentFirstBinding binding;
+    String randomInfo;
+
+    TextView displaytv;
 
     @Override
     public View onCreateView(
@@ -40,6 +45,28 @@ public class FirstFragment extends Fragment {
                         .navigate(R.id.action_FirstFragment_to_SecondFragment);
             }
         });
+
+        view.findViewById(R.id.onBtn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity)getActivity()).turnonbluetooth();
+            }
+        });
+
+        view.findViewById(R.id.offBtn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity)getActivity()).turnoffbluetooth();
+            }
+        });
+
+        view.findViewById(R.id.discoverableBtn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity)getActivity()).bluetooth_discoverable();
+            }
+        });
+
     }
 
     @Override

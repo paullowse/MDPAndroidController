@@ -37,7 +37,7 @@
         android:id="@+id/statusBluetoothTv"
         android:layout_width="310dp"
         android:layout_height="wrap_content"
-        android:text=""
+        android:text="Bluetooth Status"
         android:textAlignment="center"
         android:textColor="#000"
         android:textSize="20sp"
@@ -51,6 +51,7 @@
         app:layout_constraintVertical_bias="0.377" />
 
     <!--    off Button-->
+
     <Button
         android:id="@+id/onBtn"
         style="@style/Base.Widget.AppCompat.Button.Colored"
@@ -63,8 +64,9 @@
         app:layout_constraintHorizontal_bias="0.9"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.795" />
+        app:layout_constraintVertical_bias="0.953" />
 
+    <!--    Discoverable button-->
     <Button
         android:id="@+id/offBtn"
         style="@style/Base.Widget.AppCompat.Button.Colored"
@@ -74,12 +76,13 @@
         android:text="Turn Off"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.901"
+        app:layout_constraintHorizontal_bias="0.9"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.724" />
+        app:layout_constraintVertical_bias="0.862" />
 
-    <!--    Discoverable button-->
+    <!--    Get list of paired devices button-->
+
     <Button
         android:id="@+id/discoverableBtn"
         style="@style/Base.Widget.AppCompat.Button.Colored"
@@ -92,22 +95,7 @@
         app:layout_constraintHorizontal_bias="0.853"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.626" />
-
-    <!--    Get list of paired devices button-->
-    <Button
-        android:id="@+id/pairedBtn"
-        style="@style/Base.Widget.AppCompat.Button.Colored"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:minWidth="200dp"
-        android:text="Get Paired Devices"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.853"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.953" />
+        app:layout_constraintVertical_bias="0.765" />
 
     <TextView
         android:id="@+id/pairedTv"

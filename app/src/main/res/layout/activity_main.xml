@@ -14,19 +14,18 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include
-        android:id="@+id/include"
-        layout="@layout/content_main" />
-
-
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        app:layout_anchor="@+id/appBarLayout"
+        app:layout_anchor="@+id/toolbar"
         app:layout_anchorGravity="center"
         app:popupTheme="@style/Theme.MDPAndroidController.PopupOverlay" />
+
+    <include
+        android:id="@+id/include"
+        layout="@layout/content_main" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

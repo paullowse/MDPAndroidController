@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
-                    Log.e("Activity result","OK");
+                    Log.e("Activity result", "OK");
                     // There are no request codes
                     Intent data = result.getData();
                 }
@@ -112,7 +112,6 @@ public class MainActivity extends AppCompatActivity {
         mOnBtn = findViewById(R.id.onBtn);
         mOffBtn = findViewById(R.id.offBtn);
         mDiscoverBtn = findViewById(R.id.discoverableBtn);
-        mPairedBtn = findViewById(R.id.pairedBtn);
         listview = findViewById(R.id.listview);
 
         // Adapter
@@ -124,10 +123,10 @@ public class MainActivity extends AppCompatActivity {
         } else {
             mStatusBlueTv.setText("Bluetooth is Available");
 
-            mOnBtn.setOnClickListener(this::onClick);        // Turn on Bluetooth btn click
-            mDiscoverBtn.setOnClickListener(this::onClick);    // Discover bluetooth btn click
-            mOffBtn.setOnClickListener(this::onClick);         // Turn off Bluetooth btn click
-            mPairedBtn.setOnClickListener(this::onClick);      // Get Paired devices button click
+            //mOnBtn.setOnClickListener(this::onClick);        // Turn on Bluetooth btn click
+            //mDiscoverBtn.setOnClickListener(this::onClick);    // Discover bluetooth btn click
+            //mOffBtn.setOnClickListener(this::onClick);         // Turn off Bluetooth btn click
+            //mPairedBtn.setOnClickListener(this::onClick);      // Get Paired devices button click
         }
     }
 
@@ -161,100 +160,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //@Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-
-            // Turn on Bluetooth btn click
-            case R.id.onBtn:
-
-                if (!mBlueAdapter.isEnabled()) {
-                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-                        // TODO: Consider calling
-                        ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.BLUETOOTH_ADMIN}, 1);
-                        // here to request the missing permissions, and then overriding
-                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                        //                                          int[] grantResults)
-                        // to handle the case where the user grants the permission. See the documentation
-                        // for ActivityCompat#requestPermissions for more details.
-                        Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                        activityResultLauncher.launch(intent);
-                        //return;
-                    }
-                    mStatusBlueTv.setText("Bluetooth is on");
-
-                    // Intent to On Bluetooth
-                    //Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                    //  startActivityForResult(intent, REQUEST_ENABLE_BT);
-
-                    //activityResultLauncher.launch(intent);
-                }
-                else {
-                    showToast("Bluetooth is already on");
-                }
-
-                break;
-
-            // Discover bluetooth btn click
-            case R.id.discoverableBtn:
-
-                if (!mBlueAdapter.isDiscovering()){
-                    showToast("Making Your Device Discoverable");
-                    Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-                    //startActivityForResult(intent ,REQUEST_DISCOVER_BT);
-                    activityResultLauncher.launch(intent);
-                }
-
-                break;
-
-            // Turn off Bluetooth btn click
-            case R.id.offBtn:
-
-                if (mBlueAdapter.isEnabled()) {
-                    mBlueAdapter.disable();
-                    showToast("Turning Bluetooth Off");
-                    mStatusBlueTv.setText("Bluetooth is off");
-                    //mBlueIv.setImageResource(R.drawable.ic_action_off);
-                }
-                else {
-                    showToast("Bluetooth is already off");
-                }
-
-                break;
-            // Get Paired devices button click
-            case R.id.pairedBtn:
-
-                if (mBlueAdapter.isEnabled()) {
-                    mPairedTv.setText("Paired Devices");
-                    //Set<BluetoothDevice> devices = mBlueAdapter.getBondedDevices();
-                    //for (BluetoothDevice device: devices){
-                    //    mPairedTv.append("\nDevice: " + device.getName() + ", " + device);
-                    //}
-                    Set<BluetoothDevice> pairedDevices = mBlueAdapter.getBondedDevices();
-                    ArrayList<String> devices = new ArrayList<>();
-                    for (BluetoothDevice bt : pairedDevices) {
-                        devices.add(bt.getName() + "\n" + bt.getAddress());
-                    }
-                    ArrayAdapter arrayAdapter = new ArrayAdapter(MainActivity.this, android.R.layout.simple_list_item_1, devices);
-                    listview.setAdapter(arrayAdapter);
-                }
-                else {
-                    //bluetooth is off so can't get paired devices
-                    showToast("Turn ON Bluetooth to get paired devices");
-                }
-
-                break;
-        }
-    }
+    //public void onClick(View view) {
+    //}
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (requestCode == 1){
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
+        if (requestCode == 1) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 showToast("Permission Granted");
-            }
-            else {
+            } else {
                 showToast("Permission Denied");
             }
         }
@@ -262,15 +178,14 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        switch (requestCode){
+        switch (requestCode) {
             case REQUEST_ENABLE_BT:
 
                 if (resultCode == RESULT_OK) {
                     // Bluetooth is on
                     //mBlueIv.setImageResource(R.drawable.ic_action_on);
                     showToast("Bluetooth is on");
-                }
-                else {
+                } else {
                     showToast("Failed to connect to bluetooth");
                 }
 
@@ -280,11 +195,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //Toast message function
-    private void showToast (String msg) {
+    private void showToast(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
     }
 
-    public void listpaireddevices(){
+    //second fragment - list paired devices
+    public void listpaireddevices() {
         ListView listview_paireddevices = findViewById(R.id.listview_paireddevices);
         if (mBlueAdapter.isEnabled()) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
@@ -302,6 +218,77 @@ public class MainActivity extends AppCompatActivity {
                 ArrayAdapter arrayAdapter = new ArrayAdapter(MainActivity.this, android.R.layout.simple_list_item_1, devices);
                 listview_paireddevices.setAdapter(arrayAdapter);
             }
+        }
+    }
+
+    //first fragment - turn on bluetooth
+    public void turnonbluetooth() {
+        if (!mBlueAdapter.isEnabled()) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.BLUETOOTH_ADMIN}, 1);
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                activityResultLauncher.launch(intent);
+                //return;
+            }
+            mStatusBlueTv.setText("Bluetooth is on");
+
+            // Intent to On Bluetooth
+            //Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            //  startActivityForResult(intent, REQUEST_ENABLE_BT);
+
+            //activityResultLauncher.launch(intent);
+        } else {
+            showToast("Bluetooth is already on");
+        }
+    }
+
+    //first fragment - turn off bluetooth
+    public void turnoffbluetooth() {
+        if (mBlueAdapter.isEnabled()) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+
+                mBlueAdapter.disable();
+                showToast("Turning Bluetooth Off");
+                mStatusBlueTv.setText("Bluetooth is off");
+                //mBlueIv.setImageResource(R.drawable.ic_action_off);
+            }
+        }
+        else {
+            showToast("Bluetooth is already off");
+        }
+    }
+
+    //first fragment - set Bluetooth discoverable
+    public void bluetooth_discoverable() {
+        if (!mBlueAdapter.isEnabled()) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.BLUETOOTH_ADMIN}, 1);
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                mStatusBlueTv.setText("Making Your Device Discoverable");
+                Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+                //startActivityForResult(intent ,REQUEST_DISCOVER_BT);
+                activityResultLauncher.launch(intent);
+            }
+        } else {
+            mStatusBlueTv.setText("Bluetooth discovery is already on");
         }
     }
 
