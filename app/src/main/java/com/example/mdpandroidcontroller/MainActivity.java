@@ -2,6 +2,7 @@ package com.example.mdpandroidcontroller;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,15 +24,20 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.mdpandroidcontroller.databinding.ActivityMainBinding;
+import com.example.mdpandroidcontroller.MapDrawer;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
+    private static MapDrawer map;
+    private static Context context;
     private static final String[] BL_PERMISSIONS = new String[]{
             Manifest.permission.BLUETOOTH,
             Manifest.permission.BLUETOOTH_ADMIN,
@@ -52,6 +58,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        //grid
+        //new im just trying...
+        map = new MapDrawer(this);
+        map = findViewById(R.id.gridView);
+        // end of new stuff...
+
+
+        //bluetooth
         super.onCreate(savedInstanceState);
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
@@ -80,9 +95,19 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Permission already granted", Toast.LENGTH_SHORT).show();
                 }
             }
-
-
         });
+
+
+
+        Button testbuttonthing = (Button) findViewById(R.id.button3);
+        testbuttonthing.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                map.setEndCoordinate(15,10);
+            }
+        });
+
+
+
     }
 
     @Override
@@ -127,6 +152,11 @@ public class MainActivity extends AppCompatActivity {
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                 || super.onSupportNavigateUp();
     }
+
+
+
+
+
 
 
 }

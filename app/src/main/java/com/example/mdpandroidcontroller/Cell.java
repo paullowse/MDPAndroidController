@@ -38,7 +38,7 @@ public class Cell {
         black.setStyle(Paint.Style.FILL_AND_STROKE);
         obstacleColor.setColor(Color.BLACK);
         robotColor.setColor(Color.GREEN);
-        //endGoalColor.setColor(Color.RED);
+        endGoalColor.setColor(Color.RED);
         startPointColor.setColor(Color.CYAN);
         waypointCoordColor.setColor(Color.YELLOW);
         unexploredCellColor.setColor(Color.LTGRAY);
