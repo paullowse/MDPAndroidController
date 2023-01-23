@@ -6,17 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".SecondFragment">
 
-    <view
-        android:id="@+id/gridView"
-        class="com.example.mdpandroidcontroller.MapDrawer"
-        android:layout_width="356dp"
-        android:layout_height="373dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <TextView
+        android:id="@+id/textview_second"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/button_second"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.723"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.129" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/button_second"
@@ -25,50 +22,31 @@
         android:text="@string/previous"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.082"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.953" />
 
-    <ImageButton
-        android:id="@+id/arrowBack"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:clickable="true"
-        android:background="@null"
-        android:maxWidth="40dp"
-        android:maxHeight="40dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/arrow_back"
-        app:layout_constraintBottom_toTopOf="@+id/button_second"
+    <ListView
+        android:id="@+id/listview_paireddevices"
+        android:layout_width="301dp"
+        android:layout_height="168dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/arrowForward" />
-
-    <ImageButton
-        android:id="@+id/arrowForward"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="55dp"
-        android:clickable="true"
-        android:adjustViewBounds="true"
-        android:background="@null"
-        android:maxWidth="40dp"
-        android:maxHeight="40dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/arrow_forward"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/gridView" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/bt_paired"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="72dp"
-        android:text="Button"
-        app:layout_constraintEnd_toStartOf="@+id/arrowForward"
-        app:layout_constraintHorizontal_bias="0.358"
+        android:text="Show Paired Devices"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.839"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/gridView" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.953" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
