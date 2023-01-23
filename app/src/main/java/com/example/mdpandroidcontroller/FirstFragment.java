@@ -66,6 +66,7 @@ public class FirstFragment extends Fragment {
                 ((MainActivity)getActivity()).bluetooth_discoverable();
             }
         });
+
     }
 
     @Override
