@@ -96,9 +96,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
-
-
+        
         Button testbuttonthing = (Button) findViewById(R.id.button3);
         testbuttonthing.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
