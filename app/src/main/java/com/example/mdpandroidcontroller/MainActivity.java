@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -49,6 +50,9 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
+
+    private static MapDrawer map;
+    private static Context context;
 
     private static final String[] BL_PERMISSIONS = new String[]{
             Manifest.permission.BLUETOOTH,
@@ -99,6 +103,14 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+
+        //grid
+        //new im just trying...
+        map = new MapDrawer(this);
+        map = findViewById(R.id.gridView);
+        // end of new stuff...
+
+
         setSupportActionBar(binding.toolbar);
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
@@ -107,12 +119,10 @@ public class MainActivity extends AppCompatActivity {
 
 
         mStatusBlueTv = findViewById(R.id.statusBluetoothTv);
-        mPairedTv = findViewById(R.id.pairedTv);
 
         mOnBtn = findViewById(R.id.onBtn);
         mOffBtn = findViewById(R.id.offBtn);
         mDiscoverBtn = findViewById(R.id.discoverableBtn);
-        listview = findViewById(R.id.listview);
 
         // Adapter
 
@@ -128,6 +138,16 @@ public class MainActivity extends AppCompatActivity {
             //mOffBtn.setOnClickListener(this::onClick);         // Turn off Bluetooth btn click
             //mPairedBtn.setOnClickListener(this::onClick);      // Get Paired devices button click
         }
+
+
+        //testing imagebuttons
+        //Button testbuttonthing = (Button) findViewById(R.id.button3);
+        //testbuttonthing.setOnClickListener(new View.OnClickListener() {
+        //    public void onClick(View view) {
+        //        map.setEndCoordinate(15,10);
+        //    }
+        //});
+
     }
 
     @Override
