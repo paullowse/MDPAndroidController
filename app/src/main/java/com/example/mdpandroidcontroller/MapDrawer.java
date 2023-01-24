@@ -45,7 +45,6 @@ public class MapDrawer extends View {
     private Paint robotColor = new Paint();
 
 
-
     public MapDrawer(Context c) {
         super(c);
         // init map???
@@ -71,6 +70,8 @@ public class MapDrawer extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+
+        // on first time drawing?
         if (!mapDrawn) {
             String[] dummyArrowCoord = new String[3];
             dummyArrowCoord[0] = "1";
@@ -80,12 +81,14 @@ public class MapDrawer extends View {
             this.createCell();
             //this.setEndCoordinate(10, 8);    // not needed anymore - use this to test functionality
             mapDrawn = true;
+            System.out.println("TESTING");
+
+            drawHorizontalLines(canvas);
+            drawVerticalLines(canvas);
+            drawGridNumber(canvas);
         }
 
-        drawCell(canvas);
-        drawHorizontalLines(canvas);
-        drawVerticalLines(canvas);
-        drawGridNumber(canvas);
+
         //if (getCanDrawRobot())   // USED TO HAVE THIS
         drawRobot(canvas, curCoord);
         drawArrow(canvas, arrowCoord);
@@ -109,7 +112,7 @@ public class MapDrawer extends View {
      * However for else: when there is an image (or obstacle?), then there is white text on it.
      * @param canvas
      */
-    private void drawCell(Canvas canvas) {
+    public void drawCell(Canvas canvas) {
         for (int x = 1; x <= COL; x++)
             for (int y = 0; y < ROW; y++)
                 for (int i = 0; i < this.getArrowCoord().size(); i++)
@@ -123,6 +126,7 @@ public class MapDrawer extends View {
                         canvas.drawRect(cells[x][y].startX, cells[x][y].startY, cells[x][y].endX, cells[x][y].endY, cells[x][y].paint);
                         canvas.drawText(String.valueOf(cells[x][y].getId()),(cells[x][y].startX+cells[x][y].endX)/2, cells[x][y].endY + (cells[x][y].startY-cells[x][y].endY)/4, textPaint);
                     }
+
 
     }
 
@@ -262,6 +266,7 @@ public class MapDrawer extends View {
         for (int x = col - 1; x <= col + 1; x++)
             for (int y = row - 1; y <= row + 1; y++)
                 cells[x][y].setType("end");
+
     }
 
     private float getCellSize() { return cellSize; }
