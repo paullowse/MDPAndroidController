@@ -1,8 +1,6 @@
 package com.example.mdpandroidcontroller;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -10,20 +8,11 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageButton;
-import android.widget.Switch;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
-
-import com.example.mdpandroidcontroller.Constants;
 
 
 public class MapDrawer extends View {
@@ -36,7 +25,7 @@ public class MapDrawer extends View {
     private static float cellSize;   // IDK WHAT THIS SHOULD BE
     private static boolean canDrawRobot = false;  // why false?
     private static String robotDirection = Constants.NONE;
-    private static int[] curCoord = new int[]{4, 6};     // IF CHANGE THIS THEN HOW
+    private static int[] curCoord = new int[]{4, 6};     // CHANGE THIS WAY OF IMPLEMENTATION... - when u drag the robot thing
 
     private Bitmap arrowBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.arrow_error); // WHAT IS THIS??
 
@@ -83,12 +72,13 @@ public class MapDrawer extends View {
             mapDrawn = true;
             System.out.println("TESTING");
 
-            drawHorizontalLines(canvas);
-            drawVerticalLines(canvas);
-            drawGridNumber(canvas);
+
         }
 
 
+        drawHorizontalLines(canvas);
+        drawVerticalLines(canvas);
+        drawGridNumber(canvas);
         //if (getCanDrawRobot())   // USED TO HAVE THIS
         drawRobot(canvas, curCoord);
         drawArrow(canvas, arrowCoord);
@@ -233,6 +223,33 @@ public class MapDrawer extends View {
         }
     }
 
+    /**
+     * have smt to move the robot
+     * HOW TO MAKE THE OLD ONE NOT COUNT
+     */
+    public void moveRobot() {
+        int[] tempCoords = this.getCurCoord();
+        switch( this.getRobotDirection()) {
+            case Constants.UP:
+                // SET check for end of the grid  - CHANGE THIS
+                tempCoords[1] = tempCoords[1] + 1;
+                setCurCoord(tempCoords);
+                break;
+            case Constants.DOWN:
+                // SET check for end of the grid  - CHANGE THIS
+                tempCoords[1] = tempCoords[1] - 1;
+                setCurCoord(tempCoords);
+                break;
+            default:
+                break;
+        }
+
+
+
+    }
+
+
+
 
     /**
      * Called when create cell called --> to set the size of the cells --> so that it will fit the size?
@@ -273,12 +290,24 @@ public class MapDrawer extends View {
     public String getRobotDirection() {
         return robotDirection;
     }
+
+
+
     public boolean getCanDrawRobot() {
         return canDrawRobot;
     }
     private ArrayList<String[]> getArrowCoord() {
         return arrowCoord;
     }
+
+    public void setRobotDirection(String direction) {robotDirection = direction;}
+
+    public void setCurCoord(int[] coordinates) {curCoord = coordinates;}
+
+    public int[] getCurCoord() {
+        return curCoord;
+    }
+
 
 }
 

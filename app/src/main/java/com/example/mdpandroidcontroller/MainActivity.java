@@ -32,6 +32,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.example.mdpandroidcontroller.databinding.ActivityMainBinding;
+import com.example.mdpandroidcontroller.Constants;
 
 import android.view.Menu;
 import android.view.MenuItem;
@@ -144,14 +145,25 @@ public class MainActivity extends AppCompatActivity {
 
 
         //testing imagebuttons
-        ImageButton testbuttonthing = (ImageButton) findViewById(R.id.arrowBack);
-        testbuttonthing.setOnClickListener(new View.OnClickListener() {
+        ImageButton backButton = (ImageButton) findViewById(R.id.arrowBack);
+        backButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                map.setEndCoordinate(15,10);
+                //map.setEndCoordinate(15,10);
+                map.setRobotDirection(Constants.DOWN);
+                map.moveRobot();
                 map.invalidate();
 
-                //map.drawCell(canvas);
                 showToast("does this work?");
+            }
+        });
+
+        ImageButton forwardButton = (ImageButton) findViewById(R.id.arrowForward);
+        forwardButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                map.setRobotDirection(Constants.UP);
+                map.moveRobot();
+                map.invalidate();
+
             }
         });
 
