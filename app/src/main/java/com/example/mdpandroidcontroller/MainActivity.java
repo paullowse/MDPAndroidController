@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Canvas;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -36,6 +37,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -53,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static MapDrawer map;
     private static Context context;
+    private static Canvas canvas;
 
     private static final String[] BL_PERMISSIONS = new String[]{
             Manifest.permission.BLUETOOTH,
@@ -141,12 +144,16 @@ public class MainActivity extends AppCompatActivity {
 
 
         //testing imagebuttons
-        //Button testbuttonthing = (Button) findViewById(R.id.button3);
-        //testbuttonthing.setOnClickListener(new View.OnClickListener() {
-        //    public void onClick(View view) {
-        //        map.setEndCoordinate(15,10);
-        //    }
-        //});
+        ImageButton testbuttonthing = (ImageButton) findViewById(R.id.arrowBack);
+        testbuttonthing.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                map.setEndCoordinate(15,10);
+                map.invalidate();
+
+                //map.drawCell(canvas);
+                showToast("does this work?");
+            }
+        });
 
     }
 
