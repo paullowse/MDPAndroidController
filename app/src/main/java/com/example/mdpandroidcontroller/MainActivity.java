@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
 
     private static MapDrawer map;
     private static Context context;
-    private static Canvas canvas;
 
     private static final String[] BL_PERMISSIONS = new String[]{
             Manifest.permission.BLUETOOTH,
@@ -161,6 +160,26 @@ public class MainActivity extends AppCompatActivity {
         forwardButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 map.setRobotDirection(Constants.UP);
+                map.moveRobot();
+                map.invalidate();
+
+            }
+        });
+
+        ImageButton rightButton = (ImageButton) findViewById(R.id.arrowRight);
+        rightButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                map.setRobotDirection(Constants.RIGHT);
+                map.moveRobot();
+                map.invalidate();
+
+            }
+        });
+
+        ImageButton leftButton = (ImageButton) findViewById(R.id.arrowLeft);
+        leftButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                map.setRobotDirection(Constants.LEFT);
                 map.moveRobot();
                 map.invalidate();
 

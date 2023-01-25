@@ -27,6 +27,7 @@ public class MapDrawer extends View {
     private static String robotDirection = Constants.NONE;
     private static int[] curCoord = new int[]{4, 6};     // CHANGE THIS WAY OF IMPLEMENTATION... - when u drag the robot thing
 
+    private static int[] oldCoord = new int[]{-1, -1};
     private Bitmap arrowBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.arrow_error); // WHAT IS THIS??
 
     private Paint black = new Paint();
@@ -70,19 +71,18 @@ public class MapDrawer extends View {
             this.createCell();
             //this.setEndCoordinate(10, 8);    // not needed anymore - use this to test functionality
             mapDrawn = true;
-            System.out.println("TESTING");
 
 
         }
 
-
-        drawHorizontalLines(canvas);
-        drawVerticalLines(canvas);
         drawGridNumber(canvas);
         //if (getCanDrawRobot())   // USED TO HAVE THIS
+
         drawRobot(canvas, curCoord);
         drawArrow(canvas, arrowCoord);
         drawCell(canvas);
+        drawHorizontalLines(canvas);
+        drawVerticalLines(canvas);
     }
 
     private void createCell() {
@@ -228,24 +228,51 @@ public class MapDrawer extends View {
      * HOW TO MAKE THE OLD ONE NOT COUNT
      */
     public void moveRobot() {
-        int[] tempCoords = this.getCurCoord();
+        int[] tempCoord = this.getCurCoord();
+        this.setOldRobotCoord(tempCoord[0], tempCoord[1]);
+        int[] oldCoord = this.getOldRobotCoord();
+        boolean isWithinGrid = true;
+
+
         switch( this.getRobotDirection()) {
             case Constants.UP:
-                // SET check for end of the grid  - CHANGE THIS
-                tempCoords[1] = tempCoords[1] + 1;
-                setCurCoord(tempCoords);
+                // Includes check for end of the grid
+                tempCoord[1] = Math.min(tempCoord[1] + 1,ROW-1);
                 break;
             case Constants.DOWN:
-                // SET check for end of the grid  - CHANGE THIS
-                tempCoords[1] = tempCoords[1] - 1;
-                setCurCoord(tempCoords);
+                tempCoord[1] = Math.max(tempCoord[1] - 1, 2);
+                break;
+            case Constants.LEFT:
+                tempCoord[0] = Math.max(tempCoord[0] - 1,2);
+                break;
+            case Constants.RIGHT:
+                tempCoord[0] = Math.min(tempCoord[0] + 1,COL-1);
                 break;
             default:
+                System.out.println("Error in moveRobot() direction input");
                 break;
         }
 
+        // set oldcoord wont happen as of now - useless btw
+        if (isWithinGrid) {
+            setCurCoord(tempCoord);
+        } else {
+            setCurCoord(oldCoord);
+        }
 
+    }
 
+    /**
+     * Saves the old robot coords and also resets the cell to the old one
+     * (a little inefficient as most of the robot cells will still be robot)
+     */
+    private void setOldRobotCoord(int oldCol, int oldRow) {
+        this.oldCoord[0] = oldCol;
+        this.oldCoord[1] = oldRow;
+        oldRow = this.convertRow(oldRow);
+        for (int x = oldCol - 1; x <= oldCol + 1; x++)
+            for (int y = oldRow - 1; y <= oldRow + 1; y++)
+                cells[x][y].setType("explored");
     }
 
 
@@ -306,6 +333,10 @@ public class MapDrawer extends View {
 
     public int[] getCurCoord() {
         return curCoord;
+    }
+
+    public int[] getOldRobotCoord() {
+        return oldCoord;
     }
 
 
