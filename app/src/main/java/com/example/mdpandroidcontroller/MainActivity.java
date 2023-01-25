@@ -107,11 +107,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
 
-        //grid
-        //new im just trying...
-        map = new MapDrawer(this);
-        map = findViewById(R.id.gridView);
-        // end of new stuff...
+
 
 
         setSupportActionBar(binding.toolbar);
@@ -142,49 +138,6 @@ public class MainActivity extends AppCompatActivity {
             //mPairedBtn.setOnClickListener(this::onClick);      // Get Paired devices button click
         }
 
-
-        //testing imagebuttons
-        ImageButton backButton = (ImageButton) findViewById(R.id.arrowBack);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                //map.setEndCoordinate(15,10);
-                map.setRobotDirection(Constants.DOWN);
-                map.moveRobot();
-                map.invalidate();
-
-                showToast("does this work?");
-            }
-        });
-
-        ImageButton forwardButton = (ImageButton) findViewById(R.id.arrowForward);
-        forwardButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                map.setRobotDirection(Constants.UP);
-                map.moveRobot();
-                map.invalidate();
-
-            }
-        });
-
-        ImageButton rightButton = (ImageButton) findViewById(R.id.arrowRight);
-        rightButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                map.setRobotDirection(Constants.RIGHT);
-                map.moveRobot();
-                map.invalidate();
-
-            }
-        });
-
-        ImageButton leftButton = (ImageButton) findViewById(R.id.arrowLeft);
-        leftButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                map.setRobotDirection(Constants.LEFT);
-                map.moveRobot();
-                map.invalidate();
-
-            }
-        });
 
     }
 
