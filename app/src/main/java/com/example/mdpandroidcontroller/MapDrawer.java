@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 
@@ -261,6 +262,37 @@ public class MapDrawer extends View {
         }
 
     }
+
+
+    public void updateObstacleOnBoard(int x, int y, ImageView obstacle) {
+        System.out.println(x);
+        System.out.println(y);
+
+        // Determine the position of the chess board on screen
+        int[] location = new int[2];
+        this.getLocationOnScreen(location);
+        int boardX = location[0];
+        int boardY = location[1];
+
+        System.out.println(boardX);
+        System.out.println(boardY);
+
+        // Determine the square width and height
+        int squareWidth = getWidth() / COL;
+        int squareHeight = getHeight() / ROW;
+
+        // Convert the x and y coordinates to row and column indices
+        int column = (int) Math.floor((x - boardX) / squareWidth);
+        int row = (int) Math.floor((y - boardY) / squareHeight);
+
+        System.out.println(column);
+        System.out.println(row);
+
+    }
+
+
+
+
 
     /**
      * Saves the old robot coords and also resets the cell to the old one
