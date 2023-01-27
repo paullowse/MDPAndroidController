@@ -4,8 +4,10 @@ import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Canvas;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -18,6 +20,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.util.Log;
@@ -106,10 +109,6 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-
-
-
-
         setSupportActionBar(binding.toolbar);
 
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
@@ -123,9 +122,6 @@ public class MainActivity extends AppCompatActivity {
         mOffBtn = findViewById(R.id.offBtn);
         mDiscoverBtn = findViewById(R.id.discoverableBtn);
 
-        // Adapter
-
-
         //Check if bluetooth is available or not
         if (mBlueAdapter == null) {
             mStatusBlueTv.setText("Bluetooth is NOT Available");
@@ -137,7 +133,6 @@ public class MainActivity extends AppCompatActivity {
             //mOffBtn.setOnClickListener(this::onClick);         // Turn off Bluetooth btn click
             //mPairedBtn.setOnClickListener(this::onClick);      // Get Paired devices button click
         }
-
 
     }
 
@@ -178,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (requestCode == 1) {
+        if (requestCode == 1 && grantResults.length > 0) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 showToast("Permission Granted");
             } else {
@@ -231,6 +226,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
 
     //first fragment - turn on bluetooth
     public void turnonbluetooth() {

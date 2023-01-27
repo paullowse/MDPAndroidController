@@ -1,10 +1,15 @@
 package com.example.mdpandroidcontroller;
 
+import static androidx.core.content.ContextCompat.registerReceiver;
+
 import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,6 +35,8 @@ import androidx.navigation.fragment.NavHostFragment;
 import com.example.mdpandroidcontroller.databinding.FragmentSecondBinding;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class SecondFragment extends Fragment {
@@ -41,6 +48,9 @@ public class SecondFragment extends Fragment {
     TextView mStatusBlueTv;
 
     ListView listview_paireddevices;
+    ListView listview_availabledevices;
+    ArrayList<String> availabledevicelist = new ArrayList<>();
+    HashSet<BluetoothDevice> availdevices = new HashSet<>();
 
     BluetoothAdapter mBlueAdapter;
     ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
@@ -63,6 +73,9 @@ public class SecondFragment extends Fragment {
         //return binding.getRoot();
 
         View view = inflater.inflate(R.layout.fragment_second, container, false);
+        listview_availabledevices = view.findViewById(R.id.listavailabledevice);
+        mBlueAdapter = BluetoothAdapter.getDefaultAdapter();
+
         return view;
     }
 
@@ -85,6 +98,71 @@ public class SecondFragment extends Fragment {
                 ((MainActivity)getActivity()).listpaireddevices();
             }
         });
+
+        view.findViewById(R.id.bt_listavailabledevices).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DiscoverDevices(v);
+            }
+        });
+    }
+
+    public void DiscoverDevices(View v){
+        if (ActivityCompat.checkSelfPermission(SecondFragment.this.getActivity(), Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            mBlueAdapter.startDiscovery();
+        }
+    }
+
+    //second fragment - show available bluetooth devices
+    BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+
+            //if you have found the devices
+            if (BluetoothDevice.ACTION_FOUND.equals(intent.getAction())) {
+
+                // Now that you have found the device. Get the Bluetooth Device
+                // object and its info from the Intent.
+                listview_availabledevices = SecondFragment.this.getActivity().findViewById(R.id.listavailabledevice);
+
+                if (ActivityCompat.checkSelfPermission(SecondFragment.this.getActivity(), Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+
+                    ActivityCompat.requestPermissions(SecondFragment.this.getActivity(), new String[]{Manifest.permission.BLUETOOTH_ADMIN}, 1);
+                    //ActivityCompat.requestPermissions(SecondFragment.this.getActivity(), new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
+                    //ActivityCompat.requestPermissions(SecondFragment.this.getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    Toast.makeText(context, "Inside toast message", Toast.LENGTH_SHORT).show();
+                }
+
+                BluetoothDevice deviceInfo = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+                availabledevicelist.add(deviceInfo.getName() + "\n" + deviceInfo.getAddress());
+                //BluetoothDevice[] devices = availdevices.toArray(new BluetoothDevice[availdevices.size()]);
+                ArrayAdapter arrayAdapter = new ArrayAdapter(SecondFragment.this.getActivity(), android.R.layout.simple_list_item_1, availabledevicelist);
+                listview_availabledevices.setAdapter(arrayAdapter);
+
+                Toast.makeText(context, "Outside toast", Toast.LENGTH_SHORT).show();
+
+            }
+        }
+    };
+
+    public void onStart(){
+        super.onStart();
+        IntentFilter bluetoothFilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        getActivity().registerReceiver(mReceiver, bluetoothFilter);
     }
 
     @Override
