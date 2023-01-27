@@ -31,6 +31,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.ListAdapter;
 
 import com.example.mdpandroidcontroller.databinding.FragmentSecondBinding;
 
@@ -51,6 +52,8 @@ public class SecondFragment extends Fragment {
     ListView listview_availabledevices;
     ArrayList<String> availabledevicelist = new ArrayList<>();
     HashSet<BluetoothDevice> availdevices = new HashSet<>();
+
+    private Context globalContext = null;
 
     BluetoothAdapter mBlueAdapter;
     ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
@@ -75,6 +78,11 @@ public class SecondFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_second, container, false);
         listview_availabledevices = view.findViewById(R.id.listavailabledevice);
         mBlueAdapter = BluetoothAdapter.getDefaultAdapter();
+
+        globalContext = this.getActivity();
+
+        ArrayAdapter arrayAdapter = new ArrayAdapter(SecondFragment.this.getActivity(), android.R.layout.simple_list_item_1, availabledevicelist);
+        listview_availabledevices.setAdapter(arrayAdapter);
 
         return view;
     }
@@ -107,6 +115,16 @@ public class SecondFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (availabledevicelist != null && availabledevicelist.size() > 0){
+            ArrayAdapter arrayAdapter = new ArrayAdapter(SecondFragment.this.getActivity(), android.R.layout.simple_list_item_1, availabledevicelist);
+            listview_availabledevices.setAdapter(arrayAdapter);
+        }
+    }
+
     public void DiscoverDevices(View v){
         if (ActivityCompat.checkSelfPermission(SecondFragment.this.getActivity(), Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -129,13 +147,13 @@ public class SecondFragment extends Fragment {
 
                 // Now that you have found the device. Get the Bluetooth Device
                 // object and its info from the Intent.
-                listview_availabledevices = SecondFragment.this.getActivity().findViewById(R.id.listavailabledevice);
+                //listview_availabledevices = SecondFragment.this.getActivity().findViewById(R.id.listavailabledevice);
 
-                if (ActivityCompat.checkSelfPermission(SecondFragment.this.getActivity(), Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.checkSelfPermission(globalContext, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
 
-                    ActivityCompat.requestPermissions(SecondFragment.this.getActivity(), new String[]{Manifest.permission.BLUETOOTH_ADMIN}, 1);
+                    ActivityCompat.requestPermissions((Activity) SecondFragment.this.globalContext, new String[]{Manifest.permission.BLUETOOTH_ADMIN}, 1);
                     //ActivityCompat.requestPermissions(SecondFragment.this.getActivity(), new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-                    //ActivityCompat.requestPermissions(SecondFragment.this.getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+                    //ActivityCompat.requestPermissions((Activity) SecondFragment.this.getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
                     // TODO: Consider calling
                     //    ActivityCompat#requestPermissions
                     // here to request the missing permissions, and then overriding
@@ -147,11 +165,10 @@ public class SecondFragment extends Fragment {
                 }
 
                 BluetoothDevice deviceInfo = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-
                 availabledevicelist.add(deviceInfo.getName() + "\n" + deviceInfo.getAddress());
                 //BluetoothDevice[] devices = availdevices.toArray(new BluetoothDevice[availdevices.size()]);
-                ArrayAdapter arrayAdapter = new ArrayAdapter(SecondFragment.this.getActivity(), android.R.layout.simple_list_item_1, availabledevicelist);
-                listview_availabledevices.setAdapter(arrayAdapter);
+                //ArrayAdapter arrayAdapter = new ArrayAdapter(SecondFragment.this.getActivity(), android.R.layout.simple_list_item_1, availabledevicelist);
+                //listview_availabledevices.setAdapter(arrayAdapter);
 
                 Toast.makeText(context, "Outside toast", Toast.LENGTH_SHORT).show();
 
