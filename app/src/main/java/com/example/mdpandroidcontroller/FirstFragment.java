@@ -1,13 +1,20 @@
 package com.example.mdpandroidcontroller;
 
+import android.annotation.SuppressLint;
+import android.content.ClipData;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -27,6 +34,8 @@ public class FirstFragment extends Fragment {
     // grid stuff
     private static MapDrawer map;
     private static Context context;
+    float x, y;
+    float dx, dy;
 
     @Override
     public View onCreateView(
@@ -41,6 +50,7 @@ public class FirstFragment extends Fragment {
 
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -122,6 +132,61 @@ public class FirstFragment extends Fragment {
 
             }
         });
+
+        ImageView myImage = (ImageView) view.findViewById(R.id.obstacle);
+        myImage.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    ClipData data = ClipData.newPlainText("", "");
+                    View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
+                    view.startDrag(data, shadowBuilder, view, 0);
+                    //view.setVisibility(View.INVISIBLE);
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        });
+
+        // Droppable chess board
+        //CustomView chessBoard = (CustomView) view.findViewById(R.id.gridView);
+        map.setOnDragListener(new View.OnDragListener() {
+            @Override
+            public boolean onDrag(View view, DragEvent dragEvent) {
+                int action = dragEvent.getAction();
+                switch (action) {
+                    case DragEvent.ACTION_DRAG_STARTED:
+                        // Do nothing
+                        break;
+                    case DragEvent.ACTION_DRAG_ENTERED:
+                        // Highlight the cell on the chess board where the piece is being dragged over
+                        break;
+                    case DragEvent.ACTION_DRAG_EXITED:
+                        // Remove the highlight from the cell
+                        break;
+                    case DragEvent.ACTION_DROP:
+                        ImageView myImage = (ImageView) dragEvent.getLocalState();
+                        //Mapdrawer targetBoard = (Mapdrawer) view;
+                        int x = (int) dragEvent.getX();
+                        int y = (int) dragEvent.getY();
+
+                        // use x and y to determine the target cell on the chess board
+                        // check the move is valid or not and update the chess board
+                        map.updateObstacleOnBoard(x, y, myImage);
+                        break;
+                    case DragEvent.ACTION_DRAG_ENDED:
+                        // Remove the highlight from the cell
+                        break;
+                    default:
+                        break;
+                }
+                return true;
+            }
+        });
+
+
+
 
     }
 
