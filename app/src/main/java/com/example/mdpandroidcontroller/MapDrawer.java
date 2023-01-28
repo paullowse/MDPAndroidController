@@ -313,7 +313,6 @@ public class MapDrawer extends View implements Serializable {
         int column = (int) Math.floor(originalX / cellSize);
         int row = (int) Math.floor(originalY / cellSize);
 
-        System.out.println("removing obstacle");
         //System.out.println(originalX);
         //System.out.println(originalY);
         //System.out.println(column);
