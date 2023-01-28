@@ -18,6 +18,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class MapDrawer extends View implements Serializable {
@@ -37,7 +38,7 @@ public class MapDrawer extends View implements Serializable {
 
     //private ArrayList<ArrayList<Integer>> obstacleCoord =  new ArrayList<ArrayList<Integer>>();
 
-    private ArrayList<int[]> obstacleCoord = new ArrayList<>();
+    private static ArrayList<int[]> obstacleCoord = new ArrayList<>();
 
     private static int[] oldCoord = new int[]{-1, -1};
     private Bitmap arrowBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.arrow_error); // WHAT IS THIS??
@@ -86,11 +87,10 @@ public class MapDrawer extends View implements Serializable {
             //this.setEndCoordinate(10, 8);    // not needed anymore - use this to test functionality
             mapDrawn = true;
 
-
         }
 
         drawGridNumber(canvas);
-        drawObstacles(canvas);
+        drawObstacles(canvas, obstacleCoord);
         //if (getCanDrawRobot())   // USED TO HAVE THIS
 
         drawRobot(canvas, curCoord);
@@ -238,14 +238,9 @@ public class MapDrawer extends View implements Serializable {
         }
     }
 
-    public void drawObstacles(Canvas canvas) {
-        ArrayList<int[]> obstacles = getObstacleCoord();
-
-
-        System.out.println("DRAWING");
+    public void drawObstacles(Canvas canvas, ArrayList<int[]> obstacles) {
+        //ArrayList<int[]> obstacles = getObstacleCoord();
         for (int i = 0; i < obstacles.size(); i++) {
-            System.out.println(obstacles.get(i)[0]);
-            System.out.println(obstacles.get(i)[1]);
             cells[obstacles.get(i)[0]][obstacles.get(i)[1]].setType("obstacle");
         }
     }
@@ -290,7 +285,7 @@ public class MapDrawer extends View implements Serializable {
     }
 
 
-    public void updateObstacleOnBoard(int x, int y, ImageView obstacle) {
+    public int[] updateObstacleOnBoard(int x, int y, ImageView obstacle) {
 
         // NOTES: one cell size worth is the grid...
         //System.out.println(cells[1][0].startX + cellSize / 2);
@@ -299,18 +294,34 @@ public class MapDrawer extends View implements Serializable {
         int column = (int) Math.floor(x / cellSize);
         int row = (int) Math.floor(y / cellSize);
 
+        //System.out.println("add obstacle");
+        //System.out.println(x);
+        //System.out.println(y);
+        //System.out.println(column);
+        //System.out.println(row);
         cells[column][row].setType("obstacle");
 
         setObstacleCoord(new int[] {column, row});
 
-        ArrayList<int[]> obstacles = getObstacleCoord();
-        System.out.println("update on board");
-        for (int i = 0; i < obstacles.size(); i++) {
-            System.out.println(obstacles.get(i)[0]);
-            System.out.println(obstacles.get(i)[1]);
-        }
+        int[] newObstacleDrag= {(int) (column * cellSize), (int) (row * cellSize)};
 
+        return newObstacleDrag;
 
+    }
+
+    public void removeObstacleOnBoard(float originalX, float originalY) {
+        int column = (int) Math.floor(originalX / cellSize);
+        int row = (int) Math.floor(originalY / cellSize);
+
+        System.out.println("removing obstacle");
+        //System.out.println(originalX);
+        //System.out.println(originalY);
+        //System.out.println(column);
+        //System.out.println(row);
+        cells[column][row].setType("unexplored");
+        removeObstacleCoord(new int[] {column, row});
+
+        //printObstacleCoord();
     }
 
 
@@ -357,10 +368,25 @@ public class MapDrawer extends View implements Serializable {
 
     public void setObstacleCoord(int[] coordinates) {
         obstacleCoord.add(coordinates);
-        System.out.println("obstacle coordinates stored:");
+    }
+
+    public void removeObstacleCoord(int[] coordinates) {
+        //printObstacleCoord();
+
         for (int i = 0; i < obstacleCoord.size(); i++) {
-            System.out.println(obstacleCoord.get(i)[0]);
-            System.out.println(obstacleCoord.get(i)[1]);
+            if (Arrays.equals(obstacleCoord.get(i), coordinates)) {
+                obstacleCoord.remove(i);
+                break;
+            }
+        }
+        //printObstacleCoord();
+    }
+
+    public void printObstacleCoord() {
+        System.out.printf("total number of obstacles: %d \n", obstacleCoord.size());
+        for (int x = 0; x < obstacleCoord.size(); x++) {
+            System.out.println(obstacleCoord.get(x)[0]);
+            System.out.println(obstacleCoord.get(x)[1]);
         }
     }
 
@@ -368,24 +394,10 @@ public class MapDrawer extends View implements Serializable {
         return obstacleCoord;
     }
 
-    /**
-     * DELETE THIS LATER - irrelevant
-     * @param col
-     * @param row
-     */
-    public void setEndCoordinate(int col, int row) {
-        row = this.convertRow(row);
-        for (int x = col - 1; x <= col + 1; x++)
-            for (int y = row - 1; y <= row + 1; y++)
-                cells[x][y].setType("end");
-
-    }
-
-    private float getCellSize() { return cellSize; }
+    public float getCellSize() { return cellSize; }
     public String getRobotDirection() {
         return robotDirection;
     }
-
 
 
     public boolean getCanDrawRobot() {
@@ -407,6 +419,11 @@ public class MapDrawer extends View implements Serializable {
         return oldCoord;
     }
 
+    /**
+     * can remove this
+     * @param out
+     * @throws IOException
+     */
     //to try serializable...
     private void writeObject(ObjectOutputStream out) throws IOException {
         out.defaultWriteObject();
