@@ -39,9 +39,11 @@ public class FirstFragment extends Fragment {
     private static MapDrawer map;
     float pastX, pastY;
 
-    ArrayList<int[]> originalObstacleCoords = new ArrayList<>();
 
-    List<ImageView> obstacleViews = new ArrayList<>();
+    private static int[][] originalObstacleCoords = new int[6][2];
+
+
+    private List<ImageView> obstacleViews = new ArrayList<>(); // cant be static!! - COS ITS REGENRATED ALL THE TIME
 
     @Override
     public View onCreateView(
@@ -52,11 +54,17 @@ public class FirstFragment extends Fragment {
         //return binding.getRoot();
 
         View view = inflater.inflate(R.layout.fragment_first, container, false);
-        System.out.println(savedInstanceState == null);
+        //System.out.println(savedInstanceState == null);
         if (savedInstanceState != null) {
             map = (MapDrawer) savedInstanceState.getSerializable("map");
         } else{
             map = view.findViewById(R.id.gridView);
+        }
+
+        for (int i = 0; i < originalObstacleCoords.length; i++) {
+            for (int j = 0; j < originalObstacleCoords[i].length; j++) {
+                originalObstacleCoords[i][j] = -1;
+            }
         }
 
         return view;
@@ -141,7 +149,9 @@ public class FirstFragment extends Fragment {
         });
 
         ImageView obstacle = (ImageView) view.findViewById(R.id.obstacle);
+
         obstacleViews.add(obstacle);
+
         obstacle.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -152,6 +162,16 @@ public class FirstFragment extends Fragment {
                     //view.setVisibility(View.INVISIBLE);
                     pastX = obstacle.getX();
                     pastY = obstacle.getY();
+
+
+                    // save the original obstacle coord (for snapping back if out of grid)
+                    if (originalObstacleCoords[0][0] == -1) {
+                        originalObstacleCoords[0][0] = obstacle.getLeft();
+                        originalObstacleCoords[0][1] = obstacle.getTop();
+                    }
+                    //System.out.println(pastX);
+                    //System.out.println(pastY);
+
                     return true;
                 } else {
                     return false;
@@ -161,9 +181,8 @@ public class FirstFragment extends Fragment {
 
         //HOW TO DO IT WITHOUT REPEATING CODE???
         ImageView obstacle2 = (ImageView) view.findViewById(R.id.obstacle2);
-        originalObstacleCoords.add((int) (obstacle2.getX()),(int) (obstacle2.getY()));
-
-        
+        //int[] tempcoord2 = {(int) (obstacle2.getX()),(int) (obstacle2.getY())};
+        //originalObstacleCoords.add(tempcoord2);
         obstacleViews.add(obstacle2);
         obstacle2.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -175,6 +194,17 @@ public class FirstFragment extends Fragment {
                     //view.setVisibility(View.INVISIBLE);
                     pastX = obstacle2.getX();
                     pastY = obstacle2.getY();
+
+                    // save the original obstacle coord (for snapping back if out of grid)
+                    if (originalObstacleCoords[1][0] == -1) {
+                        originalObstacleCoords[1][0] = obstacle2.getLeft();;
+                        originalObstacleCoords[1][1] = obstacle2.getTop();
+                    }
+
+
+                    //System.out.println(pastX);
+                    //System.out.println(pastY);
+
                     return true;
                 } else {
                     return false;
@@ -256,11 +286,30 @@ public class FirstFragment extends Fragment {
 
                 if (event.getAction() == DragEvent.ACTION_DROP) {
                     if(x < mapCoord[0] || x > mapCoord[0] + mapWidth || y < mapCoord[1] || y > mapCoord[1] + mapHeight){
+
                         //System.out.println("out of map");
+
                         ImageView myImage = (ImageView) event.getLocalState();
-                        myImage.setVisibility(View.INVISIBLE);
-                        map.removeObstacleOnBoard(pastX - map.getX() + map.getCellSize()/2,pastY - map.getY() + map.getCellSize()/2);
-                        map.invalidate();
+                        //myImage.setVisibility(View.INVISIBLE);
+                        // loop through obstacleviews to find the obstacle name
+                        // set according to obstacle coord
+                        for (int i = 0; i < obstacleViews.size(); i++) {
+                            if (myImage == obstacleViews.get(i)) {
+                                myImage.setX(originalObstacleCoords[i][0]);
+                                myImage.setY(originalObstacleCoords[i][1]);
+                            }
+                        }
+
+
+                        //outside map to outside map
+
+
+                        if(pastX >= mapCoord[0] && pastX <= mapCoord[0] + mapWidth && pastY >= mapCoord[1] && pastY <= mapCoord[1] + mapHeight){
+                            // in of map to out of map!!
+                            map.removeObstacleOnBoard(pastX - map.getX() + map.getCellSize()/2,pastY - map.getY() + map.getCellSize()/2);
+                            map.invalidate();
+                        }
+
                     } else {
                         // obstacle was dropped inside the map
                     }
@@ -271,6 +320,74 @@ public class FirstFragment extends Fragment {
 
 
 
+    }
+
+    public void onPause() {
+        super.onPause();
+
+
+        System.out.println("pause- save");
+
+        // Save the ImageView locations
+        SharedPreferences preferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        for (int i = 0; i < obstacleViews.size(); i++) {
+            ImageView imageView = obstacleViews.get(i);
+
+            // x and y = current position
+            int x = (int) imageView.getX();
+            int y = (int) imageView.getY();
+
+            // left and top = og position
+            int left = (int) imageView.getLeft();
+            int top = (int) imageView.getTop();
+
+            editor.putInt("image_view_" + i + "_x", x);
+            editor.putInt("image_view_" + i + "_y", y);
+            editor.putInt("image_view_" + i + "_left", left);
+            editor.putInt("image_view_" + i + "_top", top);
+
+            System.out.println(i);
+            System.out.println(x);
+            System.out.println(y);
+        }
+        editor.apply();
+    }
+
+    public void onResume() {
+        super.onResume();
+        System.out.println("resume");
+        // Retrieve the ImageView locations
+        SharedPreferences preferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+        for (int i = 0; i < obstacleViews.size(); i++) {
+            ImageView imageView = obstacleViews.get(i);
+            int x = preferences.getInt("image_view_" + i + "_x", 0);
+            int y = preferences.getInt("image_view_" + i + "_y", 0);
+            int left = preferences.getInt("image_view_" + i + "_left", 0);
+            int top = preferences.getInt("image_view_" + i + "_top", 0);
+
+            // setX and setY == 0 is the bASE POSITION - use this to reset
+            //imageView.setX(0);
+            //imageView.setY(0);
+
+            System.out.println(i);
+            System.out.println(x);
+            System.out.println(y);
+
+
+            if (i == 0) {
+                imageView.setX(x - left);
+                imageView.setY(y - top);  //top == 1022
+
+            }
+            if (i == 1) {
+                imageView.setX(x - left);
+                imageView.setY(y - top); // top = -912
+
+            }
+
+
+        }
     }
 
 
