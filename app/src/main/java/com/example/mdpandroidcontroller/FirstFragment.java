@@ -37,7 +37,9 @@ public class FirstFragment extends Fragment {
 
     // grid stuff
     private static MapDrawer map;
-    float originalX, originalY;
+    float pastX, pastY;
+
+    ArrayList<int[]> originalObstacleCoords = new ArrayList<>();
 
     List<ImageView> obstacleViews = new ArrayList<>();
 
@@ -148,8 +150,8 @@ public class FirstFragment extends Fragment {
                     View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
                     view.startDrag(data, shadowBuilder, view, 0);
                     //view.setVisibility(View.INVISIBLE);
-                    originalX = obstacle.getX();
-                    originalY = obstacle.getY();
+                    pastX = obstacle.getX();
+                    pastY = obstacle.getY();
                     return true;
                 } else {
                     return false;
@@ -159,6 +161,9 @@ public class FirstFragment extends Fragment {
 
         //HOW TO DO IT WITHOUT REPEATING CODE???
         ImageView obstacle2 = (ImageView) view.findViewById(R.id.obstacle2);
+        originalObstacleCoords.add((int) (obstacle2.getX()),(int) (obstacle2.getY()));
+
+        
         obstacleViews.add(obstacle2);
         obstacle2.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -168,8 +173,8 @@ public class FirstFragment extends Fragment {
                     View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
                     view.startDrag(data, shadowBuilder, view, 0);
                     //view.setVisibility(View.INVISIBLE);
-                    originalX = obstacle2.getX();
-                    originalY = obstacle2.getY();
+                    pastX = obstacle2.getX();
+                    pastY = obstacle2.getY();
                     return true;
                 } else {
                     return false;
@@ -198,16 +203,12 @@ public class FirstFragment extends Fragment {
                         // Remove the highlight from the cell
                         break;
                     case DragEvent.ACTION_DROP:
-
+                        // when dropped into the grid
                         ImageView myImage = (ImageView) dragEvent.getLocalState();
 
                         int x = (int) dragEvent.getX();
                         int y = (int) dragEvent.getY();
 
-
-
-                        // use x and y to determine the target cell on the chess board
-                        // check the move is valid or not and update the chess board
 
                         // this is the exact location - but we want to snap to grid
                         //myImage.setX(x + map.getX() - map.getCellSize()/2);
@@ -217,12 +218,12 @@ public class FirstFragment extends Fragment {
                         //ImageView newObst = new ImageView(getContext());
                         //newObst.setImageDrawable(myImage.getDrawable());
 
-                        // if the original was in the map, u remove the old one.
-                        if (originalX >= map.getX() && originalX <= map.getX() + map.getWidth() && originalY >= map.getY() && originalY <= map.getY() + map.getHeight()) {
+                        // if the past location of obstacle was in the map, u remove the old one.
+                        if (pastX >= map.getX() && pastX <= map.getX() + map.getWidth() && pastY >= map.getY() && pastY <= map.getY() + map.getHeight()) {
                             //System.out.println("IN MAP");
-                            map.removeObstacleOnBoard(originalX - map.getX() + map.getCellSize()/2,originalY - map.getY() + map.getCellSize()/2);
+                            map.removeObstacleOnBoard(pastX - map.getX() + map.getCellSize()/2,pastY - map.getY() + map.getCellSize()/2);
                         }
-
+                        // to add the new obstacle
                         int[] newObstCoord = map.updateObstacleOnBoard(x, y, myImage);
 
                         // MUST get from the map class to snap to grid
@@ -258,7 +259,7 @@ public class FirstFragment extends Fragment {
                         //System.out.println("out of map");
                         ImageView myImage = (ImageView) event.getLocalState();
                         myImage.setVisibility(View.INVISIBLE);
-                        map.removeObstacleOnBoard(originalX - map.getX() + map.getCellSize()/2,originalY - map.getY() + map.getCellSize()/2);
+                        map.removeObstacleOnBoard(pastX - map.getX() + map.getCellSize()/2,pastY - map.getY() + map.getCellSize()/2);
                         map.invalidate();
                     } else {
                         // obstacle was dropped inside the map
@@ -267,7 +268,7 @@ public class FirstFragment extends Fragment {
                 return true;
             }
         });
-        
+
 
 
     }
