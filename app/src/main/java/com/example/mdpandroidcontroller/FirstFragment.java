@@ -57,7 +57,13 @@ public class FirstFragment extends Fragment {
         //grid
         //new im just trying...
         //map = new MapDrawer(context);
-        map = view.findViewById(R.id.gridView);
+        System.out.println(savedInstanceState == null);
+        if (savedInstanceState != null) {
+            map = (MapDrawer) savedInstanceState.getSerializable("map");
+        } else{
+            map = view.findViewById(R.id.gridView);
+        }
+
         // end of new stuff...
 
 
@@ -174,6 +180,8 @@ public class FirstFragment extends Fragment {
                         // use x and y to determine the target cell on the chess board
                         // check the move is valid or not and update the chess board
                         map.updateObstacleOnBoard(x, y, myImage);
+                        map.invalidate();
+
                         break;
                     case DragEvent.ACTION_DRAG_ENDED:
                         // Remove the highlight from the cell
@@ -185,9 +193,15 @@ public class FirstFragment extends Fragment {
             }
         });
 
+    }
 
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
 
+        outState.putSerializable("map", map);
 
+        // Save the chess board state to the bundle
+        //outState.putStringArray("map", map);
     }
 
     @Override

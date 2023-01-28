@@ -13,11 +13,18 @@ import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 
-public class MapDrawer extends View {
+public class MapDrawer extends View implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+    private Context context;
+    private AttributeSet attrs;
     private boolean mapDrawn = false;
     private static ArrayList<String[]> arrowCoord = new ArrayList<>();
     private static Cell[][] cells;
@@ -27,6 +34,10 @@ public class MapDrawer extends View {
     private static boolean canDrawRobot = false;  // why false?
     private static String robotDirection = Constants.NONE;
     private static int[] curCoord = new int[]{4, 6};     // CHANGE THIS WAY OF IMPLEMENTATION... - when u drag the robot thing
+
+    //private ArrayList<ArrayList<Integer>> obstacleCoord =  new ArrayList<ArrayList<Integer>>();
+
+    private ArrayList<int[]> obstacleCoord = new ArrayList<>();
 
     private static int[] oldCoord = new int[]{-1, -1};
     private Bitmap arrowBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.arrow_error); // WHAT IS THIS??
@@ -44,8 +55,10 @@ public class MapDrawer extends View {
         robotColor.setColor(Color.GREEN);
     }
 
-    public MapDrawer(Context context, @Nullable AttributeSet attrs) {
+    public MapDrawer (Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        this.context = context;
+        this.attrs = attrs;
 
         black.setStyle(Paint.Style.FILL_AND_STROKE);
         unexploredCellColor.setColor(Color.LTGRAY);
@@ -77,6 +90,7 @@ public class MapDrawer extends View {
         }
 
         drawGridNumber(canvas);
+        drawObstacles(canvas);
         //if (getCanDrawRobot())   // USED TO HAVE THIS
 
         drawRobot(canvas, curCoord);
@@ -224,6 +238,18 @@ public class MapDrawer extends View {
         }
     }
 
+    public void drawObstacles(Canvas canvas) {
+        ArrayList<int[]> obstacles = getObstacleCoord();
+
+
+        System.out.println("DRAWING");
+        for (int i = 0; i < obstacles.size(); i++) {
+            System.out.println(obstacles.get(i)[0]);
+            System.out.println(obstacles.get(i)[1]);
+            cells[obstacles.get(i)[0]][obstacles.get(i)[1]].setType("obstacle");
+        }
+    }
+
     /**
      * have smt to move the robot
      * HOW TO MAKE THE OLD ONE NOT COUNT
@@ -265,28 +291,25 @@ public class MapDrawer extends View {
 
 
     public void updateObstacleOnBoard(int x, int y, ImageView obstacle) {
-        System.out.println(x);
-        System.out.println(y);
 
-        // Determine the position of the chess board on screen
-        int[] location = new int[2];
-        this.getLocationOnScreen(location);
-        int boardX = location[0];
-        int boardY = location[1];
+        // NOTES: one cell size worth is the grid...
+        //System.out.println(cells[1][0].startX + cellSize / 2);
+        //System.out.println(cells[1][0].startY + cellSize / 2);
 
-        System.out.println(boardX);
-        System.out.println(boardY);
+        int column = (int) Math.floor(x / cellSize);
+        int row = (int) Math.floor(y / cellSize);
 
-        // Determine the square width and height
-        int squareWidth = getWidth() / COL;
-        int squareHeight = getHeight() / ROW;
+        cells[column][row].setType("obstacle");
 
-        // Convert the x and y coordinates to row and column indices
-        int column = (int) Math.floor((x - boardX) / squareWidth);
-        int row = (int) Math.floor((y - boardY) / squareHeight);
+        setObstacleCoord(new int[] {column, row});
 
-        System.out.println(column);
-        System.out.println(row);
+        ArrayList<int[]> obstacles = getObstacleCoord();
+        System.out.println("update on board");
+        for (int i = 0; i < obstacles.size(); i++) {
+            System.out.println(obstacles.get(i)[0]);
+            System.out.println(obstacles.get(i)[1]);
+        }
+
 
     }
 
@@ -316,6 +339,7 @@ public class MapDrawer extends View {
      */
     private void calculateDimension() {
         this.setCellSize(getWidth()/(COL+1));
+
     } // removed col +1
 
     /**
@@ -331,6 +355,18 @@ public class MapDrawer extends View {
     private void setCellSize(float cellSize) {MapDrawer.cellSize = cellSize;
     }
 
+    public void setObstacleCoord(int[] coordinates) {
+        obstacleCoord.add(coordinates);
+        System.out.println("obstacle coordinates stored:");
+        for (int i = 0; i < obstacleCoord.size(); i++) {
+            System.out.println(obstacleCoord.get(i)[0]);
+            System.out.println(obstacleCoord.get(i)[1]);
+        }
+    }
+
+    public ArrayList<int[]> getObstacleCoord() {
+        return obstacleCoord;
+    }
 
     /**
      * DELETE THIS LATER - irrelevant
@@ -369,6 +405,19 @@ public class MapDrawer extends View {
 
     public int[] getOldRobotCoord() {
         return oldCoord;
+    }
+
+    //to try serializable...
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        out.writeObject(context);
+        out.writeObject(attrs);
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        context = (Context) in.readObject();
+        attrs = (AttributeSet) in.readObject();
     }
 
 
