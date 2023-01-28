@@ -97,8 +97,8 @@
     <view
         android:id="@+id/gridView"
         class="com.example.mdpandroidcontroller.MapDrawer"
-        android:layout_width="356dp"
-        android:layout_height="373dp"
+        android:layout_width="357dp"
+        android:layout_height="357dp"
         android:layout_marginBottom="220dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -174,11 +174,20 @@
 
     <ImageView
         android:id="@+id/obstacle"
-        android:layout_width="15dp"
-        android:layout_height="15dp"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
         android:layout_marginBottom="32dp"
         android:src="@drawable/obstacle"
         app:layout_constraintBottom_toTopOf="@+id/arrowForward"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/obstacle2"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_marginBottom="24dp"
+        android:src="@drawable/obstacle"
+        app:layout_constraintBottom_toTopOf="@+id/obstacle"
         app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

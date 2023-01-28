@@ -3,6 +3,7 @@ package com.example.mdpandroidcontroller;
 import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
@@ -24,6 +25,9 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.mdpandroidcontroller.databinding.FragmentFirstBinding;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class FirstFragment extends Fragment {
 
     private FragmentFirstBinding binding;
@@ -33,9 +37,11 @@ public class FirstFragment extends Fragment {
 
     // grid stuff
     private static MapDrawer map;
-    private static Context context;
-    float x, y;
-    float dx, dy;
+    float pastX, pastY;
+
+    ArrayList<int[]> originalObstacleCoords = new ArrayList<>();
+
+    List<ImageView> obstacleViews = new ArrayList<>();
 
     @Override
     public View onCreateView(
@@ -46,17 +52,6 @@ public class FirstFragment extends Fragment {
         //return binding.getRoot();
 
         View view = inflater.inflate(R.layout.fragment_first, container, false);
-        return view;
-
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        //grid
-        //new im just trying...
-        //map = new MapDrawer(context);
         System.out.println(savedInstanceState == null);
         if (savedInstanceState != null) {
             map = (MapDrawer) savedInstanceState.getSerializable("map");
@@ -64,7 +59,13 @@ public class FirstFragment extends Fragment {
             map = view.findViewById(R.id.gridView);
         }
 
-        // end of new stuff...
+        return view;
+
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
 
         view.findViewById(R.id.button_first).setOnClickListener(new View.OnClickListener() {
@@ -139,8 +140,9 @@ public class FirstFragment extends Fragment {
             }
         });
 
-        ImageView myImage = (ImageView) view.findViewById(R.id.obstacle);
-        myImage.setOnTouchListener(new View.OnTouchListener() {
+        ImageView obstacle = (ImageView) view.findViewById(R.id.obstacle);
+        obstacleViews.add(obstacle);
+        obstacle.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
@@ -148,6 +150,8 @@ public class FirstFragment extends Fragment {
                     View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
                     view.startDrag(data, shadowBuilder, view, 0);
                     //view.setVisibility(View.INVISIBLE);
+                    pastX = obstacle.getX();
+                    pastY = obstacle.getY();
                     return true;
                 } else {
                     return false;
@@ -155,15 +159,42 @@ public class FirstFragment extends Fragment {
             }
         });
 
+        //HOW TO DO IT WITHOUT REPEATING CODE???
+        ImageView obstacle2 = (ImageView) view.findViewById(R.id.obstacle2);
+        originalObstacleCoords.add((int) (obstacle2.getX()),(int) (obstacle2.getY()));
+
+        
+        obstacleViews.add(obstacle2);
+        obstacle2.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                    ClipData data = ClipData.newPlainText("", "");
+                    View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
+                    view.startDrag(data, shadowBuilder, view, 0);
+                    //view.setVisibility(View.INVISIBLE);
+                    pastX = obstacle2.getX();
+                    pastY = obstacle2.getY();
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        });
+
+
+
         // Droppable chess board
         //CustomView chessBoard = (CustomView) view.findViewById(R.id.gridView);
         map.setOnDragListener(new View.OnDragListener() {
             @Override
             public boolean onDrag(View view, DragEvent dragEvent) {
+
                 int action = dragEvent.getAction();
                 switch (action) {
                     case DragEvent.ACTION_DRAG_STARTED:
                         // Do nothing
+
                         break;
                     case DragEvent.ACTION_DRAG_ENTERED:
                         // Highlight the cell on the chess board where the piece is being dragged over
@@ -172,14 +203,33 @@ public class FirstFragment extends Fragment {
                         // Remove the highlight from the cell
                         break;
                     case DragEvent.ACTION_DROP:
+                        // when dropped into the grid
                         ImageView myImage = (ImageView) dragEvent.getLocalState();
-                        //Mapdrawer targetBoard = (Mapdrawer) view;
+
                         int x = (int) dragEvent.getX();
                         int y = (int) dragEvent.getY();
 
-                        // use x and y to determine the target cell on the chess board
-                        // check the move is valid or not and update the chess board
-                        map.updateObstacleOnBoard(x, y, myImage);
+
+                        // this is the exact location - but we want to snap to grid
+                        //myImage.setX(x + map.getX() - map.getCellSize()/2);
+                        //myImage.setY(y+ map.getY() - map.getCellSize()/2);
+
+                        // create a duplicate
+                        //ImageView newObst = new ImageView(getContext());
+                        //newObst.setImageDrawable(myImage.getDrawable());
+
+                        // if the past location of obstacle was in the map, u remove the old one.
+                        if (pastX >= map.getX() && pastX <= map.getX() + map.getWidth() && pastY >= map.getY() && pastY <= map.getY() + map.getHeight()) {
+                            //System.out.println("IN MAP");
+                            map.removeObstacleOnBoard(pastX - map.getX() + map.getCellSize()/2,pastY - map.getY() + map.getCellSize()/2);
+                        }
+                        // to add the new obstacle
+                        int[] newObstCoord = map.updateObstacleOnBoard(x, y, myImage);
+
+                        // MUST get from the map class to snap to grid
+                        myImage.setX(newObstCoord[0]+ map.getX());
+                        myImage.setY(newObstCoord[1]+ map.getY());
+
                         map.invalidate();
 
                         break;
@@ -193,7 +243,37 @@ public class FirstFragment extends Fragment {
             }
         });
 
+        ViewGroup parentView = (ViewGroup) map.getParent();
+        parentView.setOnDragListener(new View.OnDragListener() {
+            @Override
+            public boolean onDrag(View view, DragEvent event) {
+                int x = (int) event.getX();
+                int y = (int) event.getY();
+                int mapWidth = map.getWidth();
+                int mapHeight = map.getHeight();
+                int[] mapCoord = new int[2];
+                map.getLocationOnScreen(mapCoord);
+
+                if (event.getAction() == DragEvent.ACTION_DROP) {
+                    if(x < mapCoord[0] || x > mapCoord[0] + mapWidth || y < mapCoord[1] || y > mapCoord[1] + mapHeight){
+                        //System.out.println("out of map");
+                        ImageView myImage = (ImageView) event.getLocalState();
+                        myImage.setVisibility(View.INVISIBLE);
+                        map.removeObstacleOnBoard(pastX - map.getX() + map.getCellSize()/2,pastY - map.getY() + map.getCellSize()/2);
+                        map.invalidate();
+                    } else {
+                        // obstacle was dropped inside the map
+                    }
+                }
+                return true;
+            }
+        });
+
+
+
     }
+
+
 
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
