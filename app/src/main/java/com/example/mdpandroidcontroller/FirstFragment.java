@@ -122,7 +122,7 @@ public class FirstFragment extends Fragment {
             rotation = map.convertFacingToRotation(map.getRobotFacing());
             //System.out.println("ROBOT ROTATION");
 
-            trackRobot(view, robot, rotation);
+            trackRobot(robot, rotation);
 
         } else {
             robot.setVisibility(View.INVISIBLE);
@@ -147,8 +147,8 @@ public class FirstFragment extends Fragment {
                     map.saveFacingWithRotation(rotation); // error: between this button and onresume, map's facing reset to 0
                     map.setCanDrawRobot(true);
                     robot.setVisibility(View.VISIBLE);
-                    rotation = map.convertFacingToRotation(map.getRobotFacing());
-                    trackRobot(view, robot, rotation);
+                    //rotation = map.convertFacingToRotation(map.getRobotFacing()); - if issue check this
+                    trackRobot(robot, rotation);
 
                 }
                 map.invalidate();
@@ -159,60 +159,37 @@ public class FirstFragment extends Fragment {
 
 
 
-        //testing imagebuttons
+        //MOVEMENT BUTTONS
         ImageButton forwardButton = (ImageButton) view.findViewById(R.id.arrowForward);
         forwardButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-
-                map.saveFacingWithRotation(rotation); // error: between this button and onresume, map's facing reset to 0
-                map.setRobotMovement(Constants.UP);
-                map.moveRobot();
-                map.invalidate();
-                rotation = map.convertFacingToRotation(map.getRobotFacing());
-                trackRobot(view, robot, rotation);
-
+                masterRobotMovement(Constants.UP);
             }
         });
 
         ImageButton rightButton = (ImageButton) view.findViewById(R.id.arrowRight);
         rightButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                map.saveFacingWithRotation(rotation); // error: between this button and onresume, map's facing reset to 0
-                map.setRobotMovement(Constants.RIGHT);
-                map.moveRobot();
-                map.invalidate();
-                rotation = map.convertFacingToRotation(map.getRobotFacing());
-                trackRobot(view, robot, rotation);
-
+                masterRobotMovement(Constants.RIGHT);
             }
         });
 
         ImageButton backButton = (ImageButton) view.findViewById(R.id.arrowBack);
         backButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                map.saveFacingWithRotation(rotation); // error: between this button and onresume, map's facing reset to 0
-                map.setRobotMovement(Constants.DOWN);
-                map.moveRobot();
-                map.invalidate();
-                rotation = map.convertFacingToRotation(map.getRobotFacing());
-                trackRobot(view, robot, rotation);
-
+                masterRobotMovement(Constants.DOWN);
             }
         });
 
         ImageButton leftButton = (ImageButton) view.findViewById(R.id.arrowLeft);
         leftButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                map.saveFacingWithRotation(rotation); // error: between this button and onresume, map's facing reset to 0
-                map.setRobotMovement(Constants.LEFT);
-                map.moveRobot();
-                map.invalidate();
-                rotation = map.convertFacingToRotation(map.getRobotFacing());
-                trackRobot(view, robot, rotation);
-
+                masterRobotMovement(Constants.LEFT);
             }
         });
 
+
+        //OBSTACLES
         ImageView obstacle = (ImageView) view.findViewById(R.id.obstacle);
         obstacleViews.add(obstacle);
 
@@ -380,7 +357,6 @@ public class FirstFragment extends Fragment {
 
                         //outside map to outside map
 
-
                         if(pastX >= mapCoord[0] && pastX <= mapCoord[0] + mapWidth && pastY >= mapCoord[1] && pastY <= mapCoord[1] + mapHeight){
                             // in of map to out of map!!
                             map.removeObstacleOnBoard(pastX - map.getX() + map.getCellSize()/2,pastY - map.getY() + map.getCellSize()/2);
@@ -489,7 +465,26 @@ public class FirstFragment extends Fragment {
         }
     }
 
-    public void trackRobot(View view, ImageView robot, int rotation) {
+    /**
+     * Summarize the move buttons actions.
+     * @param direction
+     */
+    public void masterRobotMovement(String direction) {
+        map.saveFacingWithRotation(rotation); // error: between this button and onresume, map's facing reset to 0
+        map.setRobotMovement(direction);
+        map.moveRobot();
+        map.invalidate();
+        rotation = map.convertFacingToRotation(map.getRobotFacing());
+        trackRobot(robot, rotation);
+    }
+
+    /**
+     * Purpose is to track the image of the robot to the current coord of the robot in map class. and follows the right rotation
+     * The robot will be paired accordingly
+     * @param robot
+     * @param rotation
+     */
+    public void trackRobot(ImageView robot, int rotation) {
         //ImageView robot = (ImageView) view.findViewById(R.id.robotcar);
         //System.out.println("TRACK ROBOT FUNCTION");
 
@@ -499,20 +494,30 @@ public class FirstFragment extends Fragment {
         robot.setY(robotLocation[1]);
         robot.setRotation(rotation);
     }
+    
+    
 
 
 
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+    //WAS USED FOR SERIALIZABLE
+    //public void onSaveInstanceState(Bundle outState) {
+    //    super.onSaveInstanceState(outState);
 
-        outState.putSerializable("map", map);
+    //    outState.putSerializable("map", map);
 
         // Save the chess board state to the bundle
         //outState.putStringArray("map", map);
-    }
+    //}
 
     @Override
     public void onDestroyView() {
+
+        //dont need? doesnt work
+        for (int i = 0; i < obstacleViews.size(); i++) {
+            obstacleViews.get(i).setX(originalObstacleCoords[i][0]);
+            obstacleViews.get(i).setY(originalObstacleCoords[i][1]);
+        }
+
         super.onDestroyView();
         binding = null;
     }
