@@ -21,9 +21,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 
-public class MapDrawer extends View implements Serializable {
+public class MapDrawer extends View { //implements Serializable
 
-    private static final long serialVersionUID = 1L;
+    //private static final long serialVersionUID = 1L;
     private Context context;
     private AttributeSet attrs;
     private boolean mapDrawn = false;
@@ -35,6 +35,7 @@ public class MapDrawer extends View implements Serializable {
     private static boolean canDrawRobot = false;  // why false? - at first cant do
     private static String robotMovement = Constants.NONE; //
     private static String robotFacing = Constants.NONE;
+    private static int robotSize = 3;
     private static int oldFacing;
     private static int newFacing;
     private static String[] robotFacingEnum = new String[] {Constants.FORWARD, Constants.RIGHT, Constants.BACKWARD, Constants.LEFT};
@@ -82,13 +83,7 @@ public class MapDrawer extends View implements Serializable {
 
         // on first time drawing?
         if (!mapDrawn) {
-            String[] dummyArrowCoord = new String[3];
-            dummyArrowCoord[0] = "1";
-            dummyArrowCoord[1] = "1";
-            dummyArrowCoord[2] = "dummy";
-            arrowCoord.add(dummyArrowCoord);
             this.createCell();
-            //this.setEndCoordinate(10, 8);    // not needed anymore - use this to test functionality
             setRobotFacing(Constants.FORWARD);
             mapDrawn = true;
 
@@ -99,7 +94,7 @@ public class MapDrawer extends View implements Serializable {
         if (getCanDrawRobot()) {
             drawRobot(canvas, curCoord);
         }
-        drawArrow(canvas, arrowCoord);
+        //drawArrow(canvas, arrowCoord);
         drawCell(canvas);
         drawHorizontalLines(canvas);
         drawVerticalLines(canvas);
@@ -125,7 +120,7 @@ public class MapDrawer extends View implements Serializable {
     public void drawCell(Canvas canvas) {
         for (int x = 1; x <= COL; x++)
             for (int y = 0; y < ROW; y++)
-                for (int i = 0; i < this.getArrowCoord().size(); i++)
+                for (int i = 0; i < robotSize; i++)
                     if (!cells[x][y].type.equals("image") && cells[x][y].getId() == -1) {
                         canvas.drawRect(cells[x][y].startX, cells[x][y].startY, cells[x][y].endX, cells[x][y].endY, cells[x][y].paint);
                     } else {
@@ -136,8 +131,6 @@ public class MapDrawer extends View implements Serializable {
                         canvas.drawRect(cells[x][y].startX, cells[x][y].startY, cells[x][y].endX, cells[x][y].endY, cells[x][y].paint);
                         canvas.drawText(String.valueOf(cells[x][y].getId()),(cells[x][y].startX+cells[x][y].endX)/2, cells[x][y].endY + (cells[x][y].startY-cells[x][y].endY)/4, textPaint);
                     }
-
-
     }
 
     /**
@@ -174,35 +167,9 @@ public class MapDrawer extends View implements Serializable {
         }
     }
 
-    // DOESNT WORK
-    private void drawArrow(Canvas canvas, ArrayList<String[]> arrowCoord) {
-        RectF rect;
+    // RANDOM OLD FUNC
+    //private void drawArrow(Canvas canvas, ArrayList<String[]> arrowCoord)
 
-        for (int i = 0; i < arrowCoord.size(); i++) {
-            if (!arrowCoord.get(i)[2].equals("dummy")) {
-                int col = Integer.parseInt(arrowCoord.get(i)[0]);
-                int row = convertRow(Integer.parseInt(arrowCoord.get(i)[1]));
-                rect = new RectF(col * cellSize, row * cellSize, (col + 1) * cellSize, (row + 1) * cellSize);
-                switch (arrowCoord.get(i)[2]) {
-                    case Constants.UP:
-                        arrowBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.arrow_forward);
-                        break;
-                    case Constants.DOWN:
-                        arrowBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.arrow_back);
-                        break;
-                    case Constants.LEFT:
-                        arrowBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.arrow_left);
-                        break;
-                    case Constants.RIGHT:
-                        arrowBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.arrow_right);
-                        break;
-                    default:
-                        break;
-                }
-                canvas.drawBitmap(arrowBitmap, null, rect, null);
-            }
-        }
-    }
 
 
     // DOESNT WORK
@@ -213,34 +180,6 @@ public class MapDrawer extends View implements Serializable {
         for (int x = curCoord[0] - 1; x <= curCoord[0] + 1; x++)
             for (int y = androidRowCoord - 1; y <= androidRowCoord + 1; y++)
                 cells[x][y].setType("robot");
-
-        // For the line part
-        for (int y = androidRowCoord; y <= androidRowCoord + 1; y++)
-            canvas.drawLine(cells[curCoord[0] - 1][y].startX, cells[curCoord[0] - 1][y].startY - (cellSize / 30), cells[curCoord[0] + 1][y].endX, cells[curCoord[0] + 1][y].startY - (cellSize / 30), robotColor);
-        for (int x = curCoord[0] - 1; x < curCoord[0] + 1; x++)
-            canvas.drawLine(cells[x][androidRowCoord - 1].startX - (cellSize / 30) + cellSize, cells[x][androidRowCoord - 1].startY, cells[x][androidRowCoord + 1].startX - (cellSize / 30) + cellSize, cells[x][androidRowCoord + 1].endY, robotColor);
-
-        // redrawing the old one black
-        switch (this.getRobotMovement()) {
-            case Constants.UP:
-                canvas.drawLine(cells[curCoord[0] - 1][androidRowCoord + 1].startX, cells[curCoord[0] - 1][androidRowCoord + 1].endY, (cells[curCoord[0]][androidRowCoord - 1].startX + cells[curCoord[0]][androidRowCoord - 1].endX) / 2, cells[curCoord[0]][androidRowCoord - 1].startY, black);
-                canvas.drawLine((cells[curCoord[0]][androidRowCoord - 1].startX + cells[curCoord[0]][androidRowCoord - 1].endX) / 2, cells[curCoord[0]][androidRowCoord - 1].startY, cells[curCoord[0] + 1][androidRowCoord + 1].endX, cells[curCoord[0] + 1][androidRowCoord + 1].endY, black);
-                break;
-            case Constants.DOWN:
-                canvas.drawLine(cells[curCoord[0] - 1][androidRowCoord - 1].startX, cells[curCoord[0] - 1][androidRowCoord - 1].startY, (cells[curCoord[0]][androidRowCoord + 1].startX + cells[curCoord[0]][androidRowCoord + 1].endX) / 2, cells[curCoord[0]][androidRowCoord + 1].endY, black);
-                canvas.drawLine((cells[curCoord[0]][androidRowCoord + 1].startX + cells[curCoord[0]][androidRowCoord + 1].endX) / 2, cells[curCoord[0]][androidRowCoord + 1].endY, cells[curCoord[0] + 1][androidRowCoord - 1].endX, cells[curCoord[0] + 1][androidRowCoord - 1].startY, black);
-                break;
-            case Constants.RIGHT:
-                canvas.drawLine(cells[curCoord[0] - 1][androidRowCoord - 1].startX, cells[curCoord[0] - 1][androidRowCoord - 1].startY, cells[curCoord[0] + 1][androidRowCoord].endX, cells[curCoord[0] + 1][androidRowCoord - 1].endY + (cells[curCoord[0] + 1][androidRowCoord].endY - cells[curCoord[0] + 1][androidRowCoord - 1].endY) / 2, black);
-                canvas.drawLine(cells[curCoord[0] + 1][androidRowCoord].endX, cells[curCoord[0] + 1][androidRowCoord - 1].endY + (cells[curCoord[0] + 1][androidRowCoord].endY - cells[curCoord[0] + 1][androidRowCoord - 1].endY) / 2, cells[curCoord[0] - 1][androidRowCoord + 1].startX, cells[curCoord[0] - 1][androidRowCoord + 1].endY, black);
-                break;
-            case Constants.LEFT:
-                canvas.drawLine(cells[curCoord[0] + 1][androidRowCoord - 1].endX, cells[curCoord[0] + 1][androidRowCoord - 1].startY, cells[curCoord[0] - 1][androidRowCoord].startX, cells[curCoord[0] - 1][androidRowCoord - 1].endY + (cells[curCoord[0] - 1][androidRowCoord].endY - cells[curCoord[0] - 1][androidRowCoord - 1].endY) / 2, black);
-                canvas.drawLine(cells[curCoord[0] - 1][androidRowCoord].startX, cells[curCoord[0] - 1][androidRowCoord - 1].endY + (cells[curCoord[0] - 1][androidRowCoord].endY - cells[curCoord[0] - 1][androidRowCoord - 1].endY) / 2, cells[curCoord[0] + 1][androidRowCoord + 1].endX, cells[curCoord[0] + 1][androidRowCoord + 1].endY, black);
-                break;
-            default:
-                break;
-        }
     }
 
     public void drawObstacles(Canvas canvas, ArrayList<int[]> obstacles) {
@@ -519,23 +458,19 @@ public class MapDrawer extends View implements Serializable {
         return oldCoord;
     }
 
-    /**
-     * can remove this
-     * @param out
-     * @throws IOException
-     */
-    //to try serializable...
-    private void writeObject(ObjectOutputStream out) throws IOException {
-        out.defaultWriteObject();
-        out.writeObject(context);
-        out.writeObject(attrs);
-    }
 
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        in.defaultReadObject();
-        context = (Context) in.readObject();
-        attrs = (AttributeSet) in.readObject();
-    }
+    //WAS USED FOR SERIALIZABLE
+    //private void writeObject(ObjectOutputStream out) throws IOException {
+    //    out.defaultWriteObject();
+    //    out.writeObject(context);
+    //    out.writeObject(attrs);
+    //}
+
+     //private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+     //    in.defaultReadObject();
+     //   context = (Context) in.readObject();
+     //   attrs = (AttributeSet) in.readObject();
+    //}
 
 
 }
