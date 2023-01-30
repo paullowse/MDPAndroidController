@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.DragEvent;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,6 +17,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -37,6 +39,10 @@ public class FirstFragment extends Fragment {
 
     // grid stuff
     private static MapDrawer map;
+    private static int mapLeft; // only at robot generate button
+    private static int mapTop;
+
+    private static ImageView robot;
     float pastX, pastY;
 
 
@@ -44,6 +50,8 @@ public class FirstFragment extends Fragment {
 
 
     private List<ImageView> obstacleViews = new ArrayList<>(); // cant be static!! - COS ITS REGENRATED ALL THE TIME
+
+
 
     @Override
     public View onCreateView(
@@ -105,6 +113,46 @@ public class FirstFragment extends Fragment {
             }
         });
 
+        // KEEP IT INVISIBLE AT FIRST
+        robot = (ImageView) view.findViewById(R.id.robotcar);
+        if (map.getCanDrawRobot()) {
+            robot.setVisibility(View.VISIBLE);
+            trackRobot(view, robot);
+
+        } else {
+            robot.setVisibility(View.INVISIBLE);
+        }
+
+
+
+        Button robotButton = (Button) view.findViewById(R.id.button2);
+        view.findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean pastDrawRobot = map.getCanDrawRobot();
+
+                mapLeft = map.getLeft();
+                mapTop = map.getTop();
+
+                if (pastDrawRobot) {
+                    // NEED TO CLEAR THE MAP ALSO -- ERROR FIX LATER
+                    map.setCanDrawRobot(false);
+                    robot.setVisibility(View.INVISIBLE);
+                } else {
+                    map.setCanDrawRobot(true);
+                    robot.setVisibility(View.VISIBLE);
+                    trackRobot(view, robot);
+
+
+                }
+                map.invalidate();
+            }
+        });
+
+
+
+
+
         //testing imagebuttons
         ImageButton backButton = (ImageButton) view.findViewById(R.id.arrowBack);
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -113,6 +161,7 @@ public class FirstFragment extends Fragment {
                 map.setRobotDirection(Constants.DOWN);
                 map.moveRobot();
                 map.invalidate();
+                trackRobot(view, robot);
 
                 //showToast("does this work?");
             }
@@ -125,6 +174,12 @@ public class FirstFragment extends Fragment {
                 map.moveRobot();
                 map.invalidate();
 
+                trackRobot(view, robot);
+                //int[] robotImageCoord = map.getCurCoord();
+                //int[] robotLocation = map.setRobotImagePosition(robotImageCoord[0],map.convertRow(robotImageCoord[1]), map.getLeft(),map.getTop());
+                //robot.setX(robotLocation[0]);
+                //robot.setY(robotLocation[1]);
+
             }
         });
 
@@ -134,6 +189,7 @@ public class FirstFragment extends Fragment {
                 map.setRobotDirection(Constants.RIGHT);
                 map.moveRobot();
                 map.invalidate();
+                trackRobot(view, robot);
 
             }
         });
@@ -144,12 +200,12 @@ public class FirstFragment extends Fragment {
                 map.setRobotDirection(Constants.LEFT);
                 map.moveRobot();
                 map.invalidate();
+                trackRobot(view, robot);
 
             }
         });
 
         ImageView obstacle = (ImageView) view.findViewById(R.id.obstacle);
-
         obstacleViews.add(obstacle);
 
         obstacle.setOnTouchListener(new View.OnTouchListener() {
@@ -200,8 +256,6 @@ public class FirstFragment extends Fragment {
                         originalObstacleCoords[1][0] = obstacle2.getLeft();;
                         originalObstacleCoords[1][1] = obstacle2.getTop();
                     }
-
-
                     //System.out.println(pastX);
                     //System.out.println(pastY);
 
@@ -210,6 +264,21 @@ public class FirstFragment extends Fragment {
                     return false;
                 }
             }
+        });
+
+        Button test = (Button) view.findViewById(R.id.button_test);
+        test.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                View popUpView = inflater.inflate(R.layout.popup_window, null);
+                int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+                int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+                PopupWindow popUpWindow = new PopupWindow(popUpView, width, height, true);
+                popUpWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
+            }
+
+
         });
 
 
@@ -347,13 +416,16 @@ public class FirstFragment extends Fragment {
             editor.putInt("image_view_" + i + "_left", left);
             editor.putInt("image_view_" + i + "_top", top);
 
-            System.out.println(i);
-            System.out.println(x);
-            System.out.println(y);
+            //System.out.println(i);
+            //System.out.println(x);
+            //System.out.println(y);
         }
         editor.apply();
     }
 
+    /** Sometimes map.getleft etc doesnt work here?
+     *
+     */
     public void onResume() {
         super.onResume();
         System.out.println("resume");
@@ -370,10 +442,9 @@ public class FirstFragment extends Fragment {
             //imageView.setX(0);
             //imageView.setY(0);
 
-            System.out.println(i);
-            System.out.println(x);
-            System.out.println(y);
-
+            //System.out.println(i);
+            //System.out.println(x);
+            //System.out.println(y);
 
             if (i == 0) {
                 imageView.setX(x - left);
@@ -386,8 +457,35 @@ public class FirstFragment extends Fragment {
 
             }
 
+            // USE THE ABOVE WAY TO GET THE ROBOT SAVED THEN U DN THIS...
+            boolean pastDrawRobot = map.getCanDrawRobot();
+            if (pastDrawRobot) {
+                // NEED TO CLEAR THE MAP ALSO -- ERROR FIX LATER
+                map.setCanDrawRobot(false);
+                robot.setVisibility(View.INVISIBLE);
+            } else {
+                map.setCanDrawRobot(true);
+                robot.setVisibility(View.VISIBLE);
+
+                //CHANGE THIS EVENTUALLY ALSO
+                int[] robotImageCoord = map.getCurCoord();
+                int[] robotLocation = map.setRobotImagePosition(robotImageCoord[0],map.convertRow(robotImageCoord[1]), mapLeft,mapTop); // ONLY WORKS IF GENERATE WAS DONE BEFORE
+                //System.out.println(robotLocation[0]);
+                //System.out.println(robotLocation[1]);
+                robot.setX(robotLocation[0]);
+                robot.setY(robotLocation[1]);
+            }
+
 
         }
+    }
+
+    public void trackRobot(View view, ImageView robot) {
+        //ImageView robot = (ImageView) view.findViewById(R.id.robotcar);
+        int[] robotImageCoord = map.getCurCoord();
+        int[] robotLocation = map.setRobotImagePosition(robotImageCoord[0],map.convertRow(robotImageCoord[1]), map.getLeft(),map.getTop());
+        robot.setX(robotLocation[0]);
+        robot.setY(robotLocation[1]);
     }
 
 

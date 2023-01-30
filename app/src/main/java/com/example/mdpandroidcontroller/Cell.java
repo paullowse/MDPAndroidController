@@ -37,14 +37,14 @@ public class Cell {
 
         black.setStyle(Paint.Style.FILL_AND_STROKE);
         obstacleColor.setColor(Color.BLACK);
-        robotColor.setColor(Color.GREEN);
+        robotColor.setColor(Color.BLUE);
         endGoalColor.setColor(Color.RED);
         startPointColor.setColor(Color.CYAN);
-        waypointCoordColor.setColor(Color.YELLOW);
+        //waypointCoordColor.setColor(Color.YELLOW);
         unexploredCellColor.setColor(Color.LTGRAY);
         exploredCellColor.setColor(Color.WHITE);
         arrowColor.setColor(Color.BLACK);
-        fastestPathColor.setColor(Color.MAGENTA);
+        //fastestPathColor.setColor(Color.MAGENTA);
     }
     public void setType(String type) {
         this.type = type;
