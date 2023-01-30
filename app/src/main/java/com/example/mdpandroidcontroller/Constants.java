@@ -20,6 +20,6 @@ public class Constants {
     public static final String DOWN = "Down";
     public static final String LEFT = "Left";
     public static final String RIGHT = "Right";
-    public static final String FORWARD = "forward";
-    public static final String BACK = "back";
+    public static final String FORWARD = "Forward";
+    public static final String BACKWARD = "Backward";
 }

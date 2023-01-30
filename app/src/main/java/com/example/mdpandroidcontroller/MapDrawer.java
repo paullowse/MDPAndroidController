@@ -33,7 +33,11 @@ public class MapDrawer extends View implements Serializable {
     private static final int ROW = Constants.TWENTY;
     private static float cellSize;   // IDK WHAT THIS SHOULD BE
     private static boolean canDrawRobot = false;  // why false? - at first cant do
-    private static String robotDirection = Constants.NONE;
+    private static String robotMovement = Constants.NONE; //
+    private static String robotFacing = Constants.NONE;
+    private static int oldFacing;
+    private static int newFacing;
+    private static String[] robotFacingEnum = new String[] {Constants.FORWARD, Constants.RIGHT, Constants.BACKWARD, Constants.LEFT};
     private static int[] curCoord = new int[]{4, 6};     // CHANGE THIS WAY OF IMPLEMENTATION... - when u drag the robot thing
 
     //private ArrayList<ArrayList<Integer>> obstacleCoord =  new ArrayList<ArrayList<Integer>>();
@@ -85,6 +89,7 @@ public class MapDrawer extends View implements Serializable {
             arrowCoord.add(dummyArrowCoord);
             this.createCell();
             //this.setEndCoordinate(10, 8);    // not needed anymore - use this to test functionality
+            setRobotFacing(Constants.FORWARD);
             mapDrawn = true;
 
         }
@@ -216,7 +221,7 @@ public class MapDrawer extends View implements Serializable {
             canvas.drawLine(cells[x][androidRowCoord - 1].startX - (cellSize / 30) + cellSize, cells[x][androidRowCoord - 1].startY, cells[x][androidRowCoord + 1].startX - (cellSize / 30) + cellSize, cells[x][androidRowCoord + 1].endY, robotColor);
 
         // redrawing the old one black
-        switch (this.getRobotDirection()) {
+        switch (this.getRobotMovement()) {
             case Constants.UP:
                 canvas.drawLine(cells[curCoord[0] - 1][androidRowCoord + 1].startX, cells[curCoord[0] - 1][androidRowCoord + 1].endY, (cells[curCoord[0]][androidRowCoord - 1].startX + cells[curCoord[0]][androidRowCoord - 1].endX) / 2, cells[curCoord[0]][androidRowCoord - 1].startY, black);
                 canvas.drawLine((cells[curCoord[0]][androidRowCoord - 1].startX + cells[curCoord[0]][androidRowCoord - 1].endX) / 2, cells[curCoord[0]][androidRowCoord - 1].startY, cells[curCoord[0] + 1][androidRowCoord + 1].endX, cells[curCoord[0] + 1][androidRowCoord + 1].endY, black);
@@ -253,34 +258,75 @@ public class MapDrawer extends View implements Serializable {
         int[] tempCoord = this.getCurCoord();
         this.setOldRobotCoord(tempCoord[0], tempCoord[1]);
         int[] oldCoord = this.getOldRobotCoord();
-        boolean isWithinGrid = true;
 
+        int transX = 0, transY = 0;
 
-        switch( this.getRobotDirection()) {
+        oldFacing = convertFacingToIndex(getRobotFacing());
+        switch( this.getRobotMovement()) {
             case Constants.UP:
                 // Includes check for end of the grid
-                tempCoord[1] = Math.min(tempCoord[1] + 1,ROW-1);
+                transX = 0;
+                transY = 1;
                 break;
             case Constants.DOWN:
-                tempCoord[1] = Math.max(tempCoord[1] - 1, 2);
+                transX = 0;
+                transY = -1;
                 break;
             case Constants.LEFT:
-                tempCoord[0] = Math.max(tempCoord[0] - 1,2);
+                transX = -1;
+                transY = 2;
+
+                newFacing = (oldFacing + 3) % 4;
+                setRobotFacing(robotFacingEnum[newFacing]);
+                //System.out.println(newFacing);
+
                 break;
             case Constants.RIGHT:
-                tempCoord[0] = Math.min(tempCoord[0] + 1,COL-1);
+                transX = 1;
+                transY = 2;
+
+                newFacing = (oldFacing + 1) % 4;
+                setRobotFacing(robotFacingEnum[newFacing]);
+                //System.out.println(newFacing);
+
                 break;
             default:
                 System.out.println("Error in moveRobot() direction input");
                 break;
         }
+        switch (oldFacing) {
+            case 0: //forward
+                tempCoord[0] = tempCoord[0] + transX;
+                tempCoord[1] = tempCoord[1] + transY;
+                break;
+            case 1: //right
+                tempCoord[0] = tempCoord[0] + transY;
+                tempCoord[1] = tempCoord[1] - transX;
+                break;
+            case 2: //back
+                tempCoord[0] = tempCoord[0] - transX;
+                tempCoord[1] = tempCoord[1] - transY;
+                break;
+            case 3: //left
+                tempCoord[0] = tempCoord[0] - transY;
+                tempCoord[1] = tempCoord[1] + transX;
+                break;
+        }
+
+        // CHECKS OUT OF BOUNDS
+        if (tempCoord[0] < 2) {
+            tempCoord[0] = Math.max(tempCoord[0],2);
+        } else {
+            tempCoord[0] = Math.min(tempCoord[0],COL-1);
+        }
+        if (tempCoord[1] < 2) {
+            tempCoord[1] = Math.max(tempCoord[1],2);
+        } else {
+            tempCoord[1] = Math.min(tempCoord[1],COL-1);
+        }
 
         // set oldcoord wont happen as of now - useless btw
-        if (isWithinGrid) {
-            setCurCoord(tempCoord);
-        } else {
-            setCurCoord(oldCoord);
-        }
+        setCurCoord(tempCoord);
 
     }
 
@@ -377,6 +423,31 @@ public class MapDrawer extends View implements Serializable {
         return (20 - row);
     }
 
+    public int convertFacingToIndex(String facing) {
+        for (int i = 0; i < robotFacingEnum.length; i++) {
+            if (robotFacingEnum[i] == facing) {
+                return i;
+            }
+        }
+        System.out.println("ERROR in facing index");
+        return -1;
+    }
+
+    public int convertFacingToRotation(String facing) {
+        switch (facing) {
+            case Constants.FORWARD:
+                return 0;
+            case Constants.RIGHT:
+                return 90;
+            case Constants.BACKWARD:
+                return 180;
+            case Constants.LEFT:
+                return 270;
+            default:
+                return 0;    // assume
+        }
+    }
+
 
     private void setCellSize(float cellSize) {MapDrawer.cellSize = cellSize;
     }
@@ -410,8 +481,11 @@ public class MapDrawer extends View implements Serializable {
     }
 
     public float getCellSize() { return cellSize; }
-    public String getRobotDirection() {
-        return robotDirection;
+    public String getRobotMovement() {
+        return robotMovement;
+    }
+    public String getRobotFacing() {
+        return robotFacing;
     }
 
 
@@ -425,7 +499,15 @@ public class MapDrawer extends View implements Serializable {
         return arrowCoord;
     }
 
-    public void setRobotDirection(String direction) {robotDirection = direction;}
+    public void setRobotMovement(String direction) {
+        robotMovement = direction;}
+
+    public void setRobotFacing(String facing) {
+        robotFacing = facing;}
+
+    public void saveFacingWithRotation(int rotation) {
+        robotFacing = robotFacingEnum[(int) (rotation / 90)];
+    }
 
     public void setCurCoord(int[] coordinates) {curCoord = coordinates;}
 
