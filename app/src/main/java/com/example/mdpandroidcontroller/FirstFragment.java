@@ -4,9 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
 import android.view.DragEvent;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -22,7 +20,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.mdpandroidcontroller.databinding.FragmentFirstBinding;
@@ -41,6 +38,7 @@ public class FirstFragment extends Fragment {
     private static MapDrawer map;
     private static int mapLeft; // only at robot generate button
     private static int mapTop;
+    private static int rotation = 0;
 
     private static ImageView robot;
     float pastX, pastY;
@@ -60,6 +58,7 @@ public class FirstFragment extends Fragment {
     ) {
         //binding = FragmentFirstBinding.inflate(inflater, container, false);
         //return binding.getRoot();
+        System.out.println("createView");
 
         View view = inflater.inflate(R.layout.fragment_first, container, false);
         //System.out.println(savedInstanceState == null);
@@ -74,6 +73,8 @@ public class FirstFragment extends Fragment {
                 originalObstacleCoords[i][j] = -1;
             }
         }
+        //CHECK if this is okay
+        //rotation = 0;
 
         return view;
 
@@ -113,11 +114,15 @@ public class FirstFragment extends Fragment {
             }
         });
 
+        //ROBOT settings
         // KEEP IT INVISIBLE AT FIRST
         robot = (ImageView) view.findViewById(R.id.robotcar);
         if (map.getCanDrawRobot()) {
             robot.setVisibility(View.VISIBLE);
-            trackRobot(view, robot);
+            rotation = map.convertFacingToRotation(map.getRobotFacing());
+            //System.out.println("ROBOT ROTATION");
+
+            trackRobot(view, robot, rotation);
 
         } else {
             robot.setVisibility(View.INVISIBLE);
@@ -139,10 +144,11 @@ public class FirstFragment extends Fragment {
                     map.setCanDrawRobot(false);
                     robot.setVisibility(View.INVISIBLE);
                 } else {
+                    map.saveFacingWithRotation(rotation); // error: between this button and onresume, map's facing reset to 0
                     map.setCanDrawRobot(true);
                     robot.setVisibility(View.VISIBLE);
-                    trackRobot(view, robot);
-
+                    rotation = map.convertFacingToRotation(map.getRobotFacing());
+                    trackRobot(view, robot, rotation);
 
                 }
                 map.invalidate();
@@ -154,31 +160,16 @@ public class FirstFragment extends Fragment {
 
 
         //testing imagebuttons
-        ImageButton backButton = (ImageButton) view.findViewById(R.id.arrowBack);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                //map.setEndCoordinate(15,10);
-                map.setRobotDirection(Constants.DOWN);
-                map.moveRobot();
-                map.invalidate();
-                trackRobot(view, robot);
-
-                //showToast("does this work?");
-            }
-        });
-
         ImageButton forwardButton = (ImageButton) view.findViewById(R.id.arrowForward);
         forwardButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                map.setRobotDirection(Constants.UP);
+
+                map.saveFacingWithRotation(rotation); // error: between this button and onresume, map's facing reset to 0
+                map.setRobotMovement(Constants.UP);
                 map.moveRobot();
                 map.invalidate();
-
-                trackRobot(view, robot);
-                //int[] robotImageCoord = map.getCurCoord();
-                //int[] robotLocation = map.setRobotImagePosition(robotImageCoord[0],map.convertRow(robotImageCoord[1]), map.getLeft(),map.getTop());
-                //robot.setX(robotLocation[0]);
-                //robot.setY(robotLocation[1]);
+                rotation = map.convertFacingToRotation(map.getRobotFacing());
+                trackRobot(view, robot, rotation);
 
             }
         });
@@ -186,10 +177,25 @@ public class FirstFragment extends Fragment {
         ImageButton rightButton = (ImageButton) view.findViewById(R.id.arrowRight);
         rightButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                map.setRobotDirection(Constants.RIGHT);
+                map.saveFacingWithRotation(rotation); // error: between this button and onresume, map's facing reset to 0
+                map.setRobotMovement(Constants.RIGHT);
                 map.moveRobot();
                 map.invalidate();
-                trackRobot(view, robot);
+                rotation = map.convertFacingToRotation(map.getRobotFacing());
+                trackRobot(view, robot, rotation);
+
+            }
+        });
+
+        ImageButton backButton = (ImageButton) view.findViewById(R.id.arrowBack);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                map.saveFacingWithRotation(rotation); // error: between this button and onresume, map's facing reset to 0
+                map.setRobotMovement(Constants.DOWN);
+                map.moveRobot();
+                map.invalidate();
+                rotation = map.convertFacingToRotation(map.getRobotFacing());
+                trackRobot(view, robot, rotation);
 
             }
         });
@@ -197,10 +203,12 @@ public class FirstFragment extends Fragment {
         ImageButton leftButton = (ImageButton) view.findViewById(R.id.arrowLeft);
         leftButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                map.setRobotDirection(Constants.LEFT);
+                map.saveFacingWithRotation(rotation); // error: between this button and onresume, map's facing reset to 0
+                map.setRobotMovement(Constants.LEFT);
                 map.moveRobot();
                 map.invalidate();
-                trackRobot(view, robot);
+                rotation = map.convertFacingToRotation(map.getRobotFacing());
+                trackRobot(view, robot, rotation);
 
             }
         });
@@ -396,6 +404,7 @@ public class FirstFragment extends Fragment {
 
 
         System.out.println("pause- save");
+        // save rotation value
 
         // Save the ImageView locations
         SharedPreferences preferences = getActivity().getPreferences(Context.MODE_PRIVATE);
@@ -449,15 +458,13 @@ public class FirstFragment extends Fragment {
             if (i == 0) {
                 imageView.setX(x - left);
                 imageView.setY(y - top);  //top == 1022
-
             }
             if (i == 1) {
                 imageView.setX(x - left);
                 imageView.setY(y - top); // top = -912
-
             }
 
-            // USE THE ABOVE WAY TO GET THE ROBOT SAVED THEN U DN THIS...
+            // To save the robot image location
             boolean pastDrawRobot = map.getCanDrawRobot();
             if (pastDrawRobot) {
                 // NEED TO CLEAR THE MAP ALSO -- ERROR FIX LATER
@@ -476,16 +483,21 @@ public class FirstFragment extends Fragment {
                 robot.setY(robotLocation[1]);
             }
 
+            System.out.println("end resume");
+
 
         }
     }
 
-    public void trackRobot(View view, ImageView robot) {
+    public void trackRobot(View view, ImageView robot, int rotation) {
         //ImageView robot = (ImageView) view.findViewById(R.id.robotcar);
+        //System.out.println("TRACK ROBOT FUNCTION");
+
         int[] robotImageCoord = map.getCurCoord();
         int[] robotLocation = map.setRobotImagePosition(robotImageCoord[0],map.convertRow(robotImageCoord[1]), map.getLeft(),map.getTop());
         robot.setX(robotLocation[0]);
         robot.setY(robotLocation[1]);
+        robot.setRotation(rotation);
     }
 
 
