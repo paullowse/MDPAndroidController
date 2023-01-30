@@ -32,7 +32,7 @@ public class MapDrawer extends View implements Serializable {
     private static final int COL = Constants.TWENTY;
     private static final int ROW = Constants.TWENTY;
     private static float cellSize;   // IDK WHAT THIS SHOULD BE
-    private static boolean canDrawRobot = false;  // why false?
+    private static boolean canDrawRobot = false;  // why false? - at first cant do
     private static String robotDirection = Constants.NONE;
     private static int[] curCoord = new int[]{4, 6};     // CHANGE THIS WAY OF IMPLEMENTATION... - when u drag the robot thing
 
@@ -53,7 +53,7 @@ public class MapDrawer extends View implements Serializable {
         // init map???
         black.setStyle(Paint.Style.FILL_AND_STROKE);
         unexploredCellColor.setColor(Color.LTGRAY);
-        robotColor.setColor(Color.GREEN);
+        robotColor.setColor(Color.RED); //GREEN
     }
 
     public MapDrawer (Context context, @Nullable AttributeSet attrs) {
@@ -63,7 +63,7 @@ public class MapDrawer extends View implements Serializable {
 
         black.setStyle(Paint.Style.FILL_AND_STROKE);
         unexploredCellColor.setColor(Color.LTGRAY);
-        robotColor.setColor(Color.GREEN);
+        robotColor.setColor(Color.RED);
 
     }
 
@@ -91,9 +91,9 @@ public class MapDrawer extends View implements Serializable {
 
         drawGridNumber(canvas);
         drawObstacles(canvas, obstacleCoord);
-        //if (getCanDrawRobot())   // USED TO HAVE THIS
-
-        drawRobot(canvas, curCoord);
+        if (getCanDrawRobot()) {
+            drawRobot(canvas, curCoord);
+        }
         drawArrow(canvas, arrowCoord);
         drawCell(canvas);
         drawHorizontalLines(canvas);
@@ -284,6 +284,22 @@ public class MapDrawer extends View implements Serializable {
 
     }
 
+    /**
+     *
+     * @param column
+     * @param row
+     */
+    public int[] setRobotImagePosition(int column, int row, float left, float top) {
+
+        // - 1 for col and row just to accomodate to the original code
+
+        int[] newRobotLocation= {(int) ((column-1) * cellSize + left), (int) ((row-1) * cellSize + top)};
+
+        return newRobotLocation;
+    }
+
+
+
 
     public int[] updateObstacleOnBoard(int x, int y, ImageView obstacle) {
 
@@ -357,7 +373,7 @@ public class MapDrawer extends View implements Serializable {
      * @param row
      * @return
      */
-    private int convertRow(int row) {
+    public int convertRow(int row) {
         return (20 - row);
     }
 
@@ -399,6 +415,9 @@ public class MapDrawer extends View implements Serializable {
     }
 
 
+    public void setCanDrawRobot(boolean isDrawRobot) {
+        canDrawRobot = isDrawRobot;
+    }
     public boolean getCanDrawRobot() {
         return canDrawRobot;
     }
