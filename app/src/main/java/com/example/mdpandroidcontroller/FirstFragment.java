@@ -47,6 +47,7 @@ public class FirstFragment extends Fragment {
 
     private static ImageView robot;
     float pastX, pastY;
+    private static String longPress;
 
     private Runnable runnable;
     private Handler handler;
@@ -176,103 +177,57 @@ public class FirstFragment extends Fragment {
 
 
 
-        //MOVEMENT BUTTONS
+        // NEW Short press and Long Press for ALL BUTTONS
         ImageButton forwardButton = (ImageButton) view.findViewById(R.id.arrowForward);
-
-        forwardButton.setOnLongClickListener(new View.OnLongClickListener() {
-            public boolean onLongClick(View view) {
-                handler = new Handler();
-                runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        masterRobotMovement(Constants.UP);
-                        handler.postDelayed(runnable, 100);
-                    }
-                };
-                handler.post(runnable);
-                return true;
-            }
-        });
-        forwardButton.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    handler.removeCallbacks(runnable);
-                }
-                return false;
-            }
-        });
-
-
         ImageButton rightButton = (ImageButton) view.findViewById(R.id.arrowRight);
-        rightButton.setOnLongClickListener(new View.OnLongClickListener() {
-            public boolean onLongClick(View view) {
-                handler = new Handler();
-                runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        masterRobotMovement(Constants.RIGHT);
-                        handler.postDelayed(runnable, 100);
-                    }
-                };
-                handler.post(runnable);
-                return true;
-            }
-        });
-        rightButton.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    handler.removeCallbacks(runnable);
-                }
-                return false;
-            }
-        });
-
-
-
-        ImageButton backButton = (ImageButton) view.findViewById(R.id.arrowBack);
-        backButton.setOnLongClickListener(new View.OnLongClickListener() {
-            public boolean onLongClick(View view) {
-                handler = new Handler();
-                runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        masterRobotMovement(Constants.DOWN);
-                        handler.postDelayed(runnable, 100);
-                    }
-                };
-                handler.post(runnable);
-                return true;
-            }
-        });
-        backButton.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_UP) {
-                    handler.removeCallbacks(runnable);
-                }
-                return false;
-            }
-        });
-
-
         ImageButton leftButton = (ImageButton) view.findViewById(R.id.arrowLeft);
-        leftButton.setOnLongClickListener(new View.OnLongClickListener() {
-            public boolean onLongClick(View view) {
-                handler = new Handler();
-                runnable = new Runnable() {
-                    @Override
-                    public void run() {
+        ImageButton backButton = (ImageButton) view.findViewById(R.id.arrowBack);
+
+        View.OnClickListener onClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switch (view.getId()) {
+                    case R.id.arrowForward:
+                        masterRobotMovement(Constants.UP);
+                        break;
+                    case R.id.arrowRight:
+                        masterRobotMovement(Constants.RIGHT);
+                        break;
+                    case R.id.arrowLeft:
                         masterRobotMovement(Constants.LEFT);
-                        handler.postDelayed(runnable, 100);
-                    }
-                };
+                        break;
+                    case R.id.arrowBack:
+                        masterRobotMovement(Constants.DOWN);
+                        break;
+                }
+            }
+        };
+
+        View.OnLongClickListener onLongClickListener = new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                handler.removeCallbacks(runnable);
                 handler.post(runnable);
+                //String longPress = "null";
+                switch (view.getId()) {
+                    case R.id.arrowForward:
+                        longPress = Constants.UP;
+                        break;
+                    case R.id.arrowRight:
+                        longPress = Constants.RIGHT;
+                        break;
+                    case R.id.arrowLeft:
+                        longPress = Constants.LEFT;
+                        break;
+                    case R.id.arrowBack:
+                        longPress = Constants.DOWN;
+                        break;
+                }
                 return true;
             }
-        });
-        leftButton.setOnTouchListener(new View.OnTouchListener() {
+        };
+
+        View.OnTouchListener onTouchListener = new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
@@ -280,7 +235,47 @@ public class FirstFragment extends Fragment {
                 }
                 return false;
             }
-        });
+        };
+
+        forwardButton.setOnClickListener(onClickListener);
+        forwardButton.setOnLongClickListener(onLongClickListener);
+        forwardButton.setOnTouchListener(onTouchListener);
+
+        rightButton.setOnClickListener(onClickListener);
+        rightButton.setOnLongClickListener(onLongClickListener);
+        rightButton.setOnTouchListener(onTouchListener);
+
+        leftButton.setOnClickListener(onClickListener);
+        leftButton.setOnLongClickListener(onLongClickListener);
+        leftButton.setOnTouchListener(onTouchListener);
+
+        backButton.setOnClickListener(onClickListener);
+        backButton.setOnLongClickListener(onLongClickListener);
+        backButton.setOnTouchListener(onTouchListener);
+
+        handler = new Handler();
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                switch (longPress) {
+                    case Constants.UP:
+                        masterRobotMovement(Constants.UP);
+                        break;
+                    case Constants.RIGHT:
+                        masterRobotMovement(Constants.RIGHT);
+                        break;
+                    case Constants.DOWN:
+                        masterRobotMovement(Constants.DOWN);
+                        break;
+                    case Constants.LEFT:
+                        masterRobotMovement(Constants.LEFT);
+                        break;
+                    default:
+                        System.out.println("somehow its still null for buttonpress");
+                }
+                handler.postDelayed(runnable, 100);
+            }
+        };
 
 
         //OBSTACLES
@@ -489,6 +484,7 @@ public class FirstFragment extends Fragment {
 
         System.out.println("pause- save");
         // save rotation value
+        map.saveFacingWithRotation(rotation);
 
         // Save the ImageView locations
         SharedPreferences preferences = getActivity().getPreferences(Context.MODE_PRIVATE);
@@ -560,10 +556,10 @@ public class FirstFragment extends Fragment {
 
                 //CHANGE THIS EVENTUALLY ALSO
                 int[] robotImageCoord = map.getCurCoord();
-                int[] robotLocation = map.setRobotImagePosition(robotImageCoord[0],map.convertRow(robotImageCoord[1]), mapLeft,mapTop); // ONLY WORKS IF GENERATE WAS DONE BEFORE
+                int[] robotLocation = map.setRobotImagePosition(robotImageCoord[0] - 4,map.convertRow(robotImageCoord[1]), mapLeft,mapTop); // ONLY WORKS IF GENERATE WAS DONE BEFORE
                 //System.out.println(robotLocation[0]);
                 //System.out.println(robotLocation[1]);
-                robot.setX(robotLocation[0]);
+                robot.setX(robotLocation[0] - 5); // IRDK WHY ITS LIDDIS
                 robot.setY(robotLocation[1]);
             }
 
