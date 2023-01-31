@@ -5,6 +5,7 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.DragEvent;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -40,8 +41,14 @@ public class FirstFragment extends Fragment {
     private static int mapTop;
     private static int rotation = 0;
 
+    private static ImageView obstacle, obstacle2;
+
     private static ImageView robot;
     float pastX, pastY;
+
+    private Runnable runnable;
+    private Handler handler;
+
 
 
     private static int[][] originalObstacleCoords = new int[6][2];
@@ -58,7 +65,7 @@ public class FirstFragment extends Fragment {
     ) {
         //binding = FragmentFirstBinding.inflate(inflater, container, false);
         //return binding.getRoot();
-        System.out.println("createView");
+        System.out.println("oncreateView");
 
         View view = inflater.inflate(R.layout.fragment_first, container, false);
         //System.out.println(savedInstanceState == null);
@@ -75,6 +82,12 @@ public class FirstFragment extends Fragment {
         }
         //CHECK if this is okay
         //rotation = 0;
+
+        obstacle = (ImageView) view.findViewById(R.id.obstacle);
+        obstacle2 = (ImageView) view.findViewById(R.id.obstacle2);
+
+        System.out.println(obstacle.getX());
+        System.out.println(obstacle.getY());
 
         return view;
 
@@ -161,36 +174,113 @@ public class FirstFragment extends Fragment {
 
         //MOVEMENT BUTTONS
         ImageButton forwardButton = (ImageButton) view.findViewById(R.id.arrowForward);
-        forwardButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                masterRobotMovement(Constants.UP);
+
+        forwardButton.setOnLongClickListener(new View.OnLongClickListener() {
+            public boolean onLongClick(View view) {
+                handler = new Handler();
+                runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        masterRobotMovement(Constants.UP);
+                        handler.postDelayed(runnable, 100);
+                    }
+                };
+                handler.post(runnable);
+                return true;
             }
         });
+        forwardButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    handler.removeCallbacks(runnable);
+                }
+                return false;
+            }
+        });
+
 
         ImageButton rightButton = (ImageButton) view.findViewById(R.id.arrowRight);
-        rightButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                masterRobotMovement(Constants.RIGHT);
+        rightButton.setOnLongClickListener(new View.OnLongClickListener() {
+            public boolean onLongClick(View view) {
+                handler = new Handler();
+                runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        masterRobotMovement(Constants.RIGHT);
+                        handler.postDelayed(runnable, 100);
+                    }
+                };
+                handler.post(runnable);
+                return true;
             }
         });
+        rightButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    handler.removeCallbacks(runnable);
+                }
+                return false;
+            }
+        });
+
+
 
         ImageButton backButton = (ImageButton) view.findViewById(R.id.arrowBack);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                masterRobotMovement(Constants.DOWN);
+        backButton.setOnLongClickListener(new View.OnLongClickListener() {
+            public boolean onLongClick(View view) {
+                handler = new Handler();
+                runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        masterRobotMovement(Constants.DOWN);
+                        handler.postDelayed(runnable, 100);
+                    }
+                };
+                handler.post(runnable);
+                return true;
+            }
+        });
+        backButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    handler.removeCallbacks(runnable);
+                }
+                return false;
             }
         });
 
+
         ImageButton leftButton = (ImageButton) view.findViewById(R.id.arrowLeft);
-        leftButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                masterRobotMovement(Constants.LEFT);
+        leftButton.setOnLongClickListener(new View.OnLongClickListener() {
+            public boolean onLongClick(View view) {
+                handler = new Handler();
+                runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        masterRobotMovement(Constants.LEFT);
+                        handler.postDelayed(runnable, 100);
+                    }
+                };
+                handler.post(runnable);
+                return true;
+            }
+        });
+        leftButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    handler.removeCallbacks(runnable);
+                }
+                return false;
             }
         });
 
 
         //OBSTACLES
-        ImageView obstacle = (ImageView) view.findViewById(R.id.obstacle);
+        obstacle = (ImageView) view.findViewById(R.id.obstacle);
         obstacleViews.add(obstacle);
 
         obstacle.setOnTouchListener(new View.OnTouchListener() {
@@ -221,7 +311,7 @@ public class FirstFragment extends Fragment {
         });
 
         //HOW TO DO IT WITHOUT REPEATING CODE???
-        ImageView obstacle2 = (ImageView) view.findViewById(R.id.obstacle2);
+        obstacle2 = (ImageView) view.findViewById(R.id.obstacle2);
         //int[] tempcoord2 = {(int) (obstacle2.getX()),(int) (obstacle2.getY())};
         //originalObstacleCoords.add(tempcoord2);
         obstacleViews.add(obstacle2);
