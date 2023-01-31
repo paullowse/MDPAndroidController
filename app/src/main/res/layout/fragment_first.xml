@@ -96,7 +96,7 @@
 
     <view
         android:id="@+id/gridView"
-        class="com.example.mdpandroidcontroller.MapDrawer"
+        class="com.example.mdpandroidcontroller.Map"
         android:layout_width="357dp"
         android:layout_height="357dp"
         android:layout_marginBottom="220dp"
