@@ -377,9 +377,6 @@ public class FirstFragment extends Fragment {
         });
 
 
-
-        // Droppable chess board
-        //CustomView chessBoard = (CustomView) view.findViewById(R.id.gridView);
         map.setOnDragListener(new View.OnDragListener() {
             @Override
             public boolean onDrag(View view, DragEvent dragEvent) {
@@ -388,7 +385,6 @@ public class FirstFragment extends Fragment {
                 switch (action) {
                     case DragEvent.ACTION_DRAG_STARTED:
                         // Do nothing
-
                         break;
                     case DragEvent.ACTION_DRAG_ENTERED:
                         // Highlight the cell on the chess board where the piece is being dragged over
