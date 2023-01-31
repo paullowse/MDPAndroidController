@@ -15,12 +15,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-
-    <!--    Display whether bluetooth is available or not-->
-
-    <!--    on Button-->
-
-
     <Button
         android:id="@+id/button_first"
         android:layout_width="wrap_content"
@@ -96,15 +90,17 @@
 
     <view
         android:id="@+id/gridView"
-        class="com.example.mdpandroidcontroller.MapDrawer"
-        android:layout_width="357dp"
-        android:layout_height="357dp"
-        android:layout_marginBottom="220dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        class="com.example.mdpandroidcontroller.Map"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="100dp"
+        app:layout_constraintBottom_toTopOf="@+id/statusBluetoothTv"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageButton
         android:id="@+id/arrowForward"
@@ -236,13 +232,13 @@
 
     <Button
         android:id="@+id/button_test"
-        android:layout_width="86dp"
-        android:layout_height="46dp"
+        android:layout_width="115dp"
+        android:layout_height="52dp"
         android:layout_marginTop="75dp"
         android:text="Button"
         app:layout_constraintEnd_toStartOf="@+id/offBtn"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/gridView" />
+        app:layout_constraintTop_toBottomOf="@+id/textview_first" />
 
     <ImageView
         android:id="@+id/robotcar"
@@ -258,20 +254,21 @@
         android:id="@+id/generateRobot"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
         android:text="Generate"
-        app:layout_constraintEnd_toStartOf="@+id/onBtn"
-        app:layout_constraintHorizontal_bias="0.415"
-        app:layout_constraintStart_toEndOf="@+id/button_first"
-        app:layout_constraintTop_toBottomOf="@+id/button_test" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteY="857dp" />
 
     <Button
         android:id="@+id/resetObstacles"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:text="Reset"
         app:layout_constraintBottom_toTopOf="@+id/generateRobot"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.523"
         app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

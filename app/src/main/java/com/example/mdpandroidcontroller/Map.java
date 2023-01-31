@@ -6,22 +6,16 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 
-public class MapDrawer extends View { //implements Serializable
+public class Map extends View { //implements Serializable
 
     //private static final long serialVersionUID = 1L;
     private Context context;
@@ -53,7 +47,7 @@ public class MapDrawer extends View { //implements Serializable
     private Paint robotColor = new Paint();
 
 
-    public MapDrawer(Context c) {
+    public Map(Context c) {
         super(c);
         // init map???
         black.setStyle(Paint.Style.FILL_AND_STROKE);
@@ -61,7 +55,7 @@ public class MapDrawer extends View { //implements Serializable
         robotColor.setColor(Color.RED); //GREEN
     }
 
-    public MapDrawer (Context context, @Nullable AttributeSet attrs) {
+    public Map(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
         this.attrs = attrs;
@@ -388,7 +382,8 @@ public class MapDrawer extends View { //implements Serializable
     }
 
 
-    private void setCellSize(float cellSize) {MapDrawer.cellSize = cellSize;
+    private void setCellSize(float cellSize) {
+        Map.cellSize = cellSize;
     }
 
     public void setObstacleCoord(int[] coordinates) {

@@ -37,7 +37,7 @@ public class FirstFragment extends Fragment {
     TextView displaytv;
 
     // grid stuff
-    private static MapDrawer map;
+    private static Map map;
     private static int mapLeft; // only at robot generate button
     private static int mapTop;
     private static int rotation = 0;
@@ -56,7 +56,7 @@ public class FirstFragment extends Fragment {
 
     private static int[][] originalObstacleCoords = new int[6][2];
 
-    private static int[][] currentObstacleCoords = new int[2][2];
+    private static int[][] currentObstacleCoords = new int[2][2]; // remember to expand this
 
 
     private List<ConstraintLayout> obstacleViews = new ArrayList<>(); // cant be static!! - COS ITS REGENRATED ALL THE TIME
@@ -75,7 +75,7 @@ public class FirstFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_first, container, false);
         //System.out.println(savedInstanceState == null);
         if (savedInstanceState != null) {
-            map = (MapDrawer) savedInstanceState.getSerializable("map");
+            map = (Map) savedInstanceState.getSerializable("map");
         } else{
             map = view.findViewById(R.id.gridView);
         }
@@ -88,11 +88,22 @@ public class FirstFragment extends Fragment {
         //CHECK if this is okay
         //rotation = 0;
 
+        //obstacle1 = (ConstraintLayout) view.findViewById(R.id.obstacleGroup1);
+        //obstacle2 = (ConstraintLayout) view.findViewById(R.id.obstacleGroup2);
+
+        //System.out.println(obstacle1.getX());
+        //System.out.println(obstacle1.getY());
+
         obstacle1 = (ConstraintLayout) view.findViewById(R.id.obstacleGroup1);
         obstacle2 = (ConstraintLayout) view.findViewById(R.id.obstacleGroup2);
+        obstacleViews.add(obstacle1);
+        obstacleViews.add(obstacle2);
 
-        System.out.println(obstacle1.getX());
-        System.out.println(obstacle1.getY());
+
+        System.out.println("current coordinates");
+        printAllObstacleCoords();
+        printAllObstacleLeftTop();
+
 
         return view;
 
@@ -279,8 +290,7 @@ public class FirstFragment extends Fragment {
 
 
         //OBSTACLES
-        obstacle1 = (ConstraintLayout) view.findViewById(R.id.obstacleGroup1);
-        obstacleViews.add(obstacle1);
+
 
         obstacle1.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -310,10 +320,7 @@ public class FirstFragment extends Fragment {
         });
 
         //HOW TO DO IT WITHOUT REPEATING CODE???
-        obstacle2 = (ConstraintLayout) view.findViewById(R.id.obstacleGroup2);
-        //int[] tempcoord2 = {(int) (obstacle2.getX()),(int) (obstacle2.getY())};
-        //originalObstacleCoords.add(tempcoord2);
-        obstacleViews.add(obstacle2);
+
         obstacle2.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -370,9 +377,6 @@ public class FirstFragment extends Fragment {
         });
 
 
-
-        // Droppable chess board
-        //CustomView chessBoard = (CustomView) view.findViewById(R.id.gridView);
         map.setOnDragListener(new View.OnDragListener() {
             @Override
             public boolean onDrag(View view, DragEvent dragEvent) {
@@ -381,7 +385,6 @@ public class FirstFragment extends Fragment {
                 switch (action) {
                     case DragEvent.ACTION_DRAG_STARTED:
                         // Do nothing
-
                         break;
                     case DragEvent.ACTION_DRAG_ENTERED:
                         // Highlight the cell on the chess board where the piece is being dragged over
@@ -395,6 +398,13 @@ public class FirstFragment extends Fragment {
 
                         int x = (int) dragEvent.getX();
                         int y = (int) dragEvent.getY();
+
+                        int obstacleNum = findObstacleNumber(myImage);
+                        System.out.println(obstacleNum);
+                        int[] newCoords = {(int) x, (int) y};
+                        currentObstacleCoords[obstacleNum-1] = newCoords;
+                        printAllObstacleCoords();
+                        printAllObstacleLeftTop();
 
 
                         // this is the exact location - but we want to snap to grid
@@ -457,9 +467,7 @@ public class FirstFragment extends Fragment {
                             }
                         }
 
-
                         //outside map to outside map
-
                         if(pastX >= mapCoord[0] && pastX <= mapCoord[0] + mapWidth && pastY >= mapCoord[1] && pastY <= mapCoord[1] + mapHeight){
                             // in of map to out of map!!
                             map.removeObstacleOnBoard(pastX - map.getX() + map.getCellSize()/2,pastY - map.getY() + map.getCellSize()/2);
@@ -597,6 +605,35 @@ public class FirstFragment extends Fragment {
         robot.setX(robotLocation[0]);
         robot.setY(robotLocation[1]);
         robot.setRotation(rotation);
+    }
+
+    public int findObstacleNumber(ConstraintLayout obstacle) {
+        for (int i = 0; i < obstacleViews.size(); i++) {
+            if (obstacle == obstacleViews.get(i)) {
+                return i+1;
+            }
+        }
+        return -1;
+    }
+
+    public void printAllObstacleCoords() {
+        System.out.println("Obstacle Coords");
+        for (int i = 0; i < currentObstacleCoords.length; i++) {
+            System.out.println(i+1);
+            System.out.println(currentObstacleCoords[i][0]);
+            System.out.println(currentObstacleCoords[i][1]);
+        }
+        System.out.println("Obstacle Coords - end");
+    }
+
+    public void printAllObstacleLeftTop() {
+        System.out.println("Obstacle Left Top");
+        for (int i = 0; i < obstacleViews.size(); i++) {
+            System.out.println(i+1);
+            System.out.printf("Left: %d\n", obstacleViews.get(i).getLeft());
+            System.out.printf("Top: %d\n", obstacleViews.get(i).getTop());
+        }
+        System.out.println("Obstacle Left Top end ");
     }
     
     
