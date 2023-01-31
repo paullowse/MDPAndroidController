@@ -20,6 +20,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -41,7 +42,8 @@ public class FirstFragment extends Fragment {
     private static int mapTop;
     private static int rotation = 0;
 
-    private static ImageView obstacle, obstacle2;
+    private static ConstraintLayout obstacle1;
+    private static ConstraintLayout obstacle2;
 
     private static ImageView robot;
     float pastX, pastY;
@@ -53,8 +55,10 @@ public class FirstFragment extends Fragment {
 
     private static int[][] originalObstacleCoords = new int[6][2];
 
+    private static int[][] currentObstacleCoords = new int[2][2];
 
-    private List<ImageView> obstacleViews = new ArrayList<>(); // cant be static!! - COS ITS REGENRATED ALL THE TIME
+
+    private List<ConstraintLayout> obstacleViews = new ArrayList<>(); // cant be static!! - COS ITS REGENRATED ALL THE TIME
 
 
 
@@ -83,11 +87,11 @@ public class FirstFragment extends Fragment {
         //CHECK if this is okay
         //rotation = 0;
 
-        obstacle = (ImageView) view.findViewById(R.id.obstacle);
-        obstacle2 = (ImageView) view.findViewById(R.id.obstacle2);
+        obstacle1 = (ConstraintLayout) view.findViewById(R.id.obstacleGroup1);
+        obstacle2 = (ConstraintLayout) view.findViewById(R.id.obstacleGroup2);
 
-        System.out.println(obstacle.getX());
-        System.out.println(obstacle.getY());
+        System.out.println(obstacle1.getX());
+        System.out.println(obstacle1.getY());
 
         return view;
 
@@ -143,8 +147,8 @@ public class FirstFragment extends Fragment {
 
 
 
-        Button robotButton = (Button) view.findViewById(R.id.button2);
-        view.findViewById(R.id.button2).setOnClickListener(new View.OnClickListener() {
+        Button robotButton = (Button) view.findViewById(R.id.generateRobot);
+        view.findViewById(R.id.generateRobot).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 boolean pastDrawRobot = map.getCanDrawRobot();
@@ -280,10 +284,10 @@ public class FirstFragment extends Fragment {
 
 
         //OBSTACLES
-        obstacle = (ImageView) view.findViewById(R.id.obstacle);
-        obstacleViews.add(obstacle);
+        obstacle1 = (ConstraintLayout) view.findViewById(R.id.obstacleGroup1);
+        obstacleViews.add(obstacle1);
 
-        obstacle.setOnTouchListener(new View.OnTouchListener() {
+        obstacle1.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
@@ -291,14 +295,14 @@ public class FirstFragment extends Fragment {
                     View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(view);
                     view.startDrag(data, shadowBuilder, view, 0);
                     //view.setVisibility(View.INVISIBLE);
-                    pastX = obstacle.getX();
-                    pastY = obstacle.getY();
+                    pastX = obstacle1.getX();
+                    pastY = obstacle1.getY();
 
 
                     // save the original obstacle coord (for snapping back if out of grid)
                     if (originalObstacleCoords[0][0] == -1) {
-                        originalObstacleCoords[0][0] = obstacle.getLeft();
-                        originalObstacleCoords[0][1] = obstacle.getTop();
+                        originalObstacleCoords[0][0] = obstacle1.getLeft();
+                        originalObstacleCoords[0][1] = obstacle1.getTop();
                     }
                     //System.out.println(pastX);
                     //System.out.println(pastY);
@@ -311,7 +315,7 @@ public class FirstFragment extends Fragment {
         });
 
         //HOW TO DO IT WITHOUT REPEATING CODE???
-        obstacle2 = (ImageView) view.findViewById(R.id.obstacle2);
+        obstacle2 = (ConstraintLayout) view.findViewById(R.id.obstacleGroup2);
         //int[] tempcoord2 = {(int) (obstacle2.getX()),(int) (obstacle2.getY())};
         //originalObstacleCoords.add(tempcoord2);
         obstacleViews.add(obstacle2);
@@ -341,6 +345,22 @@ public class FirstFragment extends Fragment {
             }
         });
 
+        Button resetObstacles = (Button) view.findViewById(R.id.resetObstacles);
+        resetObstacles.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for (int i = 0; i < obstacleViews.size(); i++) {
+                    obstacleViews.get(i).setX(originalObstacleCoords[i][0]);
+                    obstacleViews.get(i).setY(originalObstacleCoords[i][1]);
+                }
+
+                map.printObstacleCoord();
+
+
+            }
+        });
+
+
         Button test = (Button) view.findViewById(R.id.button_test);
         test.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -352,8 +372,6 @@ public class FirstFragment extends Fragment {
                 PopupWindow popUpWindow = new PopupWindow(popUpView, width, height, true);
                 popUpWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
             }
-
-
         });
 
 
@@ -378,7 +396,7 @@ public class FirstFragment extends Fragment {
                         break;
                     case DragEvent.ACTION_DROP:
                         // when dropped into the grid
-                        ImageView myImage = (ImageView) dragEvent.getLocalState();
+                        ConstraintLayout myImage = (ConstraintLayout) dragEvent.getLocalState();
 
                         int x = (int) dragEvent.getX();
                         int y = (int) dragEvent.getY();
@@ -398,7 +416,7 @@ public class FirstFragment extends Fragment {
                             map.removeObstacleOnBoard(pastX - map.getX() + map.getCellSize()/2,pastY - map.getY() + map.getCellSize()/2);
                         }
                         // to add the new obstacle
-                        int[] newObstCoord = map.updateObstacleOnBoard(x, y, myImage);
+                        int[] newObstCoord = map.updateObstacleOnBoard(x, y);
 
                         // MUST get from the map class to snap to grid
                         myImage.setX(newObstCoord[0]+ map.getX());
@@ -433,7 +451,7 @@ public class FirstFragment extends Fragment {
 
                         //System.out.println("out of map");
 
-                        ImageView myImage = (ImageView) event.getLocalState();
+                        ConstraintLayout myImage = (ConstraintLayout) event.getLocalState();
                         //myImage.setVisibility(View.INVISIBLE);
                         // loop through obstacleviews to find the obstacle name
                         // set according to obstacle coord
@@ -476,7 +494,7 @@ public class FirstFragment extends Fragment {
         SharedPreferences preferences = getActivity().getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         for (int i = 0; i < obstacleViews.size(); i++) {
-            ImageView imageView = obstacleViews.get(i);
+            ConstraintLayout imageView = obstacleViews.get(i);
 
             // x and y = current position
             int x = (int) imageView.getX();
@@ -507,7 +525,7 @@ public class FirstFragment extends Fragment {
         // Retrieve the ImageView locations
         SharedPreferences preferences = getActivity().getPreferences(Context.MODE_PRIVATE);
         for (int i = 0; i < obstacleViews.size(); i++) {
-            ImageView imageView = obstacleViews.get(i);
+            ConstraintLayout imageView = obstacleViews.get(i);
             int x = preferences.getInt("image_view_" + i + "_x", 0);
             int y = preferences.getInt("image_view_" + i + "_y", 0);
             int left = preferences.getInt("image_view_" + i + "_left", 0);
