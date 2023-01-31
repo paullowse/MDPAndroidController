@@ -286,7 +286,7 @@ public class MapDrawer extends View { //implements Serializable
 
 
 
-    public int[] updateObstacleOnBoard(int x, int y, ImageView obstacle) {
+    public int[] updateObstacleOnBoard(int x, int y) {
 
         // NOTES: one cell size worth is the grid...
         //System.out.println(cells[1][0].startX + cellSize / 2);
