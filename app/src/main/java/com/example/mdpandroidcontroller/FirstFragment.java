@@ -44,6 +44,8 @@ public class FirstFragment extends Fragment {
 
     private static ConstraintLayout obstacle1;
     private static ConstraintLayout obstacle2;
+    private static ImageView obstacle1Box;
+    private static ImageView obstacle2Box;
 
     private static ImageView robot;
     float pastX, pastY;
@@ -94,16 +96,6 @@ public class FirstFragment extends Fragment {
         //System.out.println(obstacle1.getX());
         //System.out.println(obstacle1.getY());
 
-        obstacle1 = (ConstraintLayout) view.findViewById(R.id.obstacleGroup1);
-        obstacle2 = (ConstraintLayout) view.findViewById(R.id.obstacleGroup2);
-        obstacleViews.add(obstacle1);
-        obstacleViews.add(obstacle2);
-
-
-        System.out.println("current coordinates");
-        printAllObstacleCoords();
-        printAllObstacleLeftTop();
-
 
         return view;
 
@@ -112,6 +104,47 @@ public class FirstFragment extends Fragment {
     @SuppressLint("ClickableViewAccessibility")
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        obstacle1 = (ConstraintLayout) view.findViewById(R.id.obstacleGroup1);
+        obstacle1Box = (ImageView) view.findViewById(R.id.obstacle1);
+        obstacle2 = (ConstraintLayout) view.findViewById(R.id.obstacleGroup2);
+        obstacle2Box = (ImageView) view.findViewById(R.id.obstacle1);
+        obstacleViews.add(obstacle1);
+        obstacleViews.add(obstacle2);
+
+        obstacle1.post(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("current coordinates");
+                printAllObstacleCoords();
+                printAllObstacleLeftTop();
+
+                //SET THE SIZES CORRECTLY JIC - RMB ITS THE BOX NOT THE WHOLE CONSTRAINT
+                obstacle1Box.getLayoutParams().height = (int) map.getCellSize();
+                obstacle1Box.getLayoutParams().width = (int) map.getCellSize();
+                obstacle1Box.requestLayout();
+
+                obstacle2Box.getLayoutParams().height = (int) map.getCellSize();   //SOMEHOW this only affects obstacle1.getLayoutParams().height NOT .getWidth() - CORRECTIOn, only now, later itll save
+                obstacle2Box.getLayoutParams().width = (int) map.getCellSize();
+                obstacle2Box.requestLayout();
+
+                robot.getLayoutParams().height = (int) map.getCellSize() * 3;
+                robot.getLayoutParams().width = (int) map.getCellSize() * 3;
+                robot.requestLayout();
+
+                //System.out.println("obstacle1 dimensions");
+                //System.out.println(obstacle1Box.getLayoutParams().height);
+                //System.out.println(obstacle1Box.getLayoutParams().width);
+
+            }
+        });
+
+
+
+
+
+
+
 
 
         view.findViewById(R.id.button_first).setOnClickListener(new View.OnClickListener() {
@@ -373,6 +406,11 @@ public class FirstFragment extends Fragment {
                 int height = LinearLayout.LayoutParams.WRAP_CONTENT;
                 PopupWindow popUpWindow = new PopupWindow(popUpView, width, height, true);
                 popUpWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
+
+                System.out.println("dimensions of map");
+                System.out.println(map.getWidth());
+                System.out.println(map.getCellSize());
+                System.out.println(obstacle1.getWidth());
             }
         });
 
@@ -552,29 +590,30 @@ public class FirstFragment extends Fragment {
                 imageView.setY(y - top); // top = -912
             }
 
-            // To save the robot image location
-            boolean pastDrawRobot = map.getCanDrawRobot();
-            if (pastDrawRobot) {
-                // NEED TO CLEAR THE MAP ALSO -- ERROR FIX LATER
-                map.setCanDrawRobot(false);
-                robot.setVisibility(View.INVISIBLE);
-            } else {
-                map.setCanDrawRobot(true);
-                robot.setVisibility(View.VISIBLE);
-
-                //CHANGE THIS EVENTUALLY ALSO
-                int[] robotImageCoord = map.getCurCoord();
-                int[] robotLocation = map.setRobotImagePosition(robotImageCoord[0] - 4,map.convertRow(robotImageCoord[1]), mapLeft,mapTop); // ONLY WORKS IF GENERATE WAS DONE BEFORE
-                //System.out.println(robotLocation[0]);
-                //System.out.println(robotLocation[1]);
-                robot.setX(robotLocation[0] - 5); // IRDK WHY ITS LIDDIS
-                robot.setY(robotLocation[1]);
-            }
-
-            System.out.println("end resume");
-
 
         }
+        // To save the robot image location
+        boolean pastDrawRobot = map.getCanDrawRobot();
+        if (pastDrawRobot) {
+            map.setCanDrawRobot(true);
+            robot.setVisibility(View.VISIBLE);
+
+            //CHANGE THIS EVENTUALLY ALSO
+            int[] robotImageCoord = map.getCurCoord();
+            int[] robotLocation = map.setRobotImagePosition(robotImageCoord[0],map.convertRow(robotImageCoord[1]), mapLeft,mapTop);//mapLeft,mapTop); // ONLY WORKS IF GENERATE WAS DONE BEFORE?
+            //System.out.println(robotLocation[0]);
+            //System.out.println(robotLocation[1]);
+
+            robot.setX(robotLocation[0]);
+            robot.setY(robotLocation[1]);
+        } else {
+            // NEED TO CLEAR THE MAP ALSO -- ERROR FIX LATER
+            map.setCanDrawRobot(false);
+            robot.setVisibility(View.INVISIBLE);
+
+        }
+
+        System.out.println("end resume");
     }
 
     /**
@@ -619,21 +658,21 @@ public class FirstFragment extends Fragment {
     public void printAllObstacleCoords() {
         System.out.println("Obstacle Coords");
         for (int i = 0; i < currentObstacleCoords.length; i++) {
-            System.out.println(i+1);
-            System.out.println(currentObstacleCoords[i][0]);
-            System.out.println(currentObstacleCoords[i][1]);
+            //System.out.println(i+1);
+            //System.out.println(currentObstacleCoords[i][0]);
+            //System.out.println(currentObstacleCoords[i][1]);
+            System.out.printf("Obstacle %d |  X: %d, Y: %d\n", i+1, currentObstacleCoords[i][0], currentObstacleCoords[i][1]);
         }
-        System.out.println("Obstacle Coords - end");
+        //System.out.println("Obstacle Coords - end");
     }
 
     public void printAllObstacleLeftTop() {
         System.out.println("Obstacle Left Top");
         for (int i = 0; i < obstacleViews.size(); i++) {
-            System.out.println(i+1);
-            System.out.printf("Left: %d\n", obstacleViews.get(i).getLeft());
-            System.out.printf("Top: %d\n", obstacleViews.get(i).getTop());
+            //System.out.println(i+1);
+            System.out.printf("Obstacle %d |  Left: %d, Top: %d\n", i+1, obstacleViews.get(i).getLeft(), obstacleViews.get(i).getTop());
         }
-        System.out.println("Obstacle Left Top end ");
+        //System.out.println("Obstacle Left Top end ");
     }
     
     
