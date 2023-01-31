@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -56,6 +57,7 @@ public class SecondFragment extends Fragment {
     HashSet<BluetoothDevice> availdevices = new HashSet<>();
 
     private Context globalContext = null;
+    private static final String TAG = "btlog";
 
     BluetoothAdapter mBlueAdapter;
     ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
@@ -192,8 +194,9 @@ public class SecondFragment extends Fragment {
     };
 
     //second fragment - pair bluetooth devices
-    /*BroadcastReceiver mBroadcastReceiver2 = new BroadcastReceiver() {
+    BroadcastReceiver mBroadcastReceiver2 = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
 
             //if you have found the devices
             if (BluetoothDevice.ACTION_FOUND.equals(intent.getAction())) {
@@ -217,17 +220,26 @@ public class SecondFragment extends Fragment {
                     Toast.makeText(context, "Inside toast message", Toast.LENGTH_SHORT).show();
                 }
 
-                BluetoothDevice deviceInfo = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                availabledevicelist.add(deviceInfo.getName() + "\n" + deviceInfo.getAddress());
-                //BluetoothDevice[] devices = availdevices.toArray(new BluetoothDevice[availdevices.size()]);
-                //ArrayAdapter arrayAdapter = new ArrayAdapter(SecondFragment.this.getActivity(), android.R.layout.simple_list_item_1, availabledevicelist);
-                //listview_availabledevices.setAdapter(arrayAdapter);
-
-                Toast.makeText(context, "Outside toast", Toast.LENGTH_SHORT).show();
+                if(action.equals(BluetoothDevice.ACTION_BOND_STATE_CHANGED)){
+                    BluetoothDevice mDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                    //3 cases:
+                    //case1: bonded already
+                    if (mDevice.getBondState() == BluetoothDevice.BOND_BONDED){
+                        Log.d(TAG, "BroadcastReceiver: BOND_BONDED.");
+                    }
+                    //case2: creating a bone
+                    if (mDevice.getBondState() == BluetoothDevice.BOND_BONDING) {
+                        Log.d(TAG, "BroadcastReceiver: BOND_BONDING.");
+                    }
+                    //case3: breaking a bond
+                    if (mDevice.getBondState() == BluetoothDevice.BOND_NONE) {
+                        Log.d(TAG, "BroadcastReceiver: BOND_NONE.");
+                    }
+                }
 
             }
         }
-    };*/
+    };
 
     public void onStart(){
         super.onStart();
