@@ -304,7 +304,12 @@ public class Map extends View { //implements Serializable
 
     }
 
-    public void removeObstacleOnBoard(float originalX, float originalY) {
+    /**
+     * this one is using COORDINATES
+     * @param originalX
+     * @param originalY
+     */
+    public void removeObstacleUsingCoord(float originalX, float originalY) {
         int column = (int) Math.floor(originalX / cellSize);
         int row = (int) Math.floor(originalY / cellSize);
 
@@ -312,7 +317,6 @@ public class Map extends View { //implements Serializable
         //System.out.println(originalY);
         //System.out.println(column);
         //System.out.println(row);
-        cells[column][row].setType("unexplored");
         removeObstacleCoord(new int[] {column, row});
 
         //printObstacleCoord();
@@ -390,8 +394,15 @@ public class Map extends View { //implements Serializable
         obstacleCoord.add(coordinates);
     }
 
+
+    /**
+     * does the actual removing
+     * @param coordinates
+     */
     public void removeObstacleCoord(int[] coordinates) {
         //printObstacleCoord();
+
+        cells[coordinates[0]][coordinates[1]].setType("unexplored");
 
         for (int i = 0; i < obstacleCoord.size(); i++) {
             if (Arrays.equals(obstacleCoord.get(i), coordinates)) {
@@ -405,8 +416,13 @@ public class Map extends View { //implements Serializable
     public void printObstacleCoord() {
         System.out.printf("total number of obstacles: %d \n", obstacleCoord.size());
         for (int x = 0; x < obstacleCoord.size(); x++) {
-            System.out.println(obstacleCoord.get(x)[0]);
-            System.out.println(obstacleCoord.get(x)[1]);
+            System.out.printf("Obstacle %d |  X: %d, Y: %d\n", x+1, obstacleCoord.get(x)[0], obstacleCoord.get(x)[1]);
+        }
+    }
+
+    public void removeAllObstacles() {
+        while (obstacleCoord.size() >= 1) {
+            removeObstacleCoord(obstacleCoord.get(0));
         }
     }
 
