@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.nfc.Tag;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -54,7 +55,7 @@ public class SecondFragment extends Fragment {
     ListView listview_paireddevices;
     ListView listview_availabledevices;
     ArrayList<String> availabledevicelist = new ArrayList<>();
-    HashSet<BluetoothDevice> availdevices = new HashSet<>();
+    ArrayList<BluetoothDevice> mBTDevices = new ArrayList<>();
 
     private Context globalContext = null;
     private static final String TAG = "btlog";
@@ -64,7 +65,7 @@ public class SecondFragment extends Fragment {
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
-                    Log.e("Activity result","OK");
+                    Log.e("Activity result", "OK");
                     // There are no request codes
                     Intent data = result.getData();
                 }
@@ -107,7 +108,7 @@ public class SecondFragment extends Fragment {
         view.findViewById(R.id.bt_paired).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity)getActivity()).listpaireddevices();
+                ((MainActivity) getActivity()).listpaireddevices();
             }
         });
 
@@ -123,8 +124,35 @@ public class SecondFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                if(position >= 0){
+                if (position >= 0) {
                     Snackbar mysnackbar = Snackbar.make(view, "Connecting to " + availabledevicelist.get(position), 999);
+
+                    //first cancel discovery because its very memory intensive.
+                    if (ActivityCompat.checkSelfPermission(SecondFragment.this.getActivity(), Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
+                        // TODO: Consider calling
+                        //    ActivityCompat#requestPermissions
+                        // here to request the missing permissions, and then overriding
+                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                        //                                          int[] grantResults)
+                        // to handle the case where the user grants the permission. See the documentation
+                        // for ActivityCompat#requestPermissions for more details.
+                        mBlueAdapter.cancelDiscovery();
+                        Toast.makeText(getContext(), "Bluetooth Discovery Off", Toast.LENGTH_SHORT).show();
+                    }
+
+                    Log.d(TAG, "onItemClick: You Clicked on a device.");
+                    String deviceName = mBTDevices.get(position).getName();
+                    String deviceAddress = mBTDevices.get(position).getAddress();
+
+                    Log.d(TAG, "onItemClick: deviceName = " + deviceName);
+                    Log.d(TAG, "onItemClick: deviceAddress = " + deviceAddress);
+
+                    //create the bond.
+                    //NOTE: Requires API 17+? I think this is JellyBean
+                    if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2){
+                        Log.d(TAG, "Trying to pair with " + deviceName);
+                        mBTDevices.get(position).createBond();
+                    }
 
                     mysnackbar.show();
                 }
@@ -183,6 +211,7 @@ public class SecondFragment extends Fragment {
 
                 BluetoothDevice deviceInfo = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 availabledevicelist.add(deviceInfo.getName() + "\n" + deviceInfo.getAddress());
+                mBTDevices.add(deviceInfo);
                 //BluetoothDevice[] devices = availdevices.toArray(new BluetoothDevice[availdevices.size()]);
                 //ArrayAdapter arrayAdapter = new ArrayAdapter(SecondFragment.this.getActivity(), android.R.layout.simple_list_item_1, availabledevicelist);
                 //listview_availabledevices.setAdapter(arrayAdapter);
@@ -248,7 +277,7 @@ public class SecondFragment extends Fragment {
 
         //Broadcasts when bond state changes (ie:pairing)
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
-        //getActivity().registerReceiver(mBroadcastReceiver2, filter);
+        getActivity().registerReceiver(mBroadcastReceiver2, filter);
     }
 
     @Override
