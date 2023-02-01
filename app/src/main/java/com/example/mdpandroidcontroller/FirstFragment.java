@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.DragEvent;
@@ -409,6 +410,8 @@ public class FirstFragment extends Fragment {
 
 
         Button test = (Button) view.findViewById(R.id.button_test);
+
+        //TRY MAKING IT INVISIBLE AND VISIBLE!!
         test.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -417,14 +420,11 @@ public class FirstFragment extends Fragment {
                 int width = LinearLayout.LayoutParams.WRAP_CONTENT;
                 int height = LinearLayout.LayoutParams.WRAP_CONTENT;
                 PopupWindow popUpWindow = new PopupWindow(popUpView, width, height, true);
-                popUpWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
 
-                System.out.println("dimensions of map");
-                System.out.println(map.getWidth());
-                System.out.println(map.getCellSize());
-                System.out.println(obstacle1.getWidth());
+                popUpWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
             }
         });
+
 
 
         map.setOnDragListener(new View.OnDragListener() {
