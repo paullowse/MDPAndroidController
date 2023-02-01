@@ -132,6 +132,22 @@ public class FirstFragment extends Fragment {
                 robot.getLayoutParams().width = (int) map.getCellSize() * 3;
                 robot.requestLayout();
 
+
+                //MAP coordinates - for saving
+                mapLeft = map.getLeft();
+                mapTop = map.getTop();
+
+                // save original coords of obstacles
+                for (int i = 0; i < obstacleViews.size(); i++) {
+                    originalObstacleCoords[i][0] = (int) obstacleViews.get(i).getLeft();
+                    originalObstacleCoords[i][1] = (int) obstacleViews.get(i).getTop();
+                }
+                printOriginalObstacleCoords();
+
+
+
+
+
                 //System.out.println("obstacle1 dimensions");
                 //System.out.println(obstacle1Box.getLayoutParams().height);
                 //System.out.println(obstacle1Box.getLayoutParams().width);
@@ -197,9 +213,6 @@ public class FirstFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 boolean pastDrawRobot = map.getCanDrawRobot();
-
-                mapLeft = map.getLeft();
-                mapTop = map.getTop();
 
                 if (pastDrawRobot) {
                     // NEED TO CLEAR THE MAP ALSO -- ERROR FIX LATER
@@ -338,10 +351,10 @@ public class FirstFragment extends Fragment {
 
 
                     // save the original obstacle coord (for snapping back if out of grid)
-                    if (originalObstacleCoords[0][0] == -1) {
-                        originalObstacleCoords[0][0] = obstacle1.getLeft();
-                        originalObstacleCoords[0][1] = obstacle1.getTop();
-                    }
+                    //if (originalObstacleCoords[0][0] == -1) {
+                    //    originalObstacleCoords[0][0] = obstacle1.getLeft();
+                    //    originalObstacleCoords[0][1] = obstacle1.getTop();
+                    //}
                     //System.out.println(pastX);
                     //System.out.println(pastY);
 
@@ -366,10 +379,10 @@ public class FirstFragment extends Fragment {
                     pastY = obstacle2.getY();
 
                     // save the original obstacle coord (for snapping back if out of grid)
-                    if (originalObstacleCoords[1][0] == -1) {
-                        originalObstacleCoords[1][0] = obstacle2.getLeft();;
-                        originalObstacleCoords[1][1] = obstacle2.getTop();
-                    }
+                    //if (originalObstacleCoords[1][0] == -1) {
+                    //    originalObstacleCoords[1][0] = obstacle2.getLeft();;
+                    //    originalObstacleCoords[1][1] = obstacle2.getTop();
+                    //}
                     //System.out.println(pastX);
                     //System.out.println(pastY);
 
@@ -388,10 +401,9 @@ public class FirstFragment extends Fragment {
                     obstacleViews.get(i).setX(originalObstacleCoords[i][0]);
                     obstacleViews.get(i).setY(originalObstacleCoords[i][1]);
                 }
-
-                map.printObstacleCoord();
-
-
+                //map.printObstacleCoord();
+                map.removeAllObstacles();
+                map.invalidate();
             }
         });
 
@@ -442,7 +454,7 @@ public class FirstFragment extends Fragment {
                         int[] newCoords = {(int) x, (int) y};
                         currentObstacleCoords[obstacleNum-1] = newCoords;
                         printAllObstacleCoords();
-                        printAllObstacleLeftTop();
+                        //printAllObstacleLeftTop();
 
 
                         // this is the exact location - but we want to snap to grid
@@ -456,7 +468,7 @@ public class FirstFragment extends Fragment {
                         // if the past location of obstacle was in the map, u remove the old one.
                         if (pastX >= map.getX() && pastX <= map.getX() + map.getWidth() && pastY >= map.getY() && pastY <= map.getY() + map.getHeight()) {
                             //System.out.println("IN MAP");
-                            map.removeObstacleOnBoard(pastX - map.getX() + map.getCellSize()/2,pastY - map.getY() + map.getCellSize()/2);
+                            map.removeObstacleUsingCoord(pastX - map.getX() + map.getCellSize()/2,pastY - map.getY() + map.getCellSize()/2);
                         }
                         // to add the new obstacle
                         int[] newObstCoord = map.updateObstacleOnBoard(x, y);
@@ -508,7 +520,7 @@ public class FirstFragment extends Fragment {
                         //outside map to outside map
                         if(pastX >= mapCoord[0] && pastX <= mapCoord[0] + mapWidth && pastY >= mapCoord[1] && pastY <= mapCoord[1] + mapHeight){
                             // in of map to out of map!!
-                            map.removeObstacleOnBoard(pastX - map.getX() + map.getCellSize()/2,pastY - map.getY() + map.getCellSize()/2);
+                            map.removeObstacleUsingCoord(pastX - map.getX() + map.getCellSize()/2,pastY - map.getY() + map.getCellSize()/2);
                             map.invalidate();
                         }
 
@@ -655,6 +667,11 @@ public class FirstFragment extends Fragment {
         return -1;
     }
 
+
+    /**
+     * HELPER FUNCTIONS TO CHECK
+     */
+
     public void printAllObstacleCoords() {
         System.out.println("Obstacle Coords");
         for (int i = 0; i < currentObstacleCoords.length; i++) {
@@ -664,6 +681,14 @@ public class FirstFragment extends Fragment {
             System.out.printf("Obstacle %d |  X: %d, Y: %d\n", i+1, currentObstacleCoords[i][0], currentObstacleCoords[i][1]);
         }
         //System.out.println("Obstacle Coords - end");
+    }
+
+    public void printOriginalObstacleCoords() {
+        System.out.println("OG obstacle Coords");
+        for (int i = 0; i < originalObstacleCoords.length; i++) {
+            System.out.printf("Obstacle %d |  X: %d, Y: %d\n", i+1, originalObstacleCoords[i][0], originalObstacleCoords[i][1]);
+        }
+
     }
 
     public void printAllObstacleLeftTop() {
