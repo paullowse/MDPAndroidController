@@ -190,27 +190,7 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
     }
 
-    //second fragment - list paired devices
-    public void listpaireddevices() {
-        ListView listview_paireddevices = findViewById(R.id.listview_paireddevices);
-        if (mBlueAdapter.isEnabled()) {
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.BLUETOOTH_ADMIN}, 1);
-                //Set<BluetoothDevice> devices = mBlueAdapter.getBondedDevices();
-                //for (BluetoothDevice device: devices){
-                //    mPairedTv.append("\nDevice: " + device.getName() + ", " + device);
-                //}
-                Set<BluetoothDevice> pairedDevices = mBlueAdapter.getBondedDevices();
-                ArrayList<String> devices = new ArrayList<>();
-                for (BluetoothDevice bt : pairedDevices) {
-                    devices.add(bt.getName() + "\n" + bt.getAddress());
-                }
-                ArrayAdapter arrayAdapter = new ArrayAdapter(MainActivity.this, android.R.layout.simple_list_item_1, devices);
-                listview_paireddevices.setAdapter(arrayAdapter);
-            }
-        }
-    }
+
 
 
     //first fragment - turn on bluetooth

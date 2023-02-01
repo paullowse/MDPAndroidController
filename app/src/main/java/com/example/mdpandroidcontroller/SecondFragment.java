@@ -11,7 +11,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,7 +20,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,18 +30,15 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.recyclerview.widget.ListAdapter;
 
 import com.example.mdpandroidcontroller.databinding.FragmentSecondBinding;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 public class SecondFragment extends Fragment {
 
@@ -55,10 +51,21 @@ public class SecondFragment extends Fragment {
     ListView listview_paireddevices;
     ListView listview_availabledevices;
     ArrayList<String> availabledevicelist = new ArrayList<>();
+    ArrayList<String> paireddevicelist = new ArrayList<>();
     ArrayList<BluetoothDevice> mBTDevices = new ArrayList<>();
+    ArrayList<BluetoothDevice> mPairDevices = new ArrayList<>();
 
     private Context globalContext = null;
     private static final String TAG = "btlog";
+
+    private static final UUID my_uuid_insecure = UUID.fromString("8ce255c0-200a-11e0-ac64-0800200c9a66");
+
+    BluetoothDevice mBTDevice;
+    BluetoothDevice mPairDevice;
+    EditText etsend;
+    Button btnSend;
+
+    BluetoothConnectionService mBluetoothConnection;
 
     BluetoothAdapter mBlueAdapter;
     ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
@@ -83,8 +90,14 @@ public class SecondFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_second, container, false);
         listview_availabledevices = view.findViewById(R.id.listavailabledevice);
         mBlueAdapter = BluetoothAdapter.getDefaultAdapter();
+        btnSend = view.findViewById(R.id.btnsend);
+        etsend = (EditText) view.findViewById(R.id.editText123);
 
         globalContext = this.getActivity();
+
+        //Broadcasts when bond state changes (ie:pairing)
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+        getActivity().registerReceiver(mBroadcastReceiver2, filter);
 
         ArrayAdapter arrayAdapter = new ArrayAdapter(SecondFragment.this.getActivity(), android.R.layout.simple_list_item_1, availabledevicelist);
         listview_availabledevices.setAdapter(arrayAdapter);
@@ -108,7 +121,7 @@ public class SecondFragment extends Fragment {
         view.findViewById(R.id.bt_paired).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity) getActivity()).listpaireddevices();
+                listpaireddevices();
             }
         });
 
@@ -119,8 +132,21 @@ public class SecondFragment extends Fragment {
             }
         });
 
-        AdapterView adapterView = (AdapterView) view.findViewById(R.id.listavailabledevice);
-        adapterView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        view.findViewById(R.id.btnsend).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                byte[] bytes = etsend.getText().toString().getBytes(Charset.defaultCharset());
+                //Toast.makeText(globalContext, etsend.getText().toString(), Toast.LENGTH_SHORT).show();
+
+                mBluetoothConnection.write(bytes);
+            }
+        });
+
+        AdapterView adapterView2 = (AdapterView) view.findViewById(R.id.listview_paireddevices);
+        AdapterView adapterView1 = (AdapterView) view.findViewById(R.id.listavailabledevice);
+
+        //discover devices adapter view
+        adapterView1.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
@@ -152,12 +178,99 @@ public class SecondFragment extends Fragment {
                     if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2){
                         Log.d(TAG, "Trying to pair with " + deviceName);
                         mBTDevices.get(position).createBond();
+
+                        mBTDevice = mBTDevices.get(position);
+                        //mBluetoothConnection = new BluetoothConnectionService(SecondFragment.this.getActivity());
+                        mBluetoothConnection = new BluetoothConnectionService(getActivity());
+                        startConnection();
                     }
 
                     mysnackbar.show();
                 }
             }
         });
+
+        //pair device adapter view
+        adapterView2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                if (position >= 0) {
+                    Snackbar mysnackbar = Snackbar.make(view, "Connecting back to " + paireddevicelist.get(position), 999);
+
+                    //first cancel discovery because its very memory intensive.
+                    if (ActivityCompat.checkSelfPermission(SecondFragment.this.getActivity(), Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
+                        // TODO: Consider calling
+                        //    ActivityCompat#requestPermissions
+                        // here to request the missing permissions, and then overriding
+                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                        //                                          int[] grantResults)
+                        // to handle the case where the user grants the permission. See the documentation
+                        // for ActivityCompat#requestPermissions for more details.
+                        mBlueAdapter.cancelDiscovery();
+                        Toast.makeText(getContext(), "Bluetooth Discovery Off", Toast.LENGTH_SHORT).show();
+                    }
+
+                    Log.d(TAG, "onItemClick: You Clicked on a paired device.");
+                    String deviceName = mPairDevices.get(position).getName();
+                    String deviceAddress = mPairDevices.get(position).getAddress();
+
+                    Log.d(TAG, "onItemClick: deviceName = " + deviceName);
+                    Log.d(TAG, "onItemClick: deviceAddress = " + deviceAddress);
+
+                    //create the bond.
+                    //NOTE: Requires API 17+? I think this is JellyBean
+                    if(Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2){
+                        Log.d(TAG, "Pairing: " + deviceName);
+                        mPairDevices.get(position).createBond();
+
+                        mPairDevice = mPairDevices.get(position);
+                        //mBluetoothConnection = new BluetoothConnectionService(SecondFragment.this.getActivity());
+                        mBluetoothConnection = new BluetoothConnectionService(getActivity());
+                        startConnection();
+                    }
+
+                    mysnackbar.show();
+                }
+            }
+        });
+    }
+
+    //second fragment - list paired devices
+    public void listpaireddevices() {
+        if (mBlueAdapter.isEnabled()) {
+            if (ActivityCompat.checkSelfPermission(SecondFragment.this.getActivity(), Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                ActivityCompat.requestPermissions(SecondFragment.this.getActivity(), new String[]{Manifest.permission.BLUETOOTH_ADMIN}, 1);
+                //Set<BluetoothDevice> devices = mBlueAdapter.getBondedDevices();
+                //for (BluetoothDevice device: devices){
+                //    mPairedTv.append("\nDevice: " + device.getName() + ", " + device);
+                //}
+                Set<BluetoothDevice> pairedDevices = mBlueAdapter.getBondedDevices();
+                for (BluetoothDevice bt : pairedDevices) {
+                    paireddevicelist.add(bt.getName() + "\n" + bt.getAddress());
+                }
+                //BluetoothDevice deviceInfo = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                //mPairDevices.add(deviceInfo);
+                ArrayAdapter arrayAdapter = new ArrayAdapter(SecondFragment.this.getActivity(), android.R.layout.simple_list_item_1, paireddevicelist);
+                listview_paireddevices.setAdapter(arrayAdapter);
+            }
+        }
+    }
+
+    //method to start connection
+    //***remember the conncction will fail and app will crash if you haven't paired first
+    public void startConnection(){
+        startBTConnection(mBTDevice, my_uuid_insecure);
+    }
+
+    /**
+     * starting chat service method
+     */
+    public void startBTConnection(BluetoothDevice device, UUID uuid){
+        Log.d(TAG, "startBTConnection: Initializing RFCOM Bluetooth Connection.");
+
+        mBluetoothConnection.startClient(device,uuid);
     }
 
     @Override
@@ -167,6 +280,10 @@ public class SecondFragment extends Fragment {
         if (availabledevicelist != null && availabledevicelist.size() > 0){
             ArrayAdapter arrayAdapter = new ArrayAdapter(SecondFragment.this.getActivity(), android.R.layout.simple_list_item_1, availabledevicelist);
             listview_availabledevices.setAdapter(arrayAdapter);
+        }
+        if (paireddevicelist != null && paireddevicelist.size() > 0){
+            ArrayAdapter arrayAdapter = new ArrayAdapter(SecondFragment.this.getActivity(), android.R.layout.simple_list_item_1, paireddevicelist);
+            listview_paireddevices.setAdapter(arrayAdapter);
         }
     }
 
@@ -212,9 +329,12 @@ public class SecondFragment extends Fragment {
                 BluetoothDevice deviceInfo = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 availabledevicelist.add(deviceInfo.getName() + "\n" + deviceInfo.getAddress());
                 mBTDevices.add(deviceInfo);
+                mPairDevices.add(deviceInfo);
                 //BluetoothDevice[] devices = availdevices.toArray(new BluetoothDevice[availdevices.size()]);
                 //ArrayAdapter arrayAdapter = new ArrayAdapter(SecondFragment.this.getActivity(), android.R.layout.simple_list_item_1, availabledevicelist);
                 //listview_availabledevices.setAdapter(arrayAdapter);
+
+
 
                 Toast.makeText(context, "Outside toast", Toast.LENGTH_SHORT).show();
 
@@ -255,6 +375,9 @@ public class SecondFragment extends Fragment {
                     //case1: bonded already
                     if (mDevice.getBondState() == BluetoothDevice.BOND_BONDED){
                         Log.d(TAG, "BroadcastReceiver: BOND_BONDED.");
+
+                        mBTDevice = mDevice;
+                        mPairDevice = mDevice;
                     }
                     //case2: creating a bone
                     if (mDevice.getBondState() == BluetoothDevice.BOND_BONDING) {
@@ -274,10 +397,6 @@ public class SecondFragment extends Fragment {
         super.onStart();
         IntentFilter bluetoothFilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         getActivity().registerReceiver(mReceiver, bluetoothFilter);
-
-        //Broadcasts when bond state changes (ie:pairing)
-        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
-        getActivity().registerReceiver(mBroadcastReceiver2, filter);
     }
 
     @Override
