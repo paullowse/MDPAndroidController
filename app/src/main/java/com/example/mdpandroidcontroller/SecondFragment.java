@@ -46,7 +46,7 @@ public class SecondFragment extends Fragment {
 
     Button bt_paired;
 
-    TextView mStatusBlueTv;
+    private View view;
 
     ListView listview_paireddevices;
     ListView listview_availabledevices;
@@ -84,10 +84,12 @@ public class SecondFragment extends Fragment {
             Bundle savedInstanceState
     ) {
 
+        if (view != null)
+            return view;
         //binding = FragmentSecondBinding.inflate(inflater, container, false);
         //return binding.getRoot();
 
-        View view = inflater.inflate(R.layout.fragment_second, container, false);
+        view = inflater.inflate(R.layout.fragment_second, container, false);
         listview_availabledevices = view.findViewById(R.id.listavailabledevice);
         mBlueAdapter = BluetoothAdapter.getDefaultAdapter();
         btnSend = view.findViewById(R.id.btnsend);
@@ -191,7 +193,7 @@ public class SecondFragment extends Fragment {
         });
 
         //pair device adapter view
-        adapterView2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        /*adapterView2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
@@ -229,6 +231,18 @@ public class SecondFragment extends Fragment {
                         mBluetoothConnection = new BluetoothConnectionService(getActivity());
                         startConnection();
                     }
+
+                    mysnackbar.show();
+                }
+            }
+        });*/
+
+        adapterView2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                if (position >= 0) {
+                    Snackbar mysnackbar = Snackbar.make(view, "Select discoverable device to connect.", 999);
 
                     mysnackbar.show();
                 }
@@ -379,7 +393,7 @@ public class SecondFragment extends Fragment {
                         mBTDevice = mDevice;
                         mPairDevice = mDevice;
                     }
-                    //case2: creating a bone
+                    //case2: creating a bond
                     if (mDevice.getBondState() == BluetoothDevice.BOND_BONDING) {
                         Log.d(TAG, "BroadcastReceiver: BOND_BONDING.");
                     }

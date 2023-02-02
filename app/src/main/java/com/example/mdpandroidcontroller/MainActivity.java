@@ -26,16 +26,19 @@ import androidx.navigation.ui.NavigationUI;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.window.SplashScreen;
 
 import com.example.mdpandroidcontroller.databinding.ActivityMainBinding;
 
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -75,6 +78,22 @@ public class MainActivity extends AppCompatActivity {
     Button mPairedBtn;
 
     ListView listview;
+
+    ListView listview_paireddevices;
+    ListView listview_availabledevices;
+    ArrayList<String> availabledevicelist = new ArrayList<>();
+    ArrayList<String> paireddevicelist = new ArrayList<>();
+    ArrayList<BluetoothDevice> mBTDevices = new ArrayList<>();
+    ArrayList<BluetoothDevice> mPairDevices = new ArrayList<>();
+
+    private static final String TAG = "btlog";
+
+    private static final UUID my_uuid_insecure = UUID.fromString("8ce255c0-200a-11e0-ac64-0800200c9a66");
+
+    BluetoothDevice mBTDevice;
+    BluetoothDevice mPairDevice;
+
+    BluetoothConnectionService mBluetoothConnection;
 
     BluetoothAdapter mBlueAdapter = BluetoothAdapter.getDefaultAdapter();
     ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
@@ -190,9 +209,6 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
     }
 
-
-
-
     //first fragment - turn on bluetooth
     public void turnonbluetooth() {
         if (!mBlueAdapter.isEnabled()) {
@@ -263,5 +279,6 @@ public class MainActivity extends AppCompatActivity {
             mStatusBlueTv.setText("Bluetooth discovery is already on");
         }
     }
+
 
 }
