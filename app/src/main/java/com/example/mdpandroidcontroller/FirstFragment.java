@@ -48,6 +48,11 @@ public class FirstFragment extends Fragment {
     private static ImageView obstacle1Box;
     private static ImageView obstacle2Box;
 
+    private static ImageView obstacle1Face;
+    private static ImageView obstacle2Face;
+
+    private static ConstraintLayout popup;
+
     private static ImageView robot;
     float pastX, pastY;
     private static String longPress;
@@ -108,10 +113,17 @@ public class FirstFragment extends Fragment {
 
         obstacle1 = (ConstraintLayout) view.findViewById(R.id.obstacleGroup1);
         obstacle1Box = (ImageView) view.findViewById(R.id.obstacle1);
+        obstacle1Face = (ImageView) view.findViewById(R.id.obstacle1Face);
         obstacle2 = (ConstraintLayout) view.findViewById(R.id.obstacleGroup2);
-        obstacle2Box = (ImageView) view.findViewById(R.id.obstacle1);
+        obstacle2Box = (ImageView) view.findViewById(R.id.obstacle2);
+        //obstacle2Face = (ImageView) view.findViewById(R.id.obstacle2Face);
         obstacleViews.add(obstacle1);
         obstacleViews.add(obstacle2);
+
+        popup = (ConstraintLayout) view.findViewById(R.id.popup_window);
+        popup.setVisibility(View.INVISIBLE);
+
+        obstacle1Face.setVisibility(View.INVISIBLE);
 
         obstacle1.post(new Runnable() {
             @Override
@@ -409,21 +421,63 @@ public class FirstFragment extends Fragment {
         });
 
 
-        Button test = (Button) view.findViewById(R.id.button_test);
 
+        //POPUP BUTTONS
+        Button test = (Button) view.findViewById(R.id.button_test);
         //TRY MAKING IT INVISIBLE AND VISIBLE!!
         test.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View popUpView = inflater.inflate(R.layout.popup_window, null);
-                int width = LinearLayout.LayoutParams.WRAP_CONTENT;
-                int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-                PopupWindow popUpWindow = new PopupWindow(popUpView, width, height, true);
+                //LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                //View popUpView = inflater.inflate(R.layout.popup_window, null);
+                //int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+                //int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+                //PopupWindow popUpWindow = new PopupWindow(popUpView, width, height, true);
+                //popUpWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
+                if (popup.getVisibility() == View.VISIBLE) {
+                    popup.setVisibility(View.INVISIBLE);
+                } else {
+                    popup.setVisibility(View.VISIBLE);
+                }
 
-                popUpWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
             }
         });
+
+        Button northFace = (Button) view.findViewById(R.id.face_north);
+        Button eastFace = (Button) view.findViewById(R.id.face_east);
+        Button southFace = (Button) view.findViewById(R.id.face_south);
+        Button westFace = (Button) view.findViewById(R.id.face_west);
+
+        /**
+         * MUST make it relevant for all obstacles not just number 1
+         */
+        View.OnClickListener onClickFaceListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                obstacle1Face.setVisibility(View.VISIBLE);
+
+                switch (view.getId()) {
+                    case R.id.face_north:
+                        obstacle1Face.setRotation(0);
+                        break;
+                    case R.id.face_east:
+                        obstacle1Face.setRotation(90);
+                        break;
+                    case R.id.face_south:
+                        obstacle1Face.setRotation(180);
+                        break;
+                    case R.id.face_west:
+                        obstacle1Face.setRotation(270);
+                        break;
+                }
+            }
+        };
+
+        northFace.setOnClickListener(onClickFaceListener);
+        eastFace.setOnClickListener(onClickFaceListener);
+        southFace.setOnClickListener(onClickFaceListener);
+        westFace.setOnClickListener(onClickFaceListener);
+
 
 
 
