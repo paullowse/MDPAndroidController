@@ -231,8 +231,8 @@ public class FirstFragment extends Fragment {
                 intent.putExtra("bluetooth_services", bluetoothServices);
                 startActivity(intent);*/
 
-                NavHostFragment.findNavController(FirstFragment.this)
-                        .navigate(R.id.action_FirstFragment_to_SecondFragment);
+                Intent intent = new Intent(getActivity(), Connect.class);
+                startActivity(intent);
             }
         });
 

@@ -99,9 +99,8 @@ public class MainActivity extends AppCompatActivity {
     BluetoothDevice mBTDevice;
     BluetoothDevice mPairDevice;
 
-    BluetoothConnectionService mBluetoothConnection;
+    //BluetoothConnectionService mBluetoothConnection;
 
-    BluetoothServices mBluetoothServices;
     private boolean mBound = false;
 
     BluetoothAdapter mBlueAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -146,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
             //mOffBtn.setOnClickListener(this::onClick);         // Turn off Bluetooth btn click
             //mPairedBtn.setOnClickListener(this::onClick);      // Get Paired devices button click
         }
-        mBluetoothConnection = new BluetoothConnectionService(MainActivity.this);
+        //mBluetoothConnection = new BluetoothConnectionService(MainActivity.this);
 
     }
 
@@ -293,14 +292,11 @@ public class MainActivity extends AppCompatActivity {
     ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            BluetoothServices.LocalBinder binder = (BluetoothServices.LocalBinder)service;
-            mBluetoothServices = binder.getService();
             mBound = true;
         }
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            mBluetoothServices = null;
             mBound = false;
         }
     };
@@ -308,9 +304,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        Intent intent = new Intent(MainActivity.this, BluetoothServices.class);
-        intent.setAction("com.example.mdpandroidcontroller.BIND");
-        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
