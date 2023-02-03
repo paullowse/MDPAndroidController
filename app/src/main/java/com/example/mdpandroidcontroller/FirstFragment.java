@@ -7,11 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.DragEvent;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,8 +19,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -62,7 +58,13 @@ public class FirstFragment extends Fragment {
     private static String obstacleFaceText;
     private static int obstacleFaceNumber;
 
-    private static TextView notifications; // for all the notifications!!
+    private static TextView outputNotifView; // for all the notifications!!
+    private static TextView locationNotifView;
+    private static TextView facingNotifView;
+
+    private static String outputNotif;
+    private static String locationNotif;
+    private static String facingNotif;
 
     private static ConstraintLayout popup;
 
@@ -147,7 +149,11 @@ public class FirstFragment extends Fragment {
         obstacle2Box = (ImageView) view.findViewById(R.id.obstacle2);
         obstacle2Face = (ImageView) view.findViewById(R.id.obstacle2Face);
 
-        notifications =  (TextView) view.findViewById(R.id.notifications);
+        //TEXTVIEWS
+        outputNotifView =  (TextView) view.findViewById(R.id.notifications);
+        locationNotifView =  (TextView) view.findViewById(R.id.robot_location);
+        facingNotifView =  (TextView) view.findViewById(R.id.robot_facing);
+
 
         // add to lists
         obstacleViews.add(obstacle1);
@@ -459,6 +465,9 @@ public class FirstFragment extends Fragment {
             }
         });
 
+        /**
+         * doesnt actually remove leh??
+         */
         Button resetObstacles = (Button) view.findViewById(R.id.resetObstacles);
         resetObstacles.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -541,6 +550,9 @@ public class FirstFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 obstacleFaceCur = obstacleFaceViews.get(obstacleFaceNumber-1);
+                ConstraintLayout obstacleGroup = obstacleViews.get(obstacleFaceNumber-1);
+
+                String facing = "error";
 
                 switch (view.getId()) {
                     case R.id.face_north:
@@ -549,6 +561,7 @@ public class FirstFragment extends Fragment {
                         } else {
                             obstacleFaceCur.setVisibility(View.VISIBLE);
                             obstacleFaceCur.setRotation(0);
+                            facing = "N";
                         }
                         break;
                     case R.id.face_east:
@@ -557,6 +570,7 @@ public class FirstFragment extends Fragment {
                         } else {
                             obstacleFaceCur.setVisibility(View.VISIBLE);
                             obstacleFaceCur.setRotation(90);
+                            facing = "E";
                         }
                         break;
                     case R.id.face_south:
@@ -565,6 +579,7 @@ public class FirstFragment extends Fragment {
                         } else {
                             obstacleFaceCur.setVisibility(View.VISIBLE);
                             obstacleFaceCur.setRotation(180);
+                            facing = "S";
                         }
                         break;
                     case R.id.face_west:
@@ -573,9 +588,18 @@ public class FirstFragment extends Fragment {
                         } else {
                             obstacleFaceCur.setVisibility(View.VISIBLE);
                             obstacleFaceCur.setRotation(270);
+                            facing = "W";
                         }
                         break;
                 }
+
+                //System.out.printf("Facing: %s, Col: %d, Row: %d, left: %d, top: %d\n", facing, (int) obstacleGroup.getX(), (int) obstacleGroup.getY(), (int) map.getLeft(), (int) map.getTop());
+
+                int[] currentColRow = map.getColRowFromXY(obstacleGroup.getX(), obstacleGroup.getY(), map.getLeft(), map.getTop());
+                outputNotif = String.format("Facing: %s, Col: %d, Row: %d\n", facing, currentColRow[0], currentColRow[1]);
+                System.out.printf(outputNotif);
+                outputNotifView.setText(outputNotif);
+
 
             }
         };
@@ -631,14 +655,14 @@ public class FirstFragment extends Fragment {
                         System.out.println("Notification values:");
                         //String notifications = getResources().getString(R.string.notifications);
                         //System.out.println(notifications);
-                        String curNotifText = (String) notifications.getText();
+                        String curNotifText = (String) outputNotifView.getText();
 
                         int obstacleNum = findObstacleNumber(myImage);
                         int col = newObstCoordColRow[2];
                         int row = newObstCoordColRow[3];
-                        String outputNotif = String.format("Obstacle: %d, Col: %d, Row: %d\n", obstacleNum, col, row);
+                        outputNotif = String.format("Obstacle: %d, Col: %d, Row: %d\n", obstacleNum, col, row);
                         System.out.printf(outputNotif);
-                        notifications.setText(outputNotif);
+                        outputNotifView.setText(outputNotif);
 
 
 
@@ -826,12 +850,14 @@ public class FirstFragment extends Fragment {
         trackRobot(robot, rotation);
     }
 
-    /**
+    /** RUNS EVERYTIME
      * Purpose is to track the image of the robot to the current coord of the robot in map class. and follows the right rotation
      * The robot will be paired accordingly
+     * Does displays as well
      * @param robot
      * @param rotation
      */
+    @SuppressLint("DefaultLocale")
     public void trackRobot(ImageView robot, int rotation) {
         //ImageView robot = (ImageView) view.findViewById(R.id.robotcar);
         //System.out.println("TRACK ROBOT FUNCTION");
@@ -841,6 +867,14 @@ public class FirstFragment extends Fragment {
         robot.setX(robotLocation[0]);
         robot.setY(robotLocation[1]);
         robot.setRotation(rotation);
+
+        //Setting displays
+        locationNotif = String.format("X: %d, Y: %d\n", robotImageCoord[0] - 1, robotImageCoord[1] - 1);    // NOTE THERES THE -1 FOR NOW, SHOULD CHANGE NEXT TIME
+        System.out.printf(locationNotif);
+        locationNotifView.setText(locationNotif);
+
+        facingNotif = String.format("Facing: %s\n", map.convertRotationToFacing(rotation));
+        facingNotifView.setText(facingNotif);
     }
 
     public int findObstacleNumber(ConstraintLayout obstacle) {
@@ -860,12 +894,8 @@ public class FirstFragment extends Fragment {
     public void printAllObstacleCoords() {
         System.out.println("Obstacle Coords");
         for (int i = 0; i < currentObstacleCoords.length; i++) {
-            //System.out.println(i+1);
-            //System.out.println(currentObstacleCoords[i][0]);
-            //System.out.println(currentObstacleCoords[i][1]);
             System.out.printf("Obstacle %d |  X: %d, Y: %d\n", i+1, currentObstacleCoords[i][0], currentObstacleCoords[i][1]);
         }
-        //System.out.println("Obstacle Coords - end");
     }
 
     public void printOriginalObstacleCoords() {

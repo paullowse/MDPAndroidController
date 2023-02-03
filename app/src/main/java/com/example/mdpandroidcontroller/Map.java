@@ -32,7 +32,7 @@ public class Map extends View { //implements Serializable
     private static int robotSize = 3;
     private static int oldFacing;
     private static int newFacing;
-    private static String[] robotFacingEnum = new String[] {Constants.FORWARD, Constants.RIGHT, Constants.BACKWARD, Constants.LEFT};
+    private static String[] robotFacingEnum = new String[] {Constants.NORTH, Constants.EAST, Constants.SOUTH, Constants.WEST};
     private static int[] curCoord = new int[]{4, 6};     // CHANGE THIS WAY OF IMPLEMENTATION... - when u drag the robot thing
 
     //private ArrayList<ArrayList<Integer>> obstacleCoord =  new ArrayList<ArrayList<Integer>>();
@@ -78,7 +78,7 @@ public class Map extends View { //implements Serializable
         // on first time drawing?
         if (!mapDrawn) {
             this.createCell();
-            setRobotFacing(Constants.FORWARD);
+            setRobotFacing(Constants.NORTH);
             mapDrawn = true;
 
         }
@@ -228,19 +228,19 @@ public class Map extends View { //implements Serializable
                 break;
         }
         switch (oldFacing) {
-            case 0: //forward
+            case 0: //North
                 tempCoord[0] = tempCoord[0] + transX;
                 tempCoord[1] = tempCoord[1] + transY;
                 break;
-            case 1: //right
+            case 1: //East
                 tempCoord[0] = tempCoord[0] + transY;
                 tempCoord[1] = tempCoord[1] - transX;
                 break;
-            case 2: //back
+            case 2: //South
                 tempCoord[0] = tempCoord[0] - transX;
                 tempCoord[1] = tempCoord[1] - transY;
                 break;
-            case 3: //left
+            case 3: //West
                 tempCoord[0] = tempCoord[0] - transY;
                 tempCoord[1] = tempCoord[1] + transX;
                 break;
@@ -322,11 +322,20 @@ public class Map extends View { //implements Serializable
         //printObstacleCoord();
     }
 
+    public int[] getColRowFromXY(float x, float y, float mapLeft, float mapTop) {
+
+        int column = (int) Math.floor((x - mapLeft + cellSize/2) / cellSize);
+        int row = (int) Math.floor((y - mapTop + cellSize/2) / cellSize);
+
+        int[] result = new int[] {column-1, convertRow(row)-1};
+        return result;
+    }
 
 
 
 
-    /**
+
+    /** its to make the old tracks...
      * Saves the old robot coords and also resets the cell to the old one
      * (a little inefficient as most of the robot cells will still be robot)
      */
@@ -372,16 +381,31 @@ public class Map extends View { //implements Serializable
 
     public int convertFacingToRotation(String facing) {
         switch (facing) {
-            case Constants.FORWARD:
+            case Constants.NORTH:
                 return 0;
-            case Constants.RIGHT:
+            case Constants.EAST:
                 return 90;
-            case Constants.BACKWARD:
+            case Constants.SOUTH:
                 return 180;
-            case Constants.LEFT:
+            case Constants.WEST:
                 return 270;
             default:
                 return 0;    // assume
+        }
+    }
+
+    public String convertRotationToFacing(int rotation) {
+        switch (rotation) {
+            case 0:
+                return Constants.NORTH;
+            case 90:
+                return Constants.EAST;
+            case 180:
+                return Constants.SOUTH;
+            case 270:
+                return Constants.WEST;
+            default:
+                return Constants.ERROR;    // assume
         }
     }
 
@@ -422,6 +446,7 @@ public class Map extends View { //implements Serializable
 
     public void removeAllObstacles() {
         while (obstacleCoord.size() >= 1) {
+            cells[obstacleCoord.get(0)[0]][obstacleCoord.get(0)[1]].setType("unexplored");
             removeObstacleCoord(obstacleCoord.get(0));
         }
     }
