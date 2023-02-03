@@ -7,12 +7,15 @@ import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,6 +69,7 @@ public class SecondFragment extends Fragment {
     Button btnSend;
 
     BluetoothConnectionService mBluetoothConnection;
+    BluetoothServices mBluetoothServices;
 
     BluetoothAdapter mBlueAdapter;
     ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
@@ -83,6 +87,14 @@ public class SecondFragment extends Fragment {
             LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
+        /*Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            //mBluetoothServices = (BluetoothServices) bundle.getSerializable("bluetooth_services");
+            mBluetoothServices = (BluetoothServices) getArguments().getSerializable("bluetooth_services");
+        }
+        else{
+            Toast.makeText(SecondFragment.this.getActivity(), "empty instance passed", Toast.LENGTH_SHORT).show();
+        }*/
 
         if (view != null)
             return view;
@@ -140,10 +152,18 @@ public class SecondFragment extends Fragment {
                 byte[] bytes = etsend.getText().toString().getBytes(Charset.defaultCharset());
                 //Toast.makeText(globalContext, etsend.getText().toString(), Toast.LENGTH_SHORT).show();
 
+                /*if (mBluetoothServices != null) {
+                    mBluetoothServices.sendData(etsend.getText().toString());
+                }
+                else{
+                    Toast.makeText(SecondFragment.this.getActivity(), "Hello no message", Toast.LENGTH_SHORT).show();
+                }*/
+
                 mBluetoothConnection.write(bytes);
                 etsend.setText("");
             }
-        });
+        }
+        );
 
         AdapterView adapterView2 = (AdapterView) view.findViewById(R.id.listview_paireddevices);
         AdapterView adapterView1 = (AdapterView) view.findViewById(R.id.listavailabledevice);
@@ -185,7 +205,9 @@ public class SecondFragment extends Fragment {
                         mBTDevice = mBTDevices.get(position);
                         //mBluetoothConnection = new BluetoothConnectionService(SecondFragment.this.getActivity());
                         mBluetoothConnection = new BluetoothConnectionService(getActivity());
-                        startConnection();;
+                        //mBluetoothServices = new BluetoothServices();
+                        startConnection();
+
                     }
 
                     mysnackbar.show();
@@ -250,6 +272,8 @@ public class SecondFragment extends Fragment {
             }
         });
     }
+
+
 
     //second fragment - list paired devices
     public void listpaireddevices() {
@@ -327,9 +351,12 @@ public class SecondFragment extends Fragment {
                 }
 
                 BluetoothDevice deviceInfo = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                availabledevicelist.add(deviceInfo.getName() + "\n" + deviceInfo.getAddress());
-                mBTDevices.add(deviceInfo);
-                mPairDevices.add(deviceInfo);
+                if(deviceInfo.getName()!= null && !deviceInfo.getName().equals("Null")){
+                    availabledevicelist.add(deviceInfo.getName() + "\n" + deviceInfo.getAddress());
+                    mBTDevices.add(deviceInfo);
+                    mPairDevices.add(deviceInfo);
+                }
+
                 //BluetoothDevice[] devices = availdevices.toArray(new BluetoothDevice[availdevices.size()]);
                 //ArrayAdapter arrayAdapter = new ArrayAdapter(SecondFragment.this.getActivity(), android.R.layout.simple_list_item_1, availabledevicelist);
                 //listview_availabledevices.setAdapter(arrayAdapter);

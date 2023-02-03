@@ -4,18 +4,22 @@ import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.os.IBinder;
 import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
@@ -35,7 +39,9 @@ import android.widget.Toast;
 import android.window.SplashScreen;
 
 import com.example.mdpandroidcontroller.databinding.ActivityMainBinding;
+import com.google.android.material.snackbar.Snackbar;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
@@ -94,6 +100,9 @@ public class MainActivity extends AppCompatActivity {
     BluetoothDevice mPairDevice;
 
     BluetoothConnectionService mBluetoothConnection;
+
+    BluetoothServices mBluetoothServices;
+    private boolean mBound = false;
 
     BluetoothAdapter mBlueAdapter = BluetoothAdapter.getDefaultAdapter();
     ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
@@ -278,6 +287,38 @@ public class MainActivity extends AppCompatActivity {
             }
         } else {
             mStatusBlueTv.setText("Bluetooth discovery is already on");
+        }
+    }
+
+    ServiceConnection serviceConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            BluetoothServices.LocalBinder binder = (BluetoothServices.LocalBinder)service;
+            mBluetoothServices = binder.getService();
+            mBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mBluetoothServices = null;
+            mBound = false;
+        }
+    };
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Intent intent = new Intent(MainActivity.this, BluetoothServices.class);
+        intent.setAction("com.example.mdpandroidcontroller.BIND");
+        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mBound) {
+            unbindService(serviceConnection);
+            mBound = false;
         }
     }
 

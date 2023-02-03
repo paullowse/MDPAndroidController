@@ -198,6 +198,11 @@ public class FirstFragment extends Fragment {
         view.findViewById(R.id.button_first).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                /*Intent intent = new Intent(getContext(), SecondFragment.class);
+                BluetoothServices bluetoothServices = new BluetoothServices();
+                intent.putExtra("bluetooth_services", bluetoothServices);
+                startActivity(intent);*/
+
                 NavHostFragment.findNavController(FirstFragment.this)
                         .navigate(R.id.action_FirstFragment_to_SecondFragment);
             }
