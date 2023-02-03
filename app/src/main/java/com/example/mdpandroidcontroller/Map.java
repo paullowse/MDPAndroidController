@@ -298,7 +298,7 @@ public class Map extends View { //implements Serializable
 
         setObstacleCoord(new int[] {column, row});
 
-        int[] newObstacleDrag= {(int) (column * cellSize), (int) (row * cellSize)};
+        int[] newObstacleDrag= {(int) (column * cellSize), (int) (row * cellSize), column-1, convertRow(row)-1};
 
         return newObstacleDrag;
 

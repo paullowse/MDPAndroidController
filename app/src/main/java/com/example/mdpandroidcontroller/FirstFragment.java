@@ -16,11 +16,14 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -57,6 +60,9 @@ public class FirstFragment extends Fragment {
     private static ImageView obstacleFaceCur;
 
     private static String obstacleFaceText;
+    private static int obstacleFaceNumber;
+
+    private static TextView notifications; // for all the notifications!!
 
     private static ConstraintLayout popup;
 
@@ -140,6 +146,8 @@ public class FirstFragment extends Fragment {
         obstacle2 = (ConstraintLayout) view.findViewById(R.id.obstacleGroup2);
         obstacle2Box = (ImageView) view.findViewById(R.id.obstacle2);
         obstacle2Face = (ImageView) view.findViewById(R.id.obstacle2Face);
+
+        notifications =  (TextView) view.findViewById(R.id.notifications);
 
         // add to lists
         obstacleViews.add(obstacle1);
@@ -468,43 +476,55 @@ public class FirstFragment extends Fragment {
 
 
         //POPUP BUTTONS
-        //TRY MAKING IT INVISIBLE AND VISIBLE!! - need to consider touching anywhere else
-
-
+        //JUST FOR OTHER TESTS rn nothing
         Button test = (Button) view.findViewById(R.id.button_test);
-
         test.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                //View popUpView = inflater.inflate(R.layout.popup_window, null);
-                //int width = LinearLayout.LayoutParams.WRAP_CONTENT;
-                //int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-                //PopupWindow popUpWindow = new PopupWindow(popUpView, width, height, true);
-                //popUpWindow.showAtLocation(v, Gravity.CENTER, 0, 0);
-                if (popup.getVisibility() == View.VISIBLE) {
-                    popup.setVisibility(View.INVISIBLE);
-                } else {
-                    popup.setVisibility(View.VISIBLE);
-                }
-                System.out.println("POPUP CHECK");
-                obstacleFaceText=getResources().getString(R.string.obstacle_face_text);
-                System.out.println(obstacleFaceText);
 
             }
         });
 
 
-        //TRY THIS
-        //View rootView = view.findViewById(android.R.id.content);
-        //rootView.setOnClickListener(new View.OnClickListener() {
-        //    @Override
-        //    public void onClick(View view) {
-        //        if (view.getId() != R.id.popup_window) {
-        //            popup.setVisibility(View.GONE);
-        //        }
-        //    }
-        //});
+
+        /**
+         * POPUP disappears when the view clicked is not the popup_window!
+         */
+        View rootView = view.findViewById(R.id.first_fragment);
+        rootView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (view.getId() != R.id.popup_window) {
+                    popup.setVisibility(View.GONE);
+                }
+            }
+        });
+
+
+        /**
+         * //drop down for the face
+         */
+        Spinner spinner = view.findViewById(R.id.spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                getActivity(),
+                R.array.spinner_array,
+                android.R.layout.simple_spinner_item
+        );
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                obstacleFaceNumber = Integer.parseInt(parent.getItemAtPosition(position).toString());
+                // Do something with the selected item
+                System.out.println(obstacleFaceNumber);
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing
+            }
+        });
 
         Button northFace = (Button) view.findViewById(R.id.face_north);
         Button eastFace = (Button) view.findViewById(R.id.face_east);
@@ -513,29 +533,50 @@ public class FirstFragment extends Fragment {
 
         //obstacleFaceCur = obstacle2Face;
         /**
-         * MUST make it relevant for all obstacles not just number 1
+         * Relevant for all obstacles!
+         * If u press the option again, the face will be invisible!
+         * If its a different orientation, then the view will be rotated.
          */
         View.OnClickListener onClickFaceListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                obstacleFaceCur = obstacleFaceViews.get(Integer.parseInt(obstacleFaceText)-1);
-
-                obstacleFaceCur.setVisibility(View.VISIBLE);
+                obstacleFaceCur = obstacleFaceViews.get(obstacleFaceNumber-1);
 
                 switch (view.getId()) {
                     case R.id.face_north:
-                        obstacleFaceCur.setRotation(0);
+                        if (obstacleFaceCur.getRotation() == 0 && obstacleFaceCur.getVisibility() == View.VISIBLE) {
+                            obstacleFaceCur.setVisibility(View.INVISIBLE);
+                        } else {
+                            obstacleFaceCur.setVisibility(View.VISIBLE);
+                            obstacleFaceCur.setRotation(0);
+                        }
                         break;
                     case R.id.face_east:
-                        obstacleFaceCur.setRotation(90);
+                        if (obstacleFaceCur.getRotation() == 90 && obstacleFaceCur.getVisibility() == View.VISIBLE) {
+                            obstacleFaceCur.setVisibility(View.INVISIBLE);
+                        } else {
+                            obstacleFaceCur.setVisibility(View.VISIBLE);
+                            obstacleFaceCur.setRotation(90);
+                        }
                         break;
                     case R.id.face_south:
-                        obstacleFaceCur.setRotation(180);
+                        if (obstacleFaceCur.getRotation() == 180 && obstacleFaceCur.getVisibility() == View.VISIBLE) {
+                            obstacleFaceCur.setVisibility(View.INVISIBLE);
+                        } else {
+                            obstacleFaceCur.setVisibility(View.VISIBLE);
+                            obstacleFaceCur.setRotation(180);
+                        }
                         break;
                     case R.id.face_west:
-                        obstacleFaceCur.setRotation(270);
+                        if (obstacleFaceCur.getRotation() == 270 && obstacleFaceCur.getVisibility() == View.VISIBLE) {
+                            obstacleFaceCur.setVisibility(View.INVISIBLE);
+                        } else {
+                            obstacleFaceCur.setVisibility(View.VISIBLE);
+                            obstacleFaceCur.setRotation(270);
+                        }
                         break;
                 }
+
             }
         };
 
@@ -543,6 +584,10 @@ public class FirstFragment extends Fragment {
         eastFace.setOnClickListener(onClickFaceListener);
         southFace.setOnClickListener(onClickFaceListener);
         westFace.setOnClickListener(onClickFaceListener);
+
+
+
+
 
 
 
@@ -569,33 +614,51 @@ public class FirstFragment extends Fragment {
                         int x = (int) dragEvent.getX();
                         int y = (int) dragEvent.getY();
 
-                        int obstacleNum = findObstacleNumber(myImage);
-                        System.out.println(obstacleNum);
-                        int[] newCoords = {(int) x, (int) y};
-                        currentObstacleCoords[obstacleNum-1] = newCoords;
-                        printAllObstacleCoords();
-                        //printAllObstacleLeftTop();
 
 
-                        // this is the exact location - but we want to snap to grid
-                        //myImage.setX(x + map.getX() - map.getCellSize()/2);
-                        //myImage.setY(y+ map.getY() - map.getCellSize()/2);
-
-                        // create a duplicate
-                        //ImageView newObst = new ImageView(getContext());
-                        //newObst.setImageDrawable(myImage.getDrawable());
+                        // this is the exact location - but we want to snap to grid //myImage.setX(x + map.getX() - map.getCellSize()/2); //myImage.setY(y+ map.getY() - map.getCellSize()/2);
 
                         // if the past location of obstacle was in the map, u remove the old one.
                         if (pastX >= map.getX() && pastX <= map.getX() + map.getWidth() && pastY >= map.getY() && pastY <= map.getY() + map.getHeight()) {
                             //System.out.println("IN MAP");
                             map.removeObstacleUsingCoord(pastX - map.getX() + map.getCellSize()/2,pastY - map.getY() + map.getCellSize()/2);
                         }
-                        // to add the new obstacle
-                        int[] newObstCoord = map.updateObstacleOnBoard(x, y);
+                        // to add the new obstacle black square - returns the coordinates, col and row --> (x, y, col, row)
+                        int[] newObstCoordColRow = map.updateObstacleOnBoard(x, y);
 
-                        // MUST get from the map class to snap to grid
-                        myImage.setX(newObstCoord[0]+ map.getX());
-                        myImage.setY(newObstCoord[1]+ map.getY());
+
+                        //getting the notification to print
+                        System.out.println("Notification values:");
+                        //String notifications = getResources().getString(R.string.notifications);
+                        //System.out.println(notifications);
+                        String curNotifText = (String) notifications.getText();
+
+                        int obstacleNum = findObstacleNumber(myImage);
+                        int col = newObstCoordColRow[2];
+                        int row = newObstCoordColRow[3];
+                        String outputNotif = String.format("Obstacle: %d, Col: %d, Row: %d\n", obstacleNum, col, row);
+                        System.out.printf(outputNotif);
+                        notifications.setText(outputNotif);
+
+
+
+                        int[] newObstacleCoord= {newObstCoordColRow[0], newObstCoordColRow[1]};
+                        //WHEN U JUST CLICK IT ONLY - releases the popupwindow
+                        if (currentObstacleCoords[obstacleNum-1][0] == newObstacleCoord[0] && currentObstacleCoords[obstacleNum-1][1] == newObstacleCoord[1]) {
+                            if (popup.getVisibility() == View.VISIBLE) {
+                                popup.setVisibility(View.INVISIBLE);
+                            } else {
+                                popup.setVisibility(View.VISIBLE);
+                            }
+                        }
+
+                        //saving the current obstacles
+                        currentObstacleCoords[obstacleNum-1] = newObstacleCoord;
+
+                        // MUST get from the map class to snap to grid - for the new image
+                        myImage.setX(newObstacleCoord[0]+ map.getX());
+                        myImage.setY(newObstacleCoord[1]+ map.getY());
+                        printAllObstacleCoords();
 
                         map.invalidate();
 
@@ -610,6 +673,9 @@ public class FirstFragment extends Fragment {
             }
         });
 
+        /**
+         * when the drop of the obstacle is out of the map, move it to the original starting place
+         */
         ViewGroup parentView = (ViewGroup) map.getParent();
         parentView.setOnDragListener(new View.OnDragListener() {
             @Override
@@ -625,21 +691,20 @@ public class FirstFragment extends Fragment {
                     if(x < mapCoord[0] || x > mapCoord[0] + mapWidth || y < mapCoord[1] || y > mapCoord[1] + mapHeight){
 
                         //System.out.println("out of map");
-
                         ConstraintLayout myImage = (ConstraintLayout) event.getLocalState();
-                        //myImage.setVisibility(View.INVISIBLE);
+
                         // loop through obstacleviews to find the obstacle name
                         // set according to obstacle coord
                         for (int i = 0; i < obstacleViews.size(); i++) {
                             if (myImage == obstacleViews.get(i)) {
                                 myImage.setX(originalObstacleCoords[i][0]);
                                 myImage.setY(originalObstacleCoords[i][1]);
+                                break; // i just tried adding this
                             }
                         }
 
-                        //outside map to outside map
+                        // in of map to out of map!!
                         if(pastX >= mapCoord[0] && pastX <= mapCoord[0] + mapWidth && pastY >= mapCoord[1] && pastY <= mapCoord[1] + mapHeight){
-                            // in of map to out of map!!
                             map.removeObstacleUsingCoord(pastX - map.getX() + map.getCellSize()/2,pastY - map.getY() + map.getCellSize()/2);
                             map.invalidate();
                         }

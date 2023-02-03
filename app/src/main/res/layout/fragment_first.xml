@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FirstFragment">
+    tools:context=".FirstFragment"
+    android:id="@+id/first_fragment">
+
 
     <!--    off Button-->
 
@@ -23,8 +25,8 @@
     <!--    Discoverable button-->
     <TextView
         android:id="@+id/statusBluetoothTv"
-        android:layout_width="212dp"
-        android:layout_height="56dp"
+        android:layout_width="223dp"
+        android:layout_height="41dp"
         android:text="Bluetooth Status"
         android:textAlignment="center"
         android:textColor="#000"
@@ -308,8 +310,8 @@
         android:layout_marginBottom="32dp"
         android:background="@drawable/rectangle_background"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <Button
@@ -319,20 +321,20 @@
             android:layout_marginTop="10dp"
             android:padding="5dp"
             android:text="North"
-            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
             android:id="@+id/face_east"
             android:layout_width="30dp"
             android:layout_height="115dp"
+            android:layout_marginRight="10dp"
             android:padding="8dp"
             android:text="East"
-            android:layout_marginRight = "10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <Button
             android:id="@+id/face_south"
@@ -341,9 +343,9 @@
             android:layout_marginBottom="10dp"
             android:padding="5dp"
             android:text="South"
-            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent" />
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
 
         <Button
             android:id="@+id/face_west"
@@ -369,7 +371,32 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/face_south"
+            app:layout_constraintEnd_toStartOf="@+id/face_east"
+            app:layout_constraintStart_toEndOf="@+id/face_west"
+            app:layout_constraintTop_toBottomOf="@+id/obstacleFaceText" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/notifications"
+        android:layout_width="223dp"
+        android:layout_height="40dp"
+        android:text="@string/notifications"
+        android:textAlignment="center"
+        android:textColor="#000"
+        android:textSize="14sp"
+        app:layout_anchorGravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.841"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/statusBluetoothTv"
+        app:layout_constraintVertical_bias="0.493" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
