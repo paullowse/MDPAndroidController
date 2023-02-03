@@ -54,6 +54,9 @@ public class FirstFragment extends Fragment {
 
     private static ImageView obstacle1Face;
     private static ImageView obstacle2Face;
+    private static ImageView obstacleFaceCur;
+
+    private static String obstacleFaceText;
 
     private static ConstraintLayout popup;
 
@@ -73,8 +76,11 @@ public class FirstFragment extends Fragment {
     private static int[][] currentObstacleCoords = new int[2][2]; // remember to expand this
 
 
-    private List<ConstraintLayout> obstacleViews = new ArrayList<>(); // cant be static!! - COS ITS REGENRATED ALL THE TIME
+    // this one is for constraint
+    private List<ConstraintLayout> obstacleViews = new ArrayList<>(); // cant be static!! - COS ITS REGENRATED ALL THE TIME - change eventually.
 
+    // for the face views
+    private List<ImageView> obstacleFaceViews = new ArrayList<>();
 
 
     @Override
@@ -101,13 +107,10 @@ public class FirstFragment extends Fragment {
         }
         //CHECK if this is okay
         //rotation = 0;
-
         //obstacle1 = (ConstraintLayout) view.findViewById(R.id.obstacleGroup1);
         //obstacle2 = (ConstraintLayout) view.findViewById(R.id.obstacleGroup2);
-
         //System.out.println(obstacle1.getX());
         //System.out.println(obstacle1.getY());
-
 
         incomingMessages = (TextView) view.findViewById(R.id.statusBluetoothTv);
         messages = new StringBuilder();
@@ -127,6 +130,7 @@ public class FirstFragment extends Fragment {
         }
     };
 
+    @SuppressLint("ClickableViewAccessibility")
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -135,14 +139,19 @@ public class FirstFragment extends Fragment {
         obstacle1Face = (ImageView) view.findViewById(R.id.obstacle1Face);
         obstacle2 = (ConstraintLayout) view.findViewById(R.id.obstacleGroup2);
         obstacle2Box = (ImageView) view.findViewById(R.id.obstacle2);
-        //obstacle2Face = (ImageView) view.findViewById(R.id.obstacle2Face);
+        obstacle2Face = (ImageView) view.findViewById(R.id.obstacle2Face);
+
+        // add to lists
         obstacleViews.add(obstacle1);
         obstacleViews.add(obstacle2);
+        obstacleFaceViews.add(obstacle1Face);
+        obstacleFaceViews.add(obstacle2Face);
 
         popup = (ConstraintLayout) view.findViewById(R.id.popup_window);
         popup.setVisibility(View.INVISIBLE);
 
         obstacle1Face.setVisibility(View.INVISIBLE);
+        obstacle2Face.setVisibility(View.INVISIBLE);
 
         obstacle1.post(new Runnable() {
             @Override
@@ -156,9 +165,17 @@ public class FirstFragment extends Fragment {
                 obstacle1Box.getLayoutParams().width = (int) map.getCellSize();
                 obstacle1Box.requestLayout();
 
+                obstacle1Face.getLayoutParams().height = (int) map.getCellSize();
+                obstacle1Face.getLayoutParams().width = (int) map.getCellSize();
+                obstacle1Face.requestLayout();
+
                 obstacle2Box.getLayoutParams().height = (int) map.getCellSize();   //SOMEHOW this only affects obstacle1.getLayoutParams().height NOT .getWidth() - CORRECTIOn, only now, later itll save
                 obstacle2Box.getLayoutParams().width = (int) map.getCellSize();
                 obstacle2Box.requestLayout();
+
+                obstacle2Face.getLayoutParams().height = (int) map.getCellSize();
+                obstacle2Face.getLayoutParams().width = (int) map.getCellSize();
+                obstacle2Face.requestLayout();
 
                 robot.getLayoutParams().height = (int) map.getCellSize() * 3;
                 robot.getLayoutParams().width = (int) map.getCellSize() * 3;
@@ -176,6 +193,12 @@ public class FirstFragment extends Fragment {
                 }
                 printOriginalObstacleCoords();
 
+                //SET at correct place
+                for (int i = 0; i < obstacleViews.size(); i++) {
+                    obstacleViews.get(i).setX(originalObstacleCoords[i][0]);
+                    obstacleViews.get(i).setY(originalObstacleCoords[i][1]);
+                }
+
 
 
 
@@ -186,9 +209,6 @@ public class FirstFragment extends Fragment {
 
             }
         });
-
-
-
 
 
 
@@ -370,6 +390,7 @@ public class FirstFragment extends Fragment {
         //OBSTACLES
 
 
+
         obstacle1.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -442,8 +463,11 @@ public class FirstFragment extends Fragment {
 
 
         //POPUP BUTTONS
+        //TRY MAKING IT INVISIBLE AND VISIBLE!! - need to consider touching anywhere else
+
+
         Button test = (Button) view.findViewById(R.id.button_test);
-        //TRY MAKING IT INVISIBLE AND VISIBLE!!
+
         test.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -458,35 +482,53 @@ public class FirstFragment extends Fragment {
                 } else {
                     popup.setVisibility(View.VISIBLE);
                 }
+                System.out.println("POPUP CHECK");
+                obstacleFaceText=getResources().getString(R.string.obstacle_face_text);
+                System.out.println(obstacleFaceText);
 
             }
         });
+
+
+        //TRY THIS
+        //View rootView = view.findViewById(android.R.id.content);
+        //rootView.setOnClickListener(new View.OnClickListener() {
+        //    @Override
+        //    public void onClick(View view) {
+        //        if (view.getId() != R.id.popup_window) {
+        //            popup.setVisibility(View.GONE);
+        //        }
+        //    }
+        //});
 
         Button northFace = (Button) view.findViewById(R.id.face_north);
         Button eastFace = (Button) view.findViewById(R.id.face_east);
         Button southFace = (Button) view.findViewById(R.id.face_south);
         Button westFace = (Button) view.findViewById(R.id.face_west);
 
+        //obstacleFaceCur = obstacle2Face;
         /**
          * MUST make it relevant for all obstacles not just number 1
          */
         View.OnClickListener onClickFaceListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                obstacle1Face.setVisibility(View.VISIBLE);
+                obstacleFaceCur = obstacleFaceViews.get(Integer.parseInt(obstacleFaceText)-1);
+
+                obstacleFaceCur.setVisibility(View.VISIBLE);
 
                 switch (view.getId()) {
                     case R.id.face_north:
-                        obstacle1Face.setRotation(0);
+                        obstacleFaceCur.setRotation(0);
                         break;
                     case R.id.face_east:
-                        obstacle1Face.setRotation(90);
+                        obstacleFaceCur.setRotation(90);
                         break;
                     case R.id.face_south:
-                        obstacle1Face.setRotation(180);
+                        obstacleFaceCur.setRotation(180);
                         break;
                     case R.id.face_west:
-                        obstacle1Face.setRotation(270);
+                        obstacleFaceCur.setRotation(270);
                         break;
                 }
             }
@@ -791,10 +833,6 @@ public class FirstFragment extends Fragment {
     public void onDestroyView() {
 
         //dont need? doesnt work
-        for (int i = 0; i < obstacleViews.size(); i++) {
-            obstacleViews.get(i).setX(originalObstacleCoords[i][0]);
-            obstacleViews.get(i).setY(originalObstacleCoords[i][1]);
-        }
 
         super.onDestroyView();
         binding = null;
