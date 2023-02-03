@@ -399,4 +399,34 @@
         app:layout_constraintTop_toBottomOf="@+id/statusBluetoothTv"
         app:layout_constraintVertical_bias="0.493" />
 
+    <TextView
+        android:id="@+id/robot_location"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:textAlignment="center"
+        android:textColor="#000"
+        android:textSize="15sp"
+        android:text="Location"
+        app:layout_anchorGravity="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/statusBluetoothTv"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.701"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <TextView
+        android:id="@+id/robot_facing"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:textAlignment="center"
+        android:textColor="#000"
+        android:textSize="15sp"
+        android:text="Facing"
+        app:layout_anchorGravity="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/notifications"
+        app:layout_constraintTop_toBottomOf="@+id/robot_location" />
+
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
