@@ -9,7 +9,14 @@
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
-    <string name="obstacle_face_text">2</string>
+    <string name="obstacle_face_text">Obstacle: </string>
     <string name="obstacle1ID_text">1</string>
     <string name="obstacle2ID_text">2</string>
+    <string name="notifications">Notifications</string>
+
+    <string-array name="spinner_array">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
 </resources>
