@@ -6,14 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".FirstFragment">
 
-    <TextView
-        android:id="@+id/textview_first"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/hello_first_fragment"
-        app:layout_constraintBottom_toTopOf="@+id/discoverableBtn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+    <!--    off Button-->
 
     <Button
         android:id="@+id/button_first"
@@ -22,26 +15,27 @@
         android:text="@string/next"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.082"
+        app:layout_constraintHorizontal_bias="0.083"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.953" />
+        app:layout_constraintVertical_bias="0.976" />
 
-    <!--    off Button-->
-
+    <!--    Discoverable button-->
     <TextView
         android:id="@+id/statusBluetoothTv"
-        android:layout_width="310dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_width="212dp"
+        android:layout_height="56dp"
         android:text="Bluetooth Status"
         android:textAlignment="center"
         android:textColor="#000"
         android:textSize="20sp"
         app:layout_anchorGravity="center"
-        app:layout_constraintBottom_toTopOf="@+id/textview_first"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.841"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.701" />
 
     <Button
         android:id="@+id/onBtn"
@@ -55,9 +49,10 @@
         app:layout_constraintHorizontal_bias="0.9"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.953" />
+        app:layout_constraintVertical_bias="0.976" />
 
-    <!--    Discoverable button-->
+    <!--    Get list of paired devices button-->
+
     <Button
         android:id="@+id/offBtn"
         style="@style/Base.Widget.AppCompat.Button.Colored"
@@ -70,9 +65,7 @@
         app:layout_constraintHorizontal_bias="0.9"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.862" />
-
-    <!--    Get list of paired devices button-->
+        app:layout_constraintVertical_bias="0.89" />
 
     <Button
         android:id="@+id/discoverableBtn"
@@ -86,7 +79,7 @@
         app:layout_constraintHorizontal_bias="0.853"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.765" />
+        app:layout_constraintVertical_bias="0.803" />
 
     <view
         android:id="@+id/gridView"
@@ -106,7 +99,8 @@
         android:id="@+id/arrowForward"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
+        android:layout_marginTop="21dp"
+        android:layout_marginBottom="26dp"
         android:adjustViewBounds="true"
         android:background="@null"
         android:clickable="true"
@@ -115,15 +109,17 @@
         android:maxHeight="40dp"
         android:scaleType="fitCenter"
         android:src="@drawable/arrow_forward"
+        app:layout_constraintBottom_toTopOf="@+id/arrowBack"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.167"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/gridView" />
+        app:layout_constraintTop_toBottomOf="@+id/gridView"
+        app:layout_constraintVertical_bias="0.7" />
 
     <ImageButton
         android:id="@+id/arrowBack"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="20dp"
         android:adjustViewBounds="true"
         android:background="@null"
         android:clickable="true"
@@ -132,13 +128,18 @@
         android:maxHeight="40dp"
         android:scaleType="fitCenter"
         android:src="@drawable/arrow_back"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.167"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/arrowForward" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.784" />
 
     <ImageButton
         android:id="@+id/arrowLeft"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
         android:adjustViewBounds="true"
         android:background="@null"
         android:clickable="true"
@@ -147,15 +148,17 @@
         android:maxHeight="40dp"
         android:scaleType="fitCenter"
         android:src="@drawable/arrow_left"
-        app:layout_constraintBottom_toTopOf="@+id/arrowBack"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/arrowRight"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/arrowForward" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.751" />
 
     <ImageButton
         android:id="@+id/arrowRight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="60dp"
         android:adjustViewBounds="true"
         android:background="@null"
         android:clickable="true"
@@ -164,9 +167,12 @@
         android:maxHeight="40dp"
         android:scaleType="fitCenter"
         android:src="@drawable/arrow_right"
-        app:layout_constraintBottom_toTopOf="@+id/arrowBack"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.293"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/arrowForward" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.751" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/obstacleGroup1"
@@ -243,18 +249,17 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-
     <Button
         android:id="@+id/button_test"
         android:layout_width="115dp"
         android:layout_height="52dp"
-        android:layout_marginTop="75dp"
-        android:layout_marginBottom="20dp"
         android:text="Button"
-        app:layout_constraintBottom_toTopOf="@+id/resetObstacles"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/offBtn"
+        app:layout_constraintHorizontal_bias="0.896"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textview_first" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.895" />
 
     <ImageView
         android:id="@+id/robotcar"
@@ -269,21 +274,25 @@
         android:id="@+id/generateRobot"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="148dp"
         android:text="Generate"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteY="857dp" />
+        app:layout_constraintEnd_toStartOf="@+id/onBtn"
+        app:layout_constraintHorizontal_bias="0.15"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.976" />
 
     <Button
         android:id="@+id/resetObstacles"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
         android:text="Reset"
-        app:layout_constraintBottom_toTopOf="@+id/generateRobot"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.523"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintHorizontal_bias="0.083"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.89" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

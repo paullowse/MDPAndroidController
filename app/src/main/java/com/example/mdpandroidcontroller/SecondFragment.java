@@ -58,7 +58,7 @@ public class SecondFragment extends Fragment {
     private Context globalContext = null;
     private static final String TAG = "btlog";
 
-    private static final UUID my_uuid_insecure = UUID.fromString("8ce255c0-200a-11e0-ac64-0800200c9a66");
+    private static final UUID my_uuid_insecure = UUID.fromString("996c1b5f-170b-4f38-a5e0-85eef5acf12c");
 
     BluetoothDevice mBTDevice;
     BluetoothDevice mPairDevice;
@@ -141,6 +141,7 @@ public class SecondFragment extends Fragment {
                 //Toast.makeText(globalContext, etsend.getText().toString(), Toast.LENGTH_SHORT).show();
 
                 mBluetoothConnection.write(bytes);
+                etsend.setText("");
             }
         });
 
@@ -184,7 +185,7 @@ public class SecondFragment extends Fragment {
                         mBTDevice = mBTDevices.get(position);
                         //mBluetoothConnection = new BluetoothConnectionService(SecondFragment.this.getActivity());
                         mBluetoothConnection = new BluetoothConnectionService(getActivity());
-                        startConnection();
+                        startConnection();;
                     }
 
                     mysnackbar.show();
@@ -270,21 +271,6 @@ public class SecondFragment extends Fragment {
                 listview_paireddevices.setAdapter(arrayAdapter);
             }
         }
-    }
-
-    //method to start connection
-    //***remember the conncction will fail and app will crash if you haven't paired first
-    public void startConnection(){
-        startBTConnection(mBTDevice, my_uuid_insecure);
-    }
-
-    /**
-     * starting chat service method
-     */
-    public void startBTConnection(BluetoothDevice device, UUID uuid){
-        Log.d(TAG, "startBTConnection: Initializing RFCOM Bluetooth Connection.");
-
-        mBluetoothConnection.startClient(device,uuid);
     }
 
     @Override
@@ -406,6 +392,21 @@ public class SecondFragment extends Fragment {
             }
         }
     };
+
+    //method to start connection
+    //***remember the conncction will fail and app will crash if you haven't paired first
+    public void startConnection(){
+        startBTConnection(mBTDevice, my_uuid_insecure);
+    }
+
+    /**
+     * starting chat service method
+     */
+    public void startBTConnection(BluetoothDevice device, UUID uuid){
+        Log.d(TAG, "startBTConnection: Initializing RFCOM Bluetooth Connection.");
+
+        mBluetoothConnection.startClient(device,uuid);
+    }
 
     public void onStart(){
         super.onStart();

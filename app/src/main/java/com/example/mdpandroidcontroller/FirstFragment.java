@@ -1,8 +1,11 @@
 package com.example.mdpandroidcontroller;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -23,6 +26,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.mdpandroidcontroller.databinding.FragmentFirstBinding;
@@ -55,6 +59,8 @@ public class FirstFragment extends Fragment {
     private Runnable runnable;
     private Handler handler;
 
+    TextView incomingMessages;
+    StringBuilder messages;
 
 
     private static int[][] originalObstacleCoords = new int[6][2];
@@ -98,11 +104,24 @@ public class FirstFragment extends Fragment {
         //System.out.println(obstacle1.getY());
 
 
+        incomingMessages = (TextView) view.findViewById(R.id.statusBluetoothTv);
+        messages = new StringBuilder();
+        LocalBroadcastManager.getInstance(FirstFragment.this.getActivity()).registerReceiver(mReceiver, new IntentFilter("incomingMessage"));
+
         return view;
 
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+    BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String text = intent.getStringExtra("theMessage");
+
+            messages.append(text + "\n");
+            incomingMessages.setText(messages);
+        }
+    };
+
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 

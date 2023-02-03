@@ -137,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
             //mOffBtn.setOnClickListener(this::onClick);         // Turn off Bluetooth btn click
             //mPairedBtn.setOnClickListener(this::onClick);      // Get Paired devices button click
         }
+        mBluetoothConnection = new BluetoothConnectionService(MainActivity.this);
 
     }
 
