@@ -8,10 +8,12 @@ import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import java.io.IOException;
@@ -29,7 +31,7 @@ public class BluetoothConnectionService extends IntentService {
 
     private AcceptThread myAcceptThread;
     private ConnectThread myConnectThread;
-    public  BluetoothDevice myDevice;
+    public BluetoothDevice myDevice;
     private UUID deviceUUID;
     private Handler mHandler;
 
@@ -83,6 +85,15 @@ public class BluetoothConnectionService extends IntentService {
 
             //Create a new listening server socket
             try {
+                if (ActivityCompat.checkSelfPermission(BluetoothConnectionService.this, android.Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                }
                 temp = myBluetoothAdapter.listenUsingInsecureRfcommWithServiceRecord(appName, myUUID);
                 Log.d(TAG, "AcceptThread: Setting up server using: " + myUUID);
 
@@ -124,7 +135,7 @@ public class BluetoothConnectionService extends IntentService {
 
                 connectionStatusIntent = new Intent("btConnectionStatus");
                 connectionStatusIntent.putExtra("ConnectionStatus", "connectionFail");
-                connectionStatusIntent.putExtra("Device",  Connect.getBluetoothDevice());
+                connectionStatusIntent.putExtra("Device", Connect.getBluetoothDevice());
 
                 Log.d(TAG, "AcceptThread: Connection Failed ,IOException: " + e.getMessage());
             }
@@ -175,6 +186,15 @@ public class BluetoothConnectionService extends IntentService {
             */
             try {
                 Log.d(TAG, "ConnectThread: Trying to create InsecureRFcommSocket using UUID: " + myUUID);
+                if (ActivityCompat.checkSelfPermission(BluetoothConnectionService.this, android.Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                }
                 temp = myDevice.createRfcommSocketToServiceRecord(deviceUUID);
             } catch (IOException e) {
 
