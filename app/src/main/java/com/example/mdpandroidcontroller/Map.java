@@ -35,12 +35,9 @@ public class Map extends View { //implements Serializable
     private static String[] robotFacingEnum = new String[] {Constants.NORTH, Constants.EAST, Constants.SOUTH, Constants.WEST};
     private static int[] curCoord = new int[]{4, 6};     // CHANGE THIS WAY OF IMPLEMENTATION... - when u drag the robot thing
 
-    //private ArrayList<ArrayList<Integer>> obstacleCoord =  new ArrayList<ArrayList<Integer>>();
-
     private static ArrayList<int[]> obstacleCoord = new ArrayList<>();
 
     private static int[] oldCoord = new int[]{-1, -1};
-    private Bitmap arrowBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.arrow_error); // WHAT IS THIS??
 
     private Paint black = new Paint();
     private Paint unexploredCellColor = new Paint();

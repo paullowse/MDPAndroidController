@@ -600,6 +600,10 @@ public class FirstFragment extends Fragment {
                     obstacleViews.get(i).setX(originalObstacleCoords[i][0]);
                     obstacleViews.get(i).setY(originalObstacleCoords[i][1]);
                 }
+                for (int i = 0; i < obstacleFaceViews.size(); i++) {
+                    //obstacleFaceViews.get(i).setRotation(0);
+                    obstacleFaceViews.get(i).setVisibility(View.INVISIBLE);
+                }
                 //map.printObstacleCoord();
                 map.removeAllObstacles();
                 map.invalidate();
@@ -753,7 +757,7 @@ public class FirstFragment extends Fragment {
                         break;
                     case DragEvent.ACTION_DROP:
                         // when dropped into the grid
-                        ConstraintLayout myImage = (ConstraintLayout) dragEvent.getLocalState();
+                        ConstraintLayout curObstacleGrp = (ConstraintLayout) dragEvent.getLocalState();
 
                         int x = (int) dragEvent.getX();
                         int y = (int) dragEvent.getY();
@@ -769,19 +773,14 @@ public class FirstFragment extends Fragment {
                         int[] newObstCoordColRow = map.updateObstacleOnBoard(x, y);
 
 
-                        //getting the notification to print
+                        //getting the notification to print!!
                         System.out.println("Notification values:");
-                        //String notifications = getResources().getString(R.string.notifications);
-                        //System.out.println(notifications);
-                        String curNotifText = (String) outputNotifView.getText();
-
-                        int obstacleNum = getObstacleNumber(myImage);
+                        int obstacleNum = getObstacleNumber(curObstacleGrp);
                         int col = newObstCoordColRow[2];
                         int row = newObstCoordColRow[3];
                         outputNotif = String.format("Obstacle: %d, Col: %d, Row: %d\n", obstacleNum, col, row);
                         System.out.printf(outputNotif);
                         outputNotifView.setText(outputNotif);
-
 
 
                         int[] newObstacleCoord= {newObstCoordColRow[0], newObstCoordColRow[1]};
@@ -790,6 +789,8 @@ public class FirstFragment extends Fragment {
                             if (popup.getVisibility() == View.VISIBLE) {
                                 popup.setVisibility(View.INVISIBLE);
                             } else {
+                                // Automate the chosen obstacle number first!!
+                                spinner.setSelection(obstacleNum-1);
                                 popup.setVisibility(View.VISIBLE);
                             }
                         }
@@ -798,8 +799,8 @@ public class FirstFragment extends Fragment {
                         currentObstacleCoords[obstacleNum-1] = newObstacleCoord;
 
                         // MUST get from the map class to snap to grid - for the new image
-                        myImage.setX(newObstacleCoord[0]+ map.getX());
-                        myImage.setY(newObstacleCoord[1]+ map.getY());
+                        curObstacleGrp.setX(newObstacleCoord[0]+ map.getX());
+                        curObstacleGrp.setY(newObstacleCoord[1]+ map.getY());
                         printAllObstacleCoords();
 
                         map.invalidate();
@@ -833,14 +834,14 @@ public class FirstFragment extends Fragment {
                     if(x < mapCoord[0] || x > mapCoord[0] + mapWidth || y < mapCoord[1] || y > mapCoord[1] + mapHeight){
 
                         //System.out.println("out of map");
-                        ConstraintLayout myImage = (ConstraintLayout) event.getLocalState();
+                        ConstraintLayout curObstacleGrp = (ConstraintLayout) event.getLocalState();
 
                         // loop through obstacleviews to find the obstacle name
                         // set according to obstacle coord
                         for (int i = 0; i < obstacleViews.size(); i++) {
-                            if (myImage == obstacleViews.get(i)) {
-                                myImage.setX(originalObstacleCoords[i][0]);
-                                myImage.setY(originalObstacleCoords[i][1]);
+                            if (curObstacleGrp == obstacleViews.get(i)) {
+                                curObstacleGrp.setX(originalObstacleCoords[i][0]);
+                                curObstacleGrp.setY(originalObstacleCoords[i][1]);
                                 break; // i just tried adding this
                             }
                         }
@@ -912,14 +913,6 @@ public class FirstFragment extends Fragment {
             int left = preferences.getInt("image_view_" + i + "_left", 0);
             int top = preferences.getInt("image_view_" + i + "_top", 0);
 
-            // setX and setY == 0 is the bASE POSITION - use this to reset
-            //imageView.setX(0);
-            //imageView.setY(0);
-
-            //System.out.println(i);
-            //System.out.println(x);
-            //System.out.println(y);
-
             if (i == 0) {
                 imageView.setX(x - left);
                 imageView.setY(y - top);  //top == 1022
@@ -940,8 +933,6 @@ public class FirstFragment extends Fragment {
             //CHANGE THIS EVENTUALLY ALSO
             int[] robotImageCoord = map.getCurCoord();
             int[] robotLocation = map.setRobotImagePosition(robotImageCoord[0],map.convertRow(robotImageCoord[1]), mapLeft,mapTop);//mapLeft,mapTop); // ONLY WORKS IF GENERATE WAS DONE BEFORE?
-            //System.out.println(robotLocation[0]);
-            //System.out.println(robotLocation[1]);
 
             robot.setX(robotLocation[0]);
             robot.setY(robotLocation[1]);
@@ -976,7 +967,6 @@ public class FirstFragment extends Fragment {
      */
     @SuppressLint("DefaultLocale")
     public void trackRobot() {
-        //ImageView robot = (ImageView) view.findViewById(R.id.robotcar);
         //System.out.println("TRACK ROBOT FUNCTION");
 
         int[] robotImageCoord = map.getCurCoord();
@@ -993,6 +983,9 @@ public class FirstFragment extends Fragment {
         facingNotifView.setText(facingNotif);
     }
 
+    /**
+     * Responding to instructions from external RPI
+     */
     public void executeInstruction() {
         String formattedInstruction = instruction.replaceAll("\\s", "");
         List<String> instructionList = Arrays.asList(formattedInstruction.split(","));
@@ -1026,7 +1019,11 @@ public class FirstFragment extends Fragment {
     }
 
 
-
+    /**
+     * convert the constraint layout obstacle to an index
+     * @param obstacle
+     * @return
+     */
     public int getObstacleNumber(ConstraintLayout obstacle) {
         for (int i = 0; i < obstacleViews.size(); i++) {
             if (obstacle == obstacleViews.get(i)) {
@@ -1080,9 +1077,6 @@ public class FirstFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
-
-        //dont need? doesnt work
-
         super.onDestroyView();
         binding = null;
     }
