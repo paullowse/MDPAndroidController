@@ -177,15 +177,15 @@
         app:layout_constraintVertical_bias="0.751" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/obstacleGroup1"
+        android:id="@+id/obstacle1Group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="50dp"
         app:layout_constraintBottom_toTopOf="@+id/arrowForward"
         app:layout_constraintStart_toStartOf="parent">
 
         <ImageView
-            android:id="@+id/obstacle1"
+            android:id="@+id/obstacle1Box"
             android:layout_width="46px"
             android:layout_height="46px"
             android:layout_marginBottom="32dp"
@@ -218,15 +218,249 @@
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/obstacleGroup2"
+        android:id="@+id/obstacle3Group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="32dp"
-        app:layout_constraintBottom_toTopOf="@+id/obstacleGroup1"
+        app:layout_constraintBottom_toTopOf="@+id/obstacle2Group"
         app:layout_constraintStart_toStartOf="parent">
 
         <ImageView
-            android:id="@+id/obstacle2"
+            android:id="@+id/obstacle3Box"
+            android:layout_width="46px"
+            android:layout_height="46px"
+            android:src="@drawable/obstacle"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/obstacle3Face"
+            android:layout_width="46px"
+            android:layout_height="46px"
+            android:layout_marginBottom="32dp"
+            android:src="@drawable/obstacle_face"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/obstacle3ID"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center_horizontal|top"
+            android:text="@string/obstacle3ID_text"
+            android:textColor="#FFFFFF"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/obstacle4Group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintBottom_toTopOf="@+id/obstacle3Group"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/obstacle4Box"
+            android:layout_width="46px"
+            android:layout_height="46px"
+            android:src="@drawable/obstacle"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/obstacle4Face"
+            android:layout_width="46px"
+            android:layout_height="46px"
+            android:layout_marginBottom="32dp"
+            android:src="@drawable/obstacle_face"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/obstacle4ID"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center_horizontal|top"
+            android:text="@string/obstacle4ID_text"
+            android:textColor="#FFFFFF"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/obstacle5Group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintBottom_toTopOf="@+id/obstacle4Group"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/obstacle5Box"
+            android:layout_width="46px"
+            android:layout_height="46px"
+            android:src="@drawable/obstacle"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/obstacle5Face"
+            android:layout_width="46px"
+            android:layout_height="46px"
+            android:layout_marginBottom="32dp"
+            android:src="@drawable/obstacle_face"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/obstacle5ID"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center_horizontal|top"
+            android:text="@string/obstacle5ID_text"
+            android:textColor="#FFFFFF"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/obstacle6Group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintBottom_toTopOf="@+id/obstacle5Group"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/obstacle6Box"
+            android:layout_width="46px"
+            android:layout_height="46px"
+            android:src="@drawable/obstacle"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/obstacle6Face"
+            android:layout_width="46px"
+            android:layout_height="46px"
+            android:layout_marginBottom="32dp"
+            android:src="@drawable/obstacle_face"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/obstacle6ID"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center_horizontal|top"
+            android:text="@string/obstacle6ID_text"
+            android:textColor="#FFFFFF"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/obstacle7Group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintBottom_toTopOf="@+id/obstacle6Group"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/obstacle7Box"
+            android:layout_width="46px"
+            android:layout_height="46px"
+            android:src="@drawable/obstacle"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/obstacle7Face"
+            android:layout_width="46px"
+            android:layout_height="46px"
+            android:layout_marginBottom="32dp"
+            android:src="@drawable/obstacle_face"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/obstacle7ID"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center_horizontal|top"
+            android:text="@string/obstacle7ID_text"
+            android:textColor="#FFFFFF"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/obstacle8Group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintBottom_toTopOf="@+id/obstacle7Group"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/obstacle8Box"
+            android:layout_width="46px"
+            android:layout_height="46px"
+            android:src="@drawable/obstacle"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <ImageView
+            android:id="@+id/obstacle8Face"
+            android:layout_width="46px"
+            android:layout_height="46px"
+            android:layout_marginBottom="32dp"
+            android:src="@drawable/obstacle_face"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/obstacle8ID"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center_horizontal|top"
+            android:text="@string/obstacle8ID_text"
+            android:textColor="#FFFFFF"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/obstacle2Group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintBottom_toTopOf="@+id/obstacle1Group"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:id="@+id/obstacle2Box"
             android:layout_width="46px"
             android:layout_height="46px"
             android:src="@drawable/obstacle"

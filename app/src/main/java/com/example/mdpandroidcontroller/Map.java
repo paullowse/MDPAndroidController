@@ -247,15 +247,15 @@ public class Map extends View { //implements Serializable
         }
 
         // CHECKS OUT OF BOUNDS
-        if (tempCoord[0] < 2) {
-            tempCoord[0] = Math.max(tempCoord[0],2);
+        if (tempCoord[0] < 1) {
+            tempCoord[0] = Math.max(tempCoord[0],1);
         } else {
-            tempCoord[0] = Math.min(tempCoord[0],COL-1);
+            tempCoord[0] = Math.min(tempCoord[0],COL-2);
         }
-        if (tempCoord[1] < 2) {
-            tempCoord[1] = Math.max(tempCoord[1],2);
+        if (tempCoord[1] < 1) {
+            tempCoord[1] = Math.max(tempCoord[1],1);
         } else {
-            tempCoord[1] = Math.min(tempCoord[1],COL-1);
+            tempCoord[1] = Math.min(tempCoord[1],ROW-2);
         }
 
         // set oldcoord wont happen as of now - useless btw
