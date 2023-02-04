@@ -14,15 +14,9 @@ public class Cell {
     private Paint black = new Paint();
     private Paint obstacleColor = new Paint();
     private Paint robotColor = new Paint();
-    private Paint endGoalColor = new Paint();
-    private Paint startPointColor = new Paint();
-    private Paint waypointCoordColor = new Paint();
     private Paint unexploredCellColor = new Paint();
+    private Paint testColor = new Paint();
     private Paint exploredCellColor = new Paint();
-    private Paint arrowColor = new Paint();
-    private Paint fastestPathColor = new Paint();
-
-
 
 
 
@@ -37,14 +31,10 @@ public class Cell {
 
         black.setStyle(Paint.Style.FILL_AND_STROKE);
         obstacleColor.setColor(Color.BLACK);
-        robotColor.setColor(Color.BLUE);
-        endGoalColor.setColor(Color.RED);
-        startPointColor.setColor(Color.CYAN);
-        //waypointCoordColor.setColor(Color.YELLOW);
+        robotColor.setColor(Color.CYAN);
+        testColor.setColor(Color.RED);
         unexploredCellColor.setColor(Color.LTGRAY);
         exploredCellColor.setColor(Color.WHITE);
-        arrowColor.setColor(Color.BLACK);
-        //fastestPathColor.setColor(Color.MAGENTA);
     }
     public void setType(String type) {
         this.type = type;
@@ -55,14 +45,8 @@ public class Cell {
             case "robot":
                 this.paint = robotColor;
                 break;
-            case "end":
-                this.paint = endGoalColor;
-                break;
-            case "start":
-                this.paint = startPointColor;
-                break;
-            case "waypoint":
-                this.paint = waypointCoordColor;
+            case "test":
+                this.paint = testColor;
                 break;
             case "unexplored":
                 this.paint = unexploredCellColor;
@@ -70,14 +54,7 @@ public class Cell {
             case "explored":
                 this.paint = exploredCellColor;
                 break;
-            case "arrow":
-                this.paint = arrowColor;
-                break;
-            case "fastestPath":
-                this.paint = fastestPathColor;
-                break;
-            case "image":
-                this.paint = obstacleColor;
+
             default:
                 break;
         }
