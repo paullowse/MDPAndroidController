@@ -170,9 +170,9 @@ public class Map extends View { //implements Serializable
     public void drawRobot(Canvas canvas, int[] curCoord) {
         int androidRowCoord = this.convertRow(curCoord[1]);
 
-        // for the shading of square
-        for (int x = curCoord[0] - 1; x <= curCoord[0] + 1; x++)
-            for (int y = androidRowCoord - 1; y <= androidRowCoord + 1; y++)
+        // for the shading of square - USED TO BE -1 to + 1
+        for (int x = curCoord[0]; x <= curCoord[0] + 2; x++)
+            for (int y = androidRowCoord - 2; y <= androidRowCoord; y++)
                 cells[x][y].setType("robot");
     }
 
@@ -270,9 +270,9 @@ public class Map extends View { //implements Serializable
      */
     public int[] setRobotImagePosition(int column, int row, float left, float top) {
 
-        // - 1 for col and row just to accomodate to the original code
+        // - 1 for col and row just to accomodate to the original code // change to 0 and -2?? LOOK INTO THIS...
 
-        int[] newRobotLocation= {(int) ((column-1) * cellSize + left), (int) ((row-1) * cellSize + top)};
+        int[] newRobotLocation= {(int) ((column) * cellSize + left), (int) ((row - 2) * cellSize + top)};
 
         return newRobotLocation;
     }
@@ -339,12 +339,12 @@ public class Map extends View { //implements Serializable
      * Saves the old robot coords and also resets the cell to the old one
      * (a little inefficient as most of the robot cells will still be robot)
      */
-    private void setOldRobotCoord(int oldCol, int oldRow) {
+    public void setOldRobotCoord(int oldCol, int oldRow) {
         this.oldCoord[0] = oldCol;
         this.oldCoord[1] = oldRow;
         oldRow = this.convertRow(oldRow);
-        for (int x = oldCol - 1; x <= oldCol + 1; x++)
-            for (int y = oldRow - 1; y <= oldRow + 1; y++)
+        for (int x = oldCol; x <= oldCol + 2; x++)
+            for (int y = oldRow - 2; y <= oldRow; y++)
                 cells[x][y].setType("explored");
     }
 
@@ -484,6 +484,10 @@ public class Map extends View { //implements Serializable
         robotFacing = robotFacingEnum[(int) (rotation / 90)];
     }
 
+    /**
+     * col then row
+     * @param coordinates
+     */
     public void setCurCoord(int[] coordinates) {curCoord = coordinates;}
 
     public int[] getCurCoord() {
