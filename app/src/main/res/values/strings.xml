@@ -12,11 +12,23 @@
     <string name="obstacle_face_text">Obstacle: </string>
     <string name="obstacle1ID_text">1</string>
     <string name="obstacle2ID_text">2</string>
+    <string name="obstacle3ID_text">3</string>
+    <string name="obstacle4ID_text">4</string>
+    <string name="obstacle5ID_text">5</string>
+    <string name="obstacle6ID_text">6</string>
+    <string name="obstacle7ID_text">7</string>
+    <string name="obstacle8ID_text">8</string>
     <string name="notifications">Notifications</string>
 
     <string-array name="spinner_array">
         <item>1</item>
         <item>2</item>
         <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+
     </string-array>
 </resources>
