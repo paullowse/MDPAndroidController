@@ -7,15 +7,15 @@
 
     <ListView
         android:id="@+id/listNewDevice"
-        android:layout_width="381dp"
-        android:layout_height="113dp"
+        android:layout_width="371dp"
+        android:layout_height="158dp"
         app:layout_constraintBottom_toTopOf="@+id/pairedDeviceText"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.587"
+        app:layout_constraintHorizontal_bias="0.515"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.857"
+        app:layout_constraintVertical_bias="0.633"
         tools:ignore="MissingConstraints" />
 
     <TextView
@@ -120,17 +120,18 @@
 
     <ListView
         android:id="@+id/pairedDeviceList"
-        android:layout_width="360dp"
-        android:layout_height="67dp"
+        android:layout_width="367dp"
+        android:layout_height="104dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:background="@color/white"
         android:listSelector="#bcbcbc"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.58"
+        app:layout_constraintHorizontal_bias="0.535"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.44" />
 
     <TextView
         android:id="@+id/pairedDeviceText"
@@ -143,8 +144,8 @@
 
     <TextView
         android:id="@+id/incomingText"
-        android:layout_width="371dp"
-        android:layout_height="62dp"
+        android:layout_width="369dp"
+        android:layout_height="77dp"
         android:layout_marginBottom="232dp"
         android:background="@color/white"
         android:text="Incoming Msg"
