@@ -105,6 +105,10 @@ public class FirstFragment extends Fragment {
     private static ConstraintLayout popup;
     private static ConstraintLayout robot_popup;
 
+    private static int robotColPopup = 1;
+    private static int robotRowPopup = 1;
+    private static String robotFacingPopup = "N";
+
     private static ImageView robot;
     float pastX, pastY;
     private static String longPress;
@@ -387,30 +391,6 @@ public class FirstFragment extends Fragment {
 
 
 
-        Button robotButton = (Button) view.findViewById(R.id.generateRobot);
-        view.findViewById(R.id.generateRobot).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                boolean pastDrawRobot = map.getCanDrawRobot();
-
-                if (pastDrawRobot) {
-                    // NEED TO CLEAR THE MAP ALSO -- ERROR FIX LATER
-                    map.setCanDrawRobot(false);
-                    robot.setVisibility(View.INVISIBLE);
-                    map.setOldRobotCoord(map.getCurCoord()[0],map.getCurCoord()[1]);
-                } else {
-                    map.saveFacingWithRotation(rotation); // error: between this button and onresume, map's facing reset to 0
-                    map.setCanDrawRobot(true);
-                    robot.setVisibility(View.VISIBLE);
-                    //rotation = map.convertFacingToRotation(map.getRobotFacing()); - if issue check this
-                    trackRobot();
-
-                }
-                map.invalidate();
-            }
-        });
-
-
 
 
 
@@ -626,6 +606,112 @@ public class FirstFragment extends Fragment {
         });
 
 
+        /**
+         * Create the robot button - make it visible and decide the coordinates.
+         */
+        Button robotButton = (Button) view.findViewById(R.id.generateRobot);
+        robotButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (robot_popup.getVisibility() == View.VISIBLE) {
+                    robot_popup.setVisibility(View.INVISIBLE);
+                } else {
+                    // Automate the chosen obstacle number first!!
+
+                    robot_popup.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        Spinner spinnerRobotX = view.findViewById(R.id.spinner_robot_x);
+        Spinner spinnerRobotY = view.findViewById(R.id.spinner_robot_y);
+        ArrayAdapter<CharSequence> adapterRobot = ArrayAdapter.createFromResource(
+                getActivity(),
+                R.array.spinner_robot_coord,
+                android.R.layout.simple_spinner_item
+        );
+        adapterRobot.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerRobotX.setAdapter(adapterRobot);
+        spinnerRobotY.setAdapter(adapterRobot);
+
+        Spinner spinnerRobotFacing = view.findViewById(R.id.spinner_robot_facing);
+        ArrayAdapter<CharSequence> adapterRobotFacing = ArrayAdapter.createFromResource(
+                getActivity(),
+                R.array.spinner_robot_facing,
+                android.R.layout.simple_spinner_item
+        );
+        adapterRobotFacing.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerRobotFacing.setAdapter(adapterRobotFacing);
+
+
+        spinnerRobotX.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                robotColPopup = Integer.parseInt(parent.getItemAtPosition(position).toString());
+                System.out.printf("COL: %d\n", robotColPopup);
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing
+            }
+        });
+        spinnerRobotY.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                robotRowPopup = Integer.parseInt(parent.getItemAtPosition(position).toString());
+                System.out.printf("ROW: %d\n", robotRowPopup);
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing
+            }
+        });
+        spinnerRobotFacing.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                robotFacingPopup = parent.getItemAtPosition(position).toString();
+                System.out.printf("FACING: %s\n", robotFacingPopup);
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing
+            }
+        });
+
+        Button confirmRobot = (Button) view.findViewById(R.id.finalise_robot);
+        confirmRobot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //boolean pastDrawRobot = map.getCanDrawRobot();
+
+                if (robot.getVisibility() == View.VISIBLE) {
+                    map.setOldRobotCoord(map.getCurCoord()[0],map.getCurCoord()[1]);
+                }
+                map.saveFacingWithRotation(rotation); // error: between this button and onresume, map's facing reset to 0
+                map.setCanDrawRobot(true);
+                map.setCurCoord(robotColPopup, robotRowPopup);
+                robot.setVisibility(View.VISIBLE);
+                rotation = map.convertFacingToRotation(robotFacingPopup); //- if issue check this
+                trackRobot();
+                map.invalidate();
+
+                robot_popup.setVisibility(View.INVISIBLE);
+            }
+        });
+        Button removeRobot = (Button) view.findViewById(R.id.remove_robot);
+        removeRobot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // NEED TO CLEAR THE MAP ALSO -- ERROR FIX LATER
+                map.setCanDrawRobot(false);
+                robot.setVisibility(View.INVISIBLE);
+                map.setOldRobotCoord(map.getCurCoord()[0],map.getCurCoord()[1]);
+                robot_popup.setVisibility(View.INVISIBLE);
+                map.invalidate();
+            }
+        });
+
+
 
         /**
          * POPUP disappears when the view clicked is not the popup_window!
@@ -636,6 +722,7 @@ public class FirstFragment extends Fragment {
             public void onClick(View view) {
                 if (view.getId() != R.id.popup_window) {
                     popup.setVisibility(View.GONE);
+                    robot_popup.setVisibility(View.GONE);
                 }
             }
         });
@@ -645,13 +732,13 @@ public class FirstFragment extends Fragment {
          * //drop down for the face
          */
         Spinner spinner = view.findViewById(R.id.spinner);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+        ArrayAdapter<CharSequence> adapterObst = ArrayAdapter.createFromResource(
                 getActivity(),
                 R.array.spinner_array,
                 android.R.layout.simple_spinner_item
         );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+        adapterObst.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapterObst);
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
