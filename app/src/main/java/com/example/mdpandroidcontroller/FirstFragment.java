@@ -103,6 +103,7 @@ public class FirstFragment extends Fragment {
     private static String instruction = "ROBOT, 3, 14, E";
 
     private static ConstraintLayout popup;
+    private static ConstraintLayout robot_popup;
 
     private static ImageView robot;
     float pastX, pastY;
@@ -174,6 +175,7 @@ public class FirstFragment extends Fragment {
 
     @SuppressLint("ClickableViewAccessibility")
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        System.out.println("OnViewCreated");
         super.onViewCreated(view, savedInstanceState);
 
 
@@ -265,10 +267,17 @@ public class FirstFragment extends Fragment {
         popup = (ConstraintLayout) view.findViewById(R.id.popup_window);
         popup.setVisibility(View.INVISIBLE);
 
+        robot_popup= (ConstraintLayout) view.findViewById(R.id.popup_window_robot);
+        robot_popup.setVisibility(View.INVISIBLE);
+
         //set face views invisible
         for (int i = 0; i < obstacleFaceViews.size(); i++) {
             obstacleFaceViews.get(i).setVisibility(View.INVISIBLE);
         }
+
+        System.out.println("HI - here");
+        printAllObstacleCoords();
+        printAllObstacleLeftTop();
 
         obstacle1Grp.post(new Runnable() {
             @Override
@@ -278,19 +287,6 @@ public class FirstFragment extends Fragment {
                 printAllObstacleLeftTop();
 
                 //SET THE SIZES CORRECTLY JIC - RMB ITS THE BOX NOT THE WHOLE CONSTRAINT
-                //obstacle1Box.getLayoutParams().height = (int) map.getCellSize();
-                //obstacle1Box.getLayoutParams().width = (int) map.getCellSize();
-                //obstacle1Box.requestLayout();
-                //obstacle1Face.getLayoutParams().height = (int) map.getCellSize();
-                //obstacle1Face.getLayoutParams().width = (int) map.getCellSize();
-                //obstacle1Face.requestLayout();
-
-                //obstacle2Box.getLayoutParams().height = (int) map.getCellSize();   //SOMEHOW this only affects obstacle1.getLayoutParams().height NOT .getWidth() - CORRECTIOn, only now, later itll save
-                //obstacle2Box.getLayoutParams().width = (int) map.getCellSize();
-                //obstacle2Box.requestLayout();
-                //obstacle2Face.getLayoutParams().height = (int) map.getCellSize();
-                //obstacle2Face.getLayoutParams().width = (int) map.getCellSize();
-                //obstacle2Face.requestLayout();
 
                 for (int i = 0; i < obstacleBoxViews.size(); i++) {
                     obstacleBoxViews.get(0).getLayoutParams().height = (int) map.getCellSize();
@@ -600,9 +596,15 @@ public class FirstFragment extends Fragment {
                     obstacleViews.get(i).setX(originalObstacleCoords[i][0]);
                     obstacleViews.get(i).setY(originalObstacleCoords[i][1]);
                 }
+                // make the face side disappear.
                 for (int i = 0; i < obstacleFaceViews.size(); i++) {
                     //obstacleFaceViews.get(i).setRotation(0);
                     obstacleFaceViews.get(i).setVisibility(View.INVISIBLE);
+                }
+                // reset list of current obstacles
+                for (int i = 0; i < currentObstacleCoords.length; i++) {
+                    currentObstacleCoords[i][0] = 0;
+                    currentObstacleCoords[i][1] = 0;
                 }
                 //map.printObstacleCoord();
                 map.removeAllObstacles();
@@ -736,10 +738,9 @@ public class FirstFragment extends Fragment {
         westFace.setOnClickListener(onClickFaceListener);
 
 
-
-
-
-
+        /** WHOLE Dropping segment of the obstacles on the map - Do clean up q hard to understand! lots of considerations.
+         *
+         */
         map.setOnDragListener(new View.OnDragListener() {
             @Override
             public boolean onDrag(View view, DragEvent dragEvent) {
@@ -784,6 +785,9 @@ public class FirstFragment extends Fragment {
 
 
                         int[] newObstacleCoord= {newObstCoordColRow[0], newObstCoordColRow[1]};
+                        newObstacleCoord[0] = newObstacleCoord[0] + (int) (map.getX());  // NEW 6 feb
+                        newObstacleCoord[1] = newObstacleCoord[1] + (int) (map.getY());
+
                         //WHEN U JUST CLICK IT ONLY - releases the popupwindow
                         if (currentObstacleCoords[obstacleNum-1][0] == newObstacleCoord[0] && currentObstacleCoords[obstacleNum-1][1] == newObstacleCoord[1]) {
                             if (popup.getVisibility() == View.VISIBLE) {
@@ -799,8 +803,8 @@ public class FirstFragment extends Fragment {
                         currentObstacleCoords[obstacleNum-1] = newObstacleCoord;
 
                         // MUST get from the map class to snap to grid - for the new image
-                        curObstacleGrp.setX(newObstacleCoord[0]+ map.getX());
-                        curObstacleGrp.setY(newObstacleCoord[1]+ map.getY());
+                        curObstacleGrp.setX(newObstacleCoord[0]); //+ map.getX()); // SHOULD BE INBUILT!!
+                        curObstacleGrp.setY(newObstacleCoord[1]); // + map.getY());
                         printAllObstacleCoords();
 
                         map.invalidate();
@@ -845,6 +849,12 @@ public class FirstFragment extends Fragment {
                                 break; // i just tried adding this
                             }
                         }
+                        //reset coordinates of current.
+                        int index = getObstacleNumber(curObstacleGrp);
+                        currentObstacleCoords[index-1][0] = 0;
+                        currentObstacleCoords[index-1][1] = 0;
+
+                        printAllObstacleCoords();
 
                         // in of map to out of map!!
                         if(pastX >= mapCoord[0] && pastX <= mapCoord[0] + mapWidth && pastY >= mapCoord[1] && pastY <= mapCoord[1] + mapHeight){
@@ -891,11 +901,13 @@ public class FirstFragment extends Fragment {
             editor.putInt("image_view_" + i + "_left", left);
             editor.putInt("image_view_" + i + "_top", top);
 
-            //System.out.println(i);
-            //System.out.println(x);
-            //System.out.println(y);
+            //System.out.printf("Obstacle %d |  X: %d, Y: %d, left: %d, top: %d\n", i+1, x,y,left,top);
+
         }
         editor.apply();
+
+        printAllObstacleCoords();
+        System.out.println("END NEXT");
     }
 
     /** Sometimes map.getleft etc doesnt work here?
@@ -906,6 +918,7 @@ public class FirstFragment extends Fragment {
         System.out.println("resume");
         // Retrieve the ImageView locations
         SharedPreferences preferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+
         for (int i = 0; i < obstacleViews.size(); i++) {
             ConstraintLayout imageView = obstacleViews.get(i);
             int x = preferences.getInt("image_view_" + i + "_x", 0);
@@ -913,17 +926,15 @@ public class FirstFragment extends Fragment {
             int left = preferences.getInt("image_view_" + i + "_left", 0);
             int top = preferences.getInt("image_view_" + i + "_top", 0);
 
-            if (i == 0) {
-                imageView.setX(x - left);
-                imageView.setY(y - top);  //top == 1022
-            }
-            if (i == 1) {
-                imageView.setX(x - left);
-                imageView.setY(y - top); // top = -912
-            }
+            // THIS code just sets it at the top... ERROR
 
+            // somehow now dont rly need
+            imageView.setX(x);
+            imageView.setY(y);
 
+            //System.out.printf("Obstacle %d |  X: %d, Y: %d, left: %d, top: %d\n", i+1, x,y,left,top);
         }
+
         // To save the robot image location
         boolean pastDrawRobot = map.getCanDrawRobot();
         if (pastDrawRobot) {

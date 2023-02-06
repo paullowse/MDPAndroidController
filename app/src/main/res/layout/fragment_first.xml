@@ -543,10 +543,11 @@
         android:layout_height="200dp"
         android:layout_marginBottom="32dp"
         android:background="@drawable/rectangle_background"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/gridView"
+        app:layout_constraintEnd_toEndOf="@+id/gridView"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintStart_toStartOf="@+id/gridView"
+        app:layout_constraintTop_toTopOf="@+id/gridView">
 
         <Button
             android:id="@+id/face_north"
@@ -614,8 +615,65 @@
             app:layout_constraintEnd_toStartOf="@+id/face_east"
             app:layout_constraintStart_toEndOf="@+id/face_west"
             app:layout_constraintTop_toBottomOf="@+id/obstacleFaceText" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/popup_window_robot"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/rectangle_background"
+        app:layout_constraintBottom_toBottomOf="@+id/gridView"
+        app:layout_constraintEnd_toEndOf="@+id/gridView"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/gridView"
+        app:layout_constraintTop_toTopOf="@+id/gridView">
+
+        <Button
+            android:id="@+id/finalise_robot"
+            android:layout_width="115dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="10dp"
+            android:padding="5dp"
+            android:text="South"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+
+        <TextView
+            android:id="@+id/popup_robotText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="100dp"
+            android:gravity="center_horizontal|top"
+            android:text="Robot Coordinates"
+            android:textColor="#000000"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Spinner
+            android:id="@+id/spinner_robot_x"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/finalise_robot"
+            app:layout_constraintEnd_toStartOf="@+id/spinner_robot_y"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/popup_robotText" />
+
+        <Spinner
+            android:id="@+id/spinner_robot_y"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/finalise_robot"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/spinner_robot_x"
+            app:layout_constraintTop_toBottomOf="@+id/popup_robotText" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
