@@ -33,7 +33,7 @@ public class Map extends View { //implements Serializable
     private static int oldFacing;
     private static int newFacing;
     private static String[] robotFacingEnum = new String[] {Constants.NORTH, Constants.EAST, Constants.SOUTH, Constants.WEST};
-    private static int[] curCoord = new int[]{4, 6};     // CHANGE THIS WAY OF IMPLEMENTATION... - when u drag the robot thing
+    private static int[] curCoord = new int[]{1, 1};     // CHANGE THIS WAY OF IMPLEMENTATION... - when u drag the robot thing
 
     private static ArrayList<int[]> obstacleCoord = new ArrayList<>();
 
@@ -486,6 +486,10 @@ public class Map extends View { //implements Serializable
      * @param coordinates
      */
     public void setCurCoord(int[] coordinates) {curCoord = coordinates;}
+    public void setCurCoord(int col, int row) {
+        curCoord[0] = col;
+        curCoord[1] = row;
+    }
 
     public int[] getCurCoord() {
         return curCoord;
