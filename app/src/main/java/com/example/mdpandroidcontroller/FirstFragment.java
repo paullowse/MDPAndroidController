@@ -1,14 +1,19 @@
 package com.example.mdpandroidcontroller;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
+import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -21,14 +26,20 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+import java.util.Observable;
+import java.util.Observer;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.mdpandroidcontroller.databinding.FragmentFirstBinding;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -100,6 +111,8 @@ public class FirstFragment extends Fragment {
     private static String locationNotif;
     private static String facingNotif;
 
+    //private static Boolean connected;
+
     private static String instruction = "ROBOT, 3, 14, E";
 
     private static ConstraintLayout popup;
@@ -163,6 +176,13 @@ public class FirstFragment extends Fragment {
         messages = new StringBuilder();
         LocalBroadcastManager.getInstance(FirstFragment.this.getActivity()).registerReceiver(mReceiver, new IntentFilter("incomingMessage"));
 
+        //TEST INSTRUCTION
+        if (!Constants.instruction.equals("null")) {
+            System.out.println("AT VIEW CREATE");
+            System.out.println(Constants.instruction);
+            executeInstruction();
+        }
+
         return view;
 
     }
@@ -181,6 +201,12 @@ public class FirstFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         System.out.println("OnViewCreated");
         super.onViewCreated(view, savedInstanceState);
+
+
+        //LISTEN FOR COMMANDS
+        MySubject subject = new MySubject();
+        MyObserver observer = new MyObserver(subject);
+        Constants constants = new Constants(subject);
 
 
         //CHECK THIS - MIGHT NOT EVEN NEED THIS!!
@@ -279,7 +305,7 @@ public class FirstFragment extends Fragment {
             obstacleFaceViews.get(i).setVisibility(View.INVISIBLE);
         }
 
-        System.out.println("HI - here");
+
         printAllObstacleCoords();
         printAllObstacleLeftTop();
 
@@ -293,23 +319,20 @@ public class FirstFragment extends Fragment {
                 //SET THE SIZES CORRECTLY JIC - RMB ITS THE BOX NOT THE WHOLE CONSTRAINT
 
                 for (int i = 0; i < obstacleBoxViews.size(); i++) {
-                    obstacleBoxViews.get(0).getLayoutParams().height = (int) map.getCellSize();
-                    obstacleBoxViews.get(0).getLayoutParams().width = (int) map.getCellSize();
-                    obstacleBoxViews.get(0).requestLayout();
+                    obstacleBoxViews.get(i).getLayoutParams().height = (int) map.getCellSize();
+                    obstacleBoxViews.get(i).getLayoutParams().width = (int) map.getCellSize();
+                    obstacleBoxViews.get(i).requestLayout();
                 }
 
                 for (int i = 0; i < obstacleFaceViews.size(); i++) {
-                    obstacleFaceViews.get(0).getLayoutParams().height = (int) map.getCellSize();
-                    obstacleFaceViews.get(0).getLayoutParams().width = (int) map.getCellSize();
-                    obstacleFaceViews.get(0).requestLayout();
+                    obstacleFaceViews.get(i).getLayoutParams().height = (int) map.getCellSize();
+                    obstacleFaceViews.get(i).getLayoutParams().width = (int) map.getCellSize();
+                    obstacleFaceViews.get(i).requestLayout();
                 }
-
 
                 robot.getLayoutParams().height = (int) map.getCellSize() * 3;
                 robot.getLayoutParams().width = (int) map.getCellSize() * 3;
                 robot.requestLayout();
-
-
 
 
 
@@ -331,12 +354,16 @@ public class FirstFragment extends Fragment {
                 }
 
 
+
                 //System.out.println("obstacle1 dimensions");
                 //System.out.println(obstacle1Box.getLayoutParams().height);
                 //System.out.println(obstacle1Box.getLayoutParams().width);
 
             }
         });
+
+
+
 
 
 
@@ -389,11 +416,6 @@ public class FirstFragment extends Fragment {
 
 
 
-
-
-
-
-
         // NEW Short press and Long Press for ALL BUTTONS
         ImageButton forwardButton = (ImageButton) view.findViewById(R.id.arrowForward);
         ImageButton rightButton = (ImageButton) view.findViewById(R.id.arrowRight);
@@ -406,19 +428,33 @@ public class FirstFragment extends Fragment {
                 if (robot.getVisibility() == View.INVISIBLE) {
                     return;
                 }
+                //byte[] bytes = "f".getBytes(Charset.defaultCharset());
+                String instruction1 = "_";
                 switch (view.getId()) {
                     case R.id.arrowForward:
                         masterRobotMovement(Constants.UP);
+                        instruction1 = "f";
                         break;
                     case R.id.arrowRight:
                         masterRobotMovement(Constants.RIGHT);
+                        instruction1 = "sr";
                         break;
                     case R.id.arrowLeft:
                         masterRobotMovement(Constants.LEFT);
+                        instruction1 = "sl";
                         break;
                     case R.id.arrowBack:
                         masterRobotMovement(Constants.DOWN);
+                        instruction1 = "r";
                         break;
+                }
+
+                if (Constants.connected) {
+                    System.out.println("first fragment - HI ITS CONNECTED");
+                    byte[] bytes = instruction1.getBytes(Charset.defaultCharset());
+                    BluetoothChat.writeMsg(bytes);
+                } else {
+                    System.out.println("first fragment - NOT CONNECTED");
                 }
             }
         };
@@ -432,20 +468,35 @@ public class FirstFragment extends Fragment {
                 handler.removeCallbacks(runnable);
                 handler.post(runnable);
                 //String longPress = "null";
+                //byte[] bytes = "f".getBytes(Charset.defaultCharset());
+                String instruction2 = "_";
+
                 switch (view.getId()) {
                     case R.id.arrowForward:
                         longPress = Constants.UP;
+                        instruction2 = "f";
                         break;
                     case R.id.arrowRight:
                         longPress = Constants.RIGHT;
+                        instruction2 = "sr";
                         break;
                     case R.id.arrowLeft:
                         longPress = Constants.LEFT;
+                        instruction2 = "sl";
                         break;
                     case R.id.arrowBack:
                         longPress = Constants.DOWN;
+                        instruction2 = "r";
                         break;
                 }
+                if (Constants.connected) {
+                    System.out.println("HI ITS CONNECTED");
+                    byte[] bytes = instruction2.getBytes(Charset.defaultCharset());
+                    BluetoothChat.writeMsg(bytes);
+                } else {
+                    System.out.println("NOT CONNECTED");
+                }
+
                 return true;
             }
         };
@@ -816,6 +867,12 @@ public class FirstFragment extends Fragment {
                 outputNotif = String.format("Facing: %s, Col: %d, Row: %d\n", facing, currentColRow[0], currentColRow[1]);
                 System.out.printf(outputNotif);
                 outputNotifView.setText(outputNotif);
+
+                //SEND VALUE
+                if (Constants.connected) {
+                    byte[] bytes = outputNotif.getBytes(Charset.defaultCharset());
+                    BluetoothChat.writeMsg(bytes);
+                }
             }
         };
 
@@ -871,18 +928,21 @@ public class FirstFragment extends Fragment {
                         outputNotifView.setText(outputNotif);
 
 
+
+                        //others
                         int[] newObstacleCoord= {newObstCoordColRow[0], newObstCoordColRow[1]};
                         newObstacleCoord[0] = newObstacleCoord[0] + (int) (map.getX());  // NEW 6 feb
                         newObstacleCoord[1] = newObstacleCoord[1] + (int) (map.getY());
 
                         //WHEN U JUST CLICK IT ONLY - releases the popupwindow
                         if (currentObstacleCoords[obstacleNum-1][0] == newObstacleCoord[0] && currentObstacleCoords[obstacleNum-1][1] == newObstacleCoord[1]) {
-                            if (popup.getVisibility() == View.VISIBLE) {
-                                popup.setVisibility(View.INVISIBLE);
-                            } else {
-                                // Automate the chosen obstacle number first!!
-                                spinner.setSelection(obstacleNum-1);
-                                popup.setVisibility(View.VISIBLE);
+                            spinner.setSelection(obstacleNum-1);
+                            popup.setVisibility(View.VISIBLE);
+                        } else {
+                            //SEND to RPI - if not a click!!
+                            if (Constants.connected) {
+                                byte[] bytes = outputNotif.getBytes(Charset.defaultCharset());
+                                BluetoothChat.writeMsg(bytes);
                             }
                         }
 
@@ -1081,17 +1141,29 @@ public class FirstFragment extends Fragment {
         facingNotifView.setText(facingNotif);
     }
 
+
+
     /**
      * Responding to instructions from external RPI
      */
     public void executeInstruction() {
+
+        if (!Constants.instruction.equals("null")) {
+            instruction = Constants.instruction;
+        }
         String formattedInstruction = instruction.replaceAll("\\s", "");
         List<String> instructionList = Arrays.asList(formattedInstruction.split(","));
 
         System.out.println(formattedInstruction);
         System.out.println(instructionList.get(0));
-
-        if (instructionList.get(0).equals("TARGET")) {
+        //FOR STATUS
+        if (instructionList.get(0).equals("STATUS")) {
+            // assuming max 1 comma
+            String display = "STATUS: ";
+            display = display + instructionList.get(1);
+            outputNotifView.setText(display);
+        }
+        else if (instructionList.get(0).equals("TARGET")) {
             // need to add check?
             int targetObst = Integer.parseInt(instructionList.get(1));
             String targetID = instructionList.get(2);
@@ -1099,8 +1171,23 @@ public class FirstFragment extends Fragment {
             target.setText(targetID);
 
         } else if (instructionList.get(0).equals("ROBOT")) {
+            //SET A MAX AND MIN!!! -- 8 feb
             int col = Integer.parseInt(instructionList.get(1));
             int row = Integer.parseInt(instructionList.get(2));
+
+            if (col < 1) {
+                col = Math.max(col,1);
+            } else {
+                col = Math.min(col, map.getCol()-2);
+            }
+            if (row < 1) {
+                row = Math.max(row,1);
+            } else {
+                row = Math.min(row,map.getCol()-2);
+            }
+
+
+
             String face = instructionList.get(3);
 
             robot.setVisibility(View.VISIBLE);
@@ -1113,6 +1200,9 @@ public class FirstFragment extends Fragment {
             map.saveFacingWithRotation(rotation);
             trackRobot();
             map.invalidate();
+        } else {
+            System.out.println(instruction);
+            System.out.println("DOESNT WORK");
         }
     }
 
@@ -1130,6 +1220,9 @@ public class FirstFragment extends Fragment {
         }
         return -1;
     }
+
+
+
 
 
     /**
@@ -1158,8 +1251,41 @@ public class FirstFragment extends Fragment {
             System.out.printf("Obstacle %d |  Left: %d, Top: %d\n", i+1, obstacleViews.get(i).getLeft(), obstacleViews.get(i).getTop());
         }
     }
-    
-    
+
+    public void setInstruction(String receivedInstruction) {
+        this.instruction = receivedInstruction;
+    }
+
+    public class MyObserver implements Observer {
+        private final MySubject subject;
+
+        public MyObserver(MySubject subject) {
+            this.subject = subject;
+            subject.addObserver(this);
+        }
+
+        @Override
+        public void update(Observable observable, Object arg) {
+            if (observable == subject) {
+                onInstructionChanged();
+            }
+        }
+
+        private void onInstructionChanged() {
+            // Do something when the constant variable changes
+            executeInstruction();
+        }
+    }
+
+    public class MySubject extends Observable {
+        public void changeInstruction() {
+            setChanged();
+            notifyObservers();
+        }
+    }
+
+
+
 
 
 

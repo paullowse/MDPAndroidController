@@ -1,6 +1,13 @@
 package com.example.mdpandroidcontroller;
 
 public class Constants {
+
+    private static FirstFragment.MySubject subject = null;
+
+    public Constants(FirstFragment.MySubject subject) {
+        this.subject = subject;
+    }
+
     public static final String APP_NAME = "GRP3";
 
     public static final String BLUETOOTH_ON = "BLUETOOTH ON";
@@ -25,4 +32,26 @@ public class Constants {
     public static final String EAST = "E";
     public static final String WEST = "W";
     public static final String ERROR = "Error!!!";
+
+    public static boolean connected = false;
+    public static String instruction = "null";
+
+    public static void setConnected (Boolean connection) {
+        connected = connection;
+        if (connected) {
+            System.out.println("ITS CONNECTED");
+        } else {
+            System.out.println("not connected");
+        }
+    }
+
+    public static void setInstruction (String received) {
+        instruction = received;
+        System.out.println("AT CONSTANT");
+        System.out.println(instruction);
+        subject.changeInstruction();
+
+    }
+
+
 }

@@ -186,8 +186,8 @@
 
         <ImageView
             android:id="@+id/obstacle1Box"
-            android:layout_width="46px"
-            android:layout_height="46px"
+            android:layout_width="34px"
+            android:layout_height="34px"
             android:layout_marginBottom="32dp"
             android:src="@drawable/obstacle"
             app:layout_constraintTop_toTopOf="parent"
@@ -195,8 +195,8 @@
 
         <ImageView
             android:id="@+id/obstacle1Face"
-            android:layout_width="46px"
-            android:layout_height="46px"
+            android:layout_width="34px"
+            android:layout_height="34px"
             android:layout_marginBottom="32dp"
             android:src="@drawable/obstacle_face"
             app:layout_constraintTop_toTopOf="parent"
@@ -227,16 +227,16 @@
 
         <ImageView
             android:id="@+id/obstacle3Box"
-            android:layout_width="46px"
-            android:layout_height="46px"
+            android:layout_width="34px"
+            android:layout_height="34px"
             android:src="@drawable/obstacle"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
         <ImageView
             android:id="@+id/obstacle3Face"
-            android:layout_width="46px"
-            android:layout_height="46px"
+            android:layout_width="34px"
+            android:layout_height="34px"
             android:layout_marginBottom="32dp"
             android:src="@drawable/obstacle_face"
             app:layout_constraintTop_toTopOf="parent"
@@ -266,16 +266,16 @@
 
         <ImageView
             android:id="@+id/obstacle4Box"
-            android:layout_width="46px"
-            android:layout_height="46px"
+            android:layout_width="34px"
+            android:layout_height="34px"
             android:src="@drawable/obstacle"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
         <ImageView
             android:id="@+id/obstacle4Face"
-            android:layout_width="46px"
-            android:layout_height="46px"
+            android:layout_width="34px"
+            android:layout_height="34px"
             android:layout_marginBottom="32dp"
             android:src="@drawable/obstacle_face"
             app:layout_constraintTop_toTopOf="parent"
@@ -305,16 +305,16 @@
 
         <ImageView
             android:id="@+id/obstacle5Box"
-            android:layout_width="46px"
-            android:layout_height="46px"
+            android:layout_width="34px"
+            android:layout_height="34px"
             android:src="@drawable/obstacle"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
         <ImageView
             android:id="@+id/obstacle5Face"
-            android:layout_width="46px"
-            android:layout_height="46px"
+            android:layout_width="34px"
+            android:layout_height="34px"
             android:layout_marginBottom="32dp"
             android:src="@drawable/obstacle_face"
             app:layout_constraintTop_toTopOf="parent"
@@ -344,16 +344,16 @@
 
         <ImageView
             android:id="@+id/obstacle6Box"
-            android:layout_width="46px"
-            android:layout_height="46px"
+            android:layout_width="34px"
+            android:layout_height="34px"
             android:src="@drawable/obstacle"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
         <ImageView
             android:id="@+id/obstacle6Face"
-            android:layout_width="46px"
-            android:layout_height="46px"
+            android:layout_width="34px"
+            android:layout_height="34px"
             android:layout_marginBottom="32dp"
             android:src="@drawable/obstacle_face"
             app:layout_constraintTop_toTopOf="parent"
@@ -383,16 +383,16 @@
 
         <ImageView
             android:id="@+id/obstacle7Box"
-            android:layout_width="46px"
-            android:layout_height="46px"
+            android:layout_width="34px"
+            android:layout_height="34px"
             android:src="@drawable/obstacle"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
         <ImageView
             android:id="@+id/obstacle7Face"
-            android:layout_width="46px"
-            android:layout_height="46px"
+            android:layout_width="34px"
+            android:layout_height="34px"
             android:layout_marginBottom="32dp"
             android:src="@drawable/obstacle_face"
             app:layout_constraintTop_toTopOf="parent"
@@ -422,16 +422,16 @@
 
         <ImageView
             android:id="@+id/obstacle8Box"
-            android:layout_width="46px"
-            android:layout_height="46px"
+            android:layout_width="34px"
+            android:layout_height="34px"
             android:src="@drawable/obstacle"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
         <ImageView
             android:id="@+id/obstacle8Face"
-            android:layout_width="46px"
-            android:layout_height="46px"
+            android:layout_width="34px"
+            android:layout_height="34px"
             android:layout_marginBottom="32dp"
             android:src="@drawable/obstacle_face"
             app:layout_constraintTop_toTopOf="parent"
@@ -461,16 +461,16 @@
 
         <ImageView
             android:id="@+id/obstacle2Box"
-            android:layout_width="46px"
-            android:layout_height="46px"
+            android:layout_width="34px"
+            android:layout_height="34px"
             android:src="@drawable/obstacle"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
         <ImageView
             android:id="@+id/obstacle2Face"
-            android:layout_width="46px"
-            android:layout_height="46px"
+            android:layout_width="34px"
+            android:layout_height="34px"
             android:layout_marginBottom="32dp"
             android:src="@drawable/obstacle_face"
             app:layout_constraintTop_toTopOf="parent"
