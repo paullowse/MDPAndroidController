@@ -28,6 +28,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentManager;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import java.nio.charset.Charset;
@@ -495,6 +496,7 @@ public class Connect extends AppCompatActivity {
                         //connectIntent.putExtra("device", device);
                         //connectIntent.putExtra("id", uuid);
                         startService(connectIntent);
+                        Constants.setConnected(true);
 
                         //CHECK PAIRED DEVICE LIST
                         checkPairedDevice();
@@ -628,6 +630,8 @@ public class Connect extends AppCompatActivity {
                     checkPairedDevice();
                     lvNewDevices.setAdapter(myDeviceListAdapter);
 
+                    Constants.setConnected(true);
+
                 }
                 //BONDING WITH ANOTHER DEVICES
                 if (device.getBondState() == BluetoothDevice.BOND_BONDING) {
@@ -635,6 +639,7 @@ public class Connect extends AppCompatActivity {
 
                     myProgressDialog = ProgressDialog.show(Connect.this, "Bonding With Device", "Please Wait...", true);
 
+                    Constants.setConnected(true);
 
                 }
                 //BREAKING A BOND
@@ -655,6 +660,8 @@ public class Connect extends AppCompatActivity {
                             });
                     alertDialog.show();
 
+                    Constants.setConnected(false);
+
                     //RESET VARIABLE
                     myBTDevice = null;
                 }
@@ -674,6 +681,11 @@ public class Connect extends AppCompatActivity {
             String msg = intent.getStringExtra("receivingMsg");
             incomingMsg.append(msg + "\n");
             incomingMsgTextView.setText(incomingMsg);
+            Constants.setInstruction(msg);
+
+            //FragmentManager manager = getSupportFragmentManager();
+            //FirstFragment fragment = (FirstFragment) manager.findFragmentById(R.id.first_fragment);
+            //fragment.setInstruction(incomingMsgTextView.getText().toString());
 
         }
     };
@@ -814,6 +826,7 @@ public class Connect extends AppCompatActivity {
         Log.d(TAG, "StartBTConnection: Starting Bluetooth Connection Service!");
 
         startService(connectIntent);
+        Constants.setConnected(true);
     }
 
 

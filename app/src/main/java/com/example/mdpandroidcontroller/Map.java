@@ -499,6 +499,10 @@ public class Map extends View { //implements Serializable
         return oldCoord;
     }
 
+    public int getCol() {
+        return COL;
+    }
+
 
     //WAS USED FOR SERIALIZABLE
     //private void writeObject(ObjectOutputStream out) throws IOException {
