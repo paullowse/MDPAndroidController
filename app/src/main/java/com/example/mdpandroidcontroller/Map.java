@@ -27,8 +27,10 @@ public class Map extends View { //implements Serializable
     private static final int ROW = Constants.TWENTY;
     private static float cellSize;   // IDK WHAT THIS SHOULD BE
     private static boolean canDrawRobot = false;  // why false? - at first cant do
-    private static String robotMovement = Constants.NONE; //
+    private static String robotMovement = Constants.NONE; // the direction its going
     private static String robotFacing = Constants.NONE;
+
+    private static boolean robotReverse = false;  // at first alw move forward
     private static int robotSize = 3;
     private static int oldFacing;
     private static int newFacing;
@@ -206,24 +208,38 @@ public class Map extends View { //implements Serializable
                 transX = -1;
                 transY = 2;
 
-                newFacing = (oldFacing + 3) % 4;
+                //changing to new facing
+                if (robotReverse) {
+                    newFacing = (oldFacing + 1) % 4;
+                } else {
+                    newFacing = (oldFacing + 3) % 4;
+                }
                 setRobotFacing(robotFacingEnum[newFacing]);
-                //System.out.println(newFacing);
+
 
                 break;
             case Constants.RIGHT:
                 transX = 1;
                 transY = 2;
 
-                newFacing = (oldFacing + 1) % 4;
+                if (robotReverse) {
+                    newFacing = (oldFacing + 3) % 4;
+                } else {
+                    newFacing = (oldFacing + 1) % 4;
+                }
                 setRobotFacing(robotFacingEnum[newFacing]);
-                //System.out.println(newFacing);
 
                 break;
             default:
                 System.out.println("Error in moveRobot() direction input");
                 break;
         }
+
+        if (robotReverse) {
+            transY = transY * -1;
+        }
+
+        // to change the direction according to formula!
         switch (oldFacing) {
             case 0: //North
                 tempCoord[0] = tempCoord[0] + transX;
@@ -242,6 +258,8 @@ public class Map extends View { //implements Serializable
                 tempCoord[1] = tempCoord[1] + transX;
                 break;
         }
+
+
 
         // CHECKS OUT OF BOUNDS
         if (tempCoord[0] < 1) {
@@ -479,6 +497,10 @@ public class Map extends View { //implements Serializable
 
     public void setRobotMovement(String direction) {
         robotMovement = direction;}
+
+    public void setRobotReverse(Boolean reverse) {
+        robotReverse = reverse;
+    }
 
     public void setRobotFacing(String facing) {
         robotFacing = facing;}
