@@ -406,6 +406,12 @@ public class Map extends View { //implements Serializable
         }
     }
 
+    public void reset() {
+        for (int x = 0; x <= COL; x++)
+            for (int y = 0; y <= ROW; y++)
+                cells[x][y].setType("unexplored");
+    }
+
 
     private void setCellSize(float cellSize) {
         Map.cellSize = cellSize;

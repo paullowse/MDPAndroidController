@@ -14,6 +14,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -27,6 +28,8 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
+
 import java.util.Observable;
 import java.util.Observer;
 
@@ -113,7 +116,7 @@ public class FirstFragment extends Fragment {
 
     //private static Boolean connected;
 
-    private static String instruction = "ROBOT, 3, 14, E";
+    private static String instruction = "TARGET, 4, 10";
 
     private static ConstraintLayout popup;
     private static ConstraintLayout robot_popup;
@@ -182,6 +185,10 @@ public class FirstFragment extends Fragment {
             System.out.println(Constants.instruction);
             executeInstruction();
         }
+
+
+        //FirstFragment.this.getActivity().setTitle("MDPAndroidController");
+
 
         return view;
 
@@ -348,10 +355,12 @@ public class FirstFragment extends Fragment {
                 printOriginalObstacleCoords();
 
                 //SET at correct place
-                for (int i = 0; i < obstacleViews.size(); i++) {
-                    obstacleViews.get(i).setX(originalObstacleCoords[i][0]);
-                    obstacleViews.get(i).setY(originalObstacleCoords[i][1]);
-                }
+                //for (int i = 0; i < obstacleViews.size(); i++) {
+                //    obstacleViews.get(i).setX(originalObstacleCoords[i][0]);
+                //    obstacleViews.get(i).setY(originalObstacleCoords[i][1]);
+                //}
+
+                reset();
 
 
 
@@ -555,6 +564,26 @@ public class FirstFragment extends Fragment {
         };
 
 
+        ToggleButton toggleButton = (ToggleButton) view.findViewById(R.id.reverse_toggle);
+        toggleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //System.out.println("TOGGLEBUTTON");
+                if (toggleButton.isChecked()) {
+                    System.out.println("checked");
+                    toggleButton.setChecked(true);
+                } else {
+                    System.out.println(" NOT CHEVCKED");
+                    toggleButton.setChecked(false);
+                }
+                //toggleButton.setChecked(!toggleButton.isChecked());
+            }
+        });
+
+
+
+
+
         //OBSTACLES
 
 
@@ -623,25 +652,10 @@ public class FirstFragment extends Fragment {
         resetObstacles.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                for (int i = 0; i < obstacleViews.size(); i++) {
-                    obstacleViews.get(i).setX(originalObstacleCoords[i][0]);
-                    obstacleViews.get(i).setY(originalObstacleCoords[i][1]);
-                }
-                // make the face side disappear.
-                for (int i = 0; i < obstacleFaceViews.size(); i++) {
-                    //obstacleFaceViews.get(i).setRotation(0);
-                    obstacleFaceViews.get(i).setVisibility(View.INVISIBLE);
-                }
-                // reset list of current obstacles
-                for (int i = 0; i < currentObstacleCoords.length; i++) {
-                    currentObstacleCoords[i][0] = 0;
-                    currentObstacleCoords[i][1] = 0;
-                }
-                //map.printObstacleCoord();
-                map.removeAllObstacles();
-                map.invalidate();
+                reset();
             }
         });
+
 
 
 
@@ -1169,6 +1183,7 @@ public class FirstFragment extends Fragment {
             String targetID = instructionList.get(2);
             TextView target = obstacleTextViews.get(targetObst-1);
             target.setText(targetID);
+            target.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
 
         } else if (instructionList.get(0).equals("ROBOT")) {
             //SET A MAX AND MIN!!! -- 8 feb
@@ -1251,6 +1266,44 @@ public class FirstFragment extends Fragment {
             System.out.printf("Obstacle %d |  Left: %d, Top: %d\n", i+1, obstacleViews.get(i).getLeft(), obstacleViews.get(i).getTop());
         }
     }
+
+    public void reset() {
+        for (int i = 0; i < obstacleViews.size(); i++) {
+            obstacleViews.get(i).setX(originalObstacleCoords[i][0]);
+            obstacleViews.get(i).setY(originalObstacleCoords[i][1]);
+        }
+        // make the face side disappear.
+        for (int i = 0; i < obstacleFaceViews.size(); i++) {
+            //obstacleFaceViews.get(i).setRotation(0);
+            obstacleFaceViews.get(i).setVisibility(View.INVISIBLE);
+        }
+        // reset list of current obstacles
+        for (int i = 0; i < currentObstacleCoords.length; i++) {
+            currentObstacleCoords[i][0] = 0;
+            currentObstacleCoords[i][1] = 0;
+        }
+        for (int i = 0; i < obstacleTextViews.size(); i++) {
+            obstacleTextViews.get(i).setTextSize(TypedValue.COMPLEX_UNIT_SP, 8);
+        }
+
+        //map.printObstacleCoord();
+        map.removeAllObstacles();
+
+
+
+
+        //TO REMOVE THE ROBOT ALSO
+        //map.setCanDrawRobot(false);
+        //robot.setVisibility(View.INVISIBLE);
+        //map.setOldRobotCoord(map.getCurCoord()[0],map.getCurCoord()[1]);
+        //robot_popup.setVisibility(View.INVISIBLE);
+
+        map.reset();   //remove all cells.
+        map.invalidate();
+
+    }
+
+
 
     public void setInstruction(String receivedInstruction) {
         this.instruction = receivedInstruction;
