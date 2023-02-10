@@ -2,9 +2,9 @@ package com.example.mdpandroidcontroller;
 
 public class Constants {
 
-    private static FirstFragment.MySubject subject = null;
+    private static MySubject subject = null;
 
-    public Constants(FirstFragment.MySubject subject) {
+    public Constants(MySubject subject) {
         this.subject = subject;
     }
 
