@@ -2,10 +2,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/first_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FirstFragment"
-    android:id="@+id/first_fragment">
+    tools:context=".FirstFragment">
 
 
     <!--    off Button-->
@@ -39,11 +39,14 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.701" />
 
+    <!--    Get list of paired devices button-->
+
     <Button
         android:id="@+id/onBtn"
         style="@style/Base.Widget.AppCompat.Button.Colored"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:hapticFeedbackEnabled="true"
         android:minWidth="100dp"
         android:text="Turn On"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -52,8 +55,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.976" />
-
-    <!--    Get list of paired devices button-->
 
     <Button
         android:id="@+id/offBtn"
@@ -190,8 +191,8 @@
             android:layout_height="34px"
             android:layout_marginBottom="32dp"
             android:src="@drawable/obstacle"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/obstacle1Face"
@@ -199,8 +200,8 @@
             android:layout_height="34px"
             android:layout_marginBottom="32dp"
             android:src="@drawable/obstacle_face"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/obstacle1ID"
@@ -230,8 +231,8 @@
             android:layout_width="34px"
             android:layout_height="34px"
             android:src="@drawable/obstacle"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/obstacle3Face"
@@ -239,8 +240,8 @@
             android:layout_height="34px"
             android:layout_marginBottom="32dp"
             android:src="@drawable/obstacle_face"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/obstacle3ID"
@@ -269,8 +270,8 @@
             android:layout_width="34px"
             android:layout_height="34px"
             android:src="@drawable/obstacle"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/obstacle4Face"
@@ -278,8 +279,8 @@
             android:layout_height="34px"
             android:layout_marginBottom="32dp"
             android:src="@drawable/obstacle_face"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/obstacle4ID"
@@ -308,8 +309,8 @@
             android:layout_width="34px"
             android:layout_height="34px"
             android:src="@drawable/obstacle"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/obstacle5Face"
@@ -317,8 +318,8 @@
             android:layout_height="34px"
             android:layout_marginBottom="32dp"
             android:src="@drawable/obstacle_face"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/obstacle5ID"
@@ -347,8 +348,8 @@
             android:layout_width="34px"
             android:layout_height="34px"
             android:src="@drawable/obstacle"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/obstacle6Face"
@@ -356,8 +357,8 @@
             android:layout_height="34px"
             android:layout_marginBottom="32dp"
             android:src="@drawable/obstacle_face"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/obstacle6ID"
@@ -386,8 +387,8 @@
             android:layout_width="34px"
             android:layout_height="34px"
             android:src="@drawable/obstacle"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/obstacle7Face"
@@ -395,8 +396,8 @@
             android:layout_height="34px"
             android:layout_marginBottom="32dp"
             android:src="@drawable/obstacle_face"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/obstacle7ID"
@@ -425,8 +426,8 @@
             android:layout_width="34px"
             android:layout_height="34px"
             android:src="@drawable/obstacle"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/obstacle8Face"
@@ -434,8 +435,8 @@
             android:layout_height="34px"
             android:layout_marginBottom="32dp"
             android:src="@drawable/obstacle_face"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/obstacle8ID"
@@ -464,8 +465,8 @@
             android:layout_width="34px"
             android:layout_height="34px"
             android:src="@drawable/obstacle"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/obstacle2Face"
@@ -473,8 +474,8 @@
             android:layout_height="34px"
             android:layout_marginBottom="32dp"
             android:src="@drawable/obstacle_face"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/obstacle2ID"
@@ -638,8 +639,8 @@
             android:padding="5dp"
             android:text="Confirm"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintLeft_toRightOf="@id/remove_robot" />
+            app:layout_constraintLeft_toRightOf="@id/remove_robot"
+            app:layout_constraintRight_toRightOf="parent" />
 
         <Button
             android:id="@+id/remove_robot"
@@ -716,30 +717,29 @@
         android:id="@+id/robot_location"
         android:layout_width="100dp"
         android:layout_height="40dp"
+        android:text="Location"
         android:textAlignment="center"
         android:textColor="#000"
         android:textSize="15sp"
-        android:text="Location"
         app:layout_anchorGravity="center"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/statusBluetoothTv"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.701"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintVertical_bias="0.701" />
 
     <TextView
         android:id="@+id/robot_facing"
         android:layout_width="100dp"
         android:layout_height="40dp"
+        android:text="Facing"
         android:textAlignment="center"
         android:textColor="#000"
         android:textSize="15sp"
-        android:text="Facing"
         app:layout_anchorGravity="center"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="@id/notifications"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/robot_location" />
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
