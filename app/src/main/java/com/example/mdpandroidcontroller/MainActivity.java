@@ -3,20 +3,26 @@ package com.example.mdpandroidcontroller;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Handler;
@@ -25,6 +31,7 @@ import android.util.Log;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -58,13 +65,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.Set;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
-    
+
     private static Context context;
 
     private static final String[] BL_PERMISSIONS = new String[]{
@@ -111,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
     BluetoothDevice mBTDevice;
     BluetoothDevice mPairDevice;
+    BluetoothAdapter myBluetoothAdapter;
 
     //BluetoothConnectionService mBluetoothConnection;
 
@@ -195,6 +204,7 @@ public class MainActivity extends AppCompatActivity {
 
     TextView incomingMessages;
     StringBuilder messages;
+    Intent connectIntent;
 
 
     private static int[][] originalObstacleCoords = new int[8][2];
@@ -209,10 +219,16 @@ public class MainActivity extends AppCompatActivity {
     private List<ImageView> obstacleFaceViews = new ArrayList<>();
     private List<TextView> obstacleTextViews = new ArrayList<>();
     private List<ImageView> obstacleBoxViews = new ArrayList<>();
-    
-    
+
+    boolean connectedState = false;
+    static String connectedDevice;
+    BluetoothDevice myBTConnectionDevice;
+    boolean currentActivity;
 
     private boolean mBound = false;
+
+    //UUID
+    private static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
     BluetoothAdapter mBlueAdapter = BluetoothAdapter.getDefaultAdapter();
     ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
@@ -241,6 +257,15 @@ public class MainActivity extends AppCompatActivity {
 
         mStatusBlueTv = findViewById(R.id.statusBluetoothTv);
 
+        //REGISTER BROADCAST RECEIVER FOR INCOMING MSG
+        LocalBroadcastManager.getInstance(this).registerReceiver(btConnectionReceiver, new IntentFilter("btConnectionStatus"));
+        connectedDevice = null;
+        currentActivity = true;
+
+        //REGISTER BROADCAST RECEIVER FOR IMCOMING MSG
+        //LocalBroadcastManager.getInstance(this).registerReceiver(incomingMsgReceiver, new IntentFilter("IncomingMsg"));
+
+
         mOnBtn = findViewById(R.id.onBtn);
         mOffBtn = findViewById(R.id.offBtn);
         mDiscoverBtn = findViewById(R.id.discoverableBtn);
@@ -257,8 +282,8 @@ public class MainActivity extends AppCompatActivity {
             //mPairedBtn.setOnClickListener(this::onClick);      // Get Paired devices button click
         }
         //mBluetoothConnection = new BluetoothConnectionService(MainActivity.this);
-        
-        
+
+
         //GUI
 
         map = findViewById(R.id.gridView);
@@ -274,8 +299,8 @@ public class MainActivity extends AppCompatActivity {
             System.out.println(Constants.instruction);
             executeInstruction();
         }
-        
-        
+
+
         //OLD ON VIEW CREATED
 
 
@@ -330,9 +355,9 @@ public class MainActivity extends AppCompatActivity {
 
 
         //TEXTVIEWS
-        outputNotifView =  (TextView) findViewById(R.id.notifications);
-        locationNotifView =  (TextView) findViewById(R.id.robot_location);
-        facingNotifView =  (TextView) findViewById(R.id.robot_facing);
+        outputNotifView = (TextView) findViewById(R.id.notifications);
+        locationNotifView = (TextView) findViewById(R.id.robot_location);
+        facingNotifView = (TextView) findViewById(R.id.robot_facing);
 
 
         // add to lists
@@ -391,7 +416,6 @@ public class MainActivity extends AppCompatActivity {
         printAllObstacleLeftTop();
 
 
-
         obstacle1Grp.post(new Runnable() {
             @Override
             public void run() {
@@ -440,17 +464,12 @@ public class MainActivity extends AppCompatActivity {
                 reset();
 
 
-
                 //System.out.println("obstacle1 dimensions");
                 //System.out.println(obstacle1Box.getLayoutParams().height);
                 //System.out.println(obstacle1Box.getLayoutParams().width);
 
             }
         });
-
-
-
-
 
 
         //ROBOT settings - KEEP IT INVISIBLE AT FIRST
@@ -498,8 +517,6 @@ public class MainActivity extends AppCompatActivity {
                 bluetooth_discoverable(); // ((MainActivity)getActivity()).
             }
         });
-
-
 
 
         // NEW Short press and Long Press for ALL BUTTONS
@@ -641,22 +658,16 @@ public class MainActivity extends AppCompatActivity {
         };
 
 
-
-
-
         reverseSwitch.setOnClickListener(new View.OnClickListener() {
-             @Override
-             public void onClick(View v) {
-                 if (reverseSwitch.isChecked()) {
-                     reverseSwitch.setChecked(true);
-                 } else {
-                     reverseSwitch.setChecked(false);
-                 }
-             }
+            @Override
+            public void onClick(View v) {
+                if (reverseSwitch.isChecked()) {
+                    reverseSwitch.setChecked(true);
+                } else {
+                    reverseSwitch.setChecked(false);
+                }
+            }
         });
-
-
-
 
 
         //OBSTACLES
@@ -732,8 +743,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
-
         //POPUP BUTTONS
         //JUST FOR OTHER TESTS rn nothing
         Button test = (Button) findViewById(R.id.button_test);
@@ -790,6 +799,7 @@ public class MainActivity extends AppCompatActivity {
                 robotColPopup = Integer.parseInt(parent.getItemAtPosition(position).toString());
                 System.out.printf("COL: %d\n", robotColPopup);
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 // Do nothing
@@ -801,6 +811,7 @@ public class MainActivity extends AppCompatActivity {
                 robotRowPopup = Integer.parseInt(parent.getItemAtPosition(position).toString());
                 System.out.printf("ROW: %d\n", robotRowPopup);
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 // Do nothing
@@ -812,6 +823,7 @@ public class MainActivity extends AppCompatActivity {
                 robotFacingPopup = parent.getItemAtPosition(position).toString();
                 System.out.printf("FACING: %s\n", robotFacingPopup);
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 // Do nothing
@@ -825,7 +837,7 @@ public class MainActivity extends AppCompatActivity {
                 //boolean pastDrawRobot = map.getCanDrawRobot();
 
                 if (robot.getVisibility() == View.VISIBLE) {
-                    map.setOldRobotCoord(map.getCurCoord()[0],map.getCurCoord()[1]);
+                    map.setOldRobotCoord(map.getCurCoord()[0], map.getCurCoord()[1]);
                 }
                 map.saveFacingWithRotation(rotation); // error: between this button and onresume, map's facing reset to 0
                 map.setCanDrawRobot(true);
@@ -845,12 +857,11 @@ public class MainActivity extends AppCompatActivity {
                 // NEED TO CLEAR THE MAP ALSO -- ERROR FIX LATER
                 map.setCanDrawRobot(false);
                 robot.setVisibility(View.INVISIBLE);
-                map.setOldRobotCoord(map.getCurCoord()[0],map.getCurCoord()[1]);
+                map.setOldRobotCoord(map.getCurCoord()[0], map.getCurCoord()[1]);
                 robot_popup.setVisibility(View.INVISIBLE);
                 map.invalidate();
             }
         });
-
 
 
         /**
@@ -887,6 +898,7 @@ public class MainActivity extends AppCompatActivity {
                 // Do something with the selected item
                 System.out.println(obstacleFaceNumber);
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 // Do nothing
@@ -907,8 +919,8 @@ public class MainActivity extends AppCompatActivity {
         View.OnClickListener onClickFaceListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                obstacleFaceCur = obstacleFaceViews.get(obstacleFaceNumber-1);
-                ConstraintLayout obstacleGroup = obstacleViews.get(obstacleFaceNumber-1);
+                obstacleFaceCur = obstacleFaceViews.get(obstacleFaceNumber - 1);
+                ConstraintLayout obstacleGroup = obstacleViews.get(obstacleFaceNumber - 1);
 
                 String facing = "error";
 
@@ -1001,7 +1013,7 @@ public class MainActivity extends AppCompatActivity {
                         // if the past location of obstacle was in the map, u remove the old one.
                         if (pastX >= map.getX() && pastX <= map.getX() + map.getWidth() && pastY >= map.getY() && pastY <= map.getY() + map.getHeight()) {
                             //System.out.println("IN MAP");
-                            map.removeObstacleUsingCoord(pastX - map.getX() + map.getCellSize()/2,pastY - map.getY() + map.getCellSize()/2);
+                            map.removeObstacleUsingCoord(pastX - map.getX() + map.getCellSize() / 2, pastY - map.getY() + map.getCellSize() / 2);
                         }
                         // to add the new obstacle black square - returns the coordinates, col and row --> (x, y, col, row)
                         int[] newObstCoordColRow = map.updateObstacleOnBoard(x, y);
@@ -1017,15 +1029,14 @@ public class MainActivity extends AppCompatActivity {
                         outputNotifView.setText(outputNotif);
 
 
-
                         //others
-                        int[] newObstacleCoord= {newObstCoordColRow[0], newObstCoordColRow[1]};
+                        int[] newObstacleCoord = {newObstCoordColRow[0], newObstCoordColRow[1]};
                         newObstacleCoord[0] = newObstacleCoord[0] + (int) (map.getX());  // NEW 6 feb
                         newObstacleCoord[1] = newObstacleCoord[1] + (int) (map.getY());
 
                         //WHEN U JUST CLICK IT ONLY - releases the popupwindow
-                        if (currentObstacleCoords[obstacleNum-1][0] == newObstacleCoord[0] && currentObstacleCoords[obstacleNum-1][1] == newObstacleCoord[1]) {
-                            spinner.setSelection(obstacleNum-1);
+                        if (currentObstacleCoords[obstacleNum - 1][0] == newObstacleCoord[0] && currentObstacleCoords[obstacleNum - 1][1] == newObstacleCoord[1]) {
+                            spinner.setSelection(obstacleNum - 1);
                             popup.setVisibility(View.VISIBLE);
                         } else {
                             //SEND to RPI - if not a click!!
@@ -1036,7 +1047,7 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         //saving the current obstacles
-                        currentObstacleCoords[obstacleNum-1] = newObstacleCoord;
+                        currentObstacleCoords[obstacleNum - 1] = newObstacleCoord;
 
                         // MUST get from the map class to snap to grid - for the new image
                         curObstacleGrp.setX(newObstacleCoord[0]); //+ map.getX()); // SHOULD BE INBUILT!!
@@ -1071,7 +1082,7 @@ public class MainActivity extends AppCompatActivity {
                 map.getLocationOnScreen(mapCoord);
 
                 if (event.getAction() == DragEvent.ACTION_DROP) {
-                    if(x < mapCoord[0] || x > mapCoord[0] + mapWidth || y < mapCoord[1] || y > mapCoord[1] + mapHeight){
+                    if (x < mapCoord[0] || x > mapCoord[0] + mapWidth || y < mapCoord[1] || y > mapCoord[1] + mapHeight) {
 
                         //System.out.println("out of map");
                         ConstraintLayout curObstacleGrp = (ConstraintLayout) event.getLocalState();
@@ -1087,14 +1098,14 @@ public class MainActivity extends AppCompatActivity {
                         }
                         //reset coordinates of current.
                         int index = getObstacleNumber(curObstacleGrp);
-                        currentObstacleCoords[index-1][0] = 0;
-                        currentObstacleCoords[index-1][1] = 0;
+                        currentObstacleCoords[index - 1][0] = 0;
+                        currentObstacleCoords[index - 1][1] = 0;
 
                         printAllObstacleCoords();
 
                         // in of map to out of map!!
-                        if(pastX >= mapCoord[0] && pastX <= mapCoord[0] + mapWidth && pastY >= mapCoord[1] && pastY <= mapCoord[1] + mapHeight){
-                            map.removeObstacleUsingCoord(pastX - map.getX() + map.getCellSize()/2,pastY - map.getY() + map.getCellSize()/2);
+                        if (pastX >= mapCoord[0] && pastX <= mapCoord[0] + mapWidth && pastY >= mapCoord[1] && pastY <= mapCoord[1] + mapHeight) {
+                            map.removeObstacleUsingCoord(pastX - map.getX() + map.getCellSize() / 2, pastY - map.getY() + map.getCellSize() / 2);
                             map.invalidate();
                         }
 
@@ -1105,11 +1116,10 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-        
-        
+
 
     }
-    
+
     // ---------------------------- GUI ---------------------------- IDK ABT ONRESUME, ON PAUSE
 
     /**
@@ -1139,7 +1149,7 @@ public class MainActivity extends AppCompatActivity {
         //System.out.println("TRACK ROBOT FUNCTION");
 
         int[] robotImageCoord = map.getCurCoord();
-        int[] robotLocation = map.setRobotImagePosition(robotImageCoord[0],map.convertRow(robotImageCoord[1]), map.getLeft(),map.getTop());
+        int[] robotLocation = map.setRobotImagePosition(robotImageCoord[0], map.convertRow(robotImageCoord[1]), map.getLeft(), map.getTop());
         robot.setX(robotLocation[0]);
         robot.setY(robotLocation[1]);
         robot.setRotation(rotation);
@@ -1151,7 +1161,6 @@ public class MainActivity extends AppCompatActivity {
         facingNotif = String.format("Facing: %s\n", map.convertRotationToFacing(rotation));
         facingNotifView.setText(facingNotif);
     }
-
 
 
     /**
@@ -1177,12 +1186,11 @@ public class MainActivity extends AppCompatActivity {
             String display = "STATUS: ";
             display = display + instructionList.get(1);
             outputNotifView.setText(display);
-        }
-        else if (prefix.equals("TARGET")) {
+        } else if (prefix.equals("TARGET")) {
             // need to add check?
             int targetObst = Integer.parseInt(instructionList.get(1));
             String targetID = instructionList.get(2);
-            TextView target = obstacleTextViews.get(targetObst-1);
+            TextView target = obstacleTextViews.get(targetObst - 1);
             target.setText(targetID);
             target.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
 
@@ -1192,20 +1200,20 @@ public class MainActivity extends AppCompatActivity {
             int row = Integer.parseInt(instructionList.get(2));
 
             if (col < 1) {
-                col = Math.max(col,1);
+                col = Math.max(col, 1);
             } else {
-                col = Math.min(col, map.getCol()-2);
+                col = Math.min(col, map.getCol() - 2);
             }
             if (row < 1) {
-                row = Math.max(row,1);
+                row = Math.max(row, 1);
             } else {
-                row = Math.min(row,map.getCol()-2);
+                row = Math.min(row, map.getCol() - 2);
             }
             String face = instructionList.get(3);
             robot.setVisibility(View.VISIBLE);
 
             map.setOldRobotCoord(map.getCurCoord()[0], map.getCurCoord()[1]); // create tracks
-            int[] newCoord = new int[] {col, row};
+            int[] newCoord = new int[]{col, row};
             map.setCurCoord(newCoord);
 
             rotation = map.convertFacingToRotation(face);
@@ -1229,14 +1237,11 @@ public class MainActivity extends AppCompatActivity {
     public int getObstacleNumber(ConstraintLayout obstacle) {
         for (int i = 0; i < obstacleViews.size(); i++) {
             if (obstacle == obstacleViews.get(i)) {
-                return i+1;
+                return i + 1;
             }
         }
         return -1;
     }
-
-
-
 
 
     /**
@@ -1246,14 +1251,14 @@ public class MainActivity extends AppCompatActivity {
     public void printAllObstacleCoords() {
         System.out.println("Obstacle Coords");
         for (int i = 0; i < currentObstacleCoords.length; i++) {
-            System.out.printf("Obstacle %d |  X: %d, Y: %d\n", i+1, currentObstacleCoords[i][0], currentObstacleCoords[i][1]);
+            System.out.printf("Obstacle %d |  X: %d, Y: %d\n", i + 1, currentObstacleCoords[i][0], currentObstacleCoords[i][1]);
         }
     }
 
     public void printOriginalObstacleCoords() {
         System.out.println("OG obstacle Coords");
         for (int i = 0; i < originalObstacleCoords.length; i++) {
-            System.out.printf("Obstacle %d |  X: %d, Y: %d\n", i+1, originalObstacleCoords[i][0], originalObstacleCoords[i][1]);
+            System.out.printf("Obstacle %d |  X: %d, Y: %d\n", i + 1, originalObstacleCoords[i][0], originalObstacleCoords[i][1]);
         }
 
     }
@@ -1262,7 +1267,7 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("Obstacle Left Top");
         for (int i = 0; i < obstacleViews.size(); i++) {
             //System.out.println(i+1);
-            System.out.printf("Obstacle %d |  Left: %d, Top: %d\n", i+1, obstacleViews.get(i).getLeft(), obstacleViews.get(i).getTop());
+            System.out.printf("Obstacle %d |  Left: %d, Top: %d\n", i + 1, obstacleViews.get(i).getLeft(), obstacleViews.get(i).getTop());
         }
     }
 
@@ -1289,8 +1294,6 @@ public class MainActivity extends AppCompatActivity {
         map.removeAllObstacles();
 
 
-
-
         //TO REMOVE THE ROBOT ALSO
         //map.setCanDrawRobot(false);
         //robot.setVisibility(View.INVISIBLE);
@@ -1301,7 +1304,6 @@ public class MainActivity extends AppCompatActivity {
         map.invalidate();
 
     }
-
 
 
     public void setInstruction(String receivedInstruction) {
@@ -1446,8 +1448,7 @@ public class MainActivity extends AppCompatActivity {
                 mStatusBlueTv.setText("Bluetooth is off");
                 //mBlueIv.setImageResource(R.drawable.ic_action_off);
             }
-        }
-        else {
+        } else {
             showToast("Bluetooth is already off");
         }
     }
@@ -1485,9 +1486,93 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    BroadcastReceiver btConnectionReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            Log.d(TAG, "Receiving btConnectionStatus Msg!!!");
+
+            String connectionStatus = intent.getStringExtra("ConnectionStatus");
+            myBTConnectionDevice = intent.getParcelableExtra("Device");
+            //myBTConnectionDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+            //DISCONNECTED FROM BLUETOOTH CHAT
+            if (connectionStatus.equals("disconnect")) {
+
+                Log.d("MainActivity:", "Device Disconnected");
+                connectedDevice = null;
+                connectedState = false;
+
+                if (currentActivity) {
+
+                    try {
+                        Thread.sleep(10000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    //START BT CONNECTION SERVICE
+                    Intent connectIntent = new Intent(MainActivity.this, BluetoothConnectionService.class);
+                    connectIntent.putExtra("serviceType", "connect");
+                    connectIntent.putExtra("device", myBTConnectionDevice);
+                    connectIntent.putExtra("id", myUUID);
+                    startService(connectIntent);
+
+                }
+            }
+            //SUCCESSFULLY CONNECTED TO BLUETOOTH DEVICE
+            else if (connectionStatus.equals("connect")) {
+
+                if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                }
+                connectedDevice = myBTConnectionDevice.getName();
+                connectedState = true;
+                Log.d("MainActivity:", "Device Connected " + connectedState);
+                Toast.makeText(MainActivity.this, "Connection Established: " + myBTConnectionDevice.getName(),
+                        Toast.LENGTH_LONG).show();
+            }
+
+            //BLUETOOTH CONNECTION FAILED
+            else if (connectionStatus.equals("connectionFail")) {
+                Toast.makeText(MainActivity.this, "Connection Failed: " + myBTConnectionDevice.getName(),
+                        Toast.LENGTH_LONG).show();
+            }
+
+        }
+    };
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
+    }
+
+    //RESUME ACTIVITY
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        //CHECK FOR EXISTING CONNECTION
+        if (connectedState) {
+            Log.d(" MainAcitvity:", "OnResume1");
+
+            //SET TEXTFIELD TO DEVICE NAME
+        } else {
+            Log.d(" MainAcitvity:", "OnResume2");
+
+            //SET TEXTFIELD TO NOT CONNECTED
+        }
+
     }
 
     @Override

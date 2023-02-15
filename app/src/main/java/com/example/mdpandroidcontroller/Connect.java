@@ -56,7 +56,7 @@ public class Connect extends AppCompatActivity {
 
     //VIEWS ANN BUTTONS
     ListView lvNewDevices;
-    ListView lvPairedDevices;
+    static ListView lvPairedDevices;
     Button btnSend;
     EditText sendMessage;
     Button btnSearch;
@@ -69,7 +69,7 @@ public class Connect extends AppCompatActivity {
     Intent connectIntent;
 
     //UUID
-    private static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+    public static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
     public static BluetoothDevice getBluetoothDevice() {
         return myBTDevice;
@@ -255,6 +255,12 @@ public class Connect extends AppCompatActivity {
                     }*/
 
                     //START CONNECTION WITH THE BOUNDED DEVICE
+
+                    Intent intent1 = new Intent();
+                    intent1.setAction("com.example.mdpandroidcontroller.btConnectionStatus");
+                    intent1.setFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+                    sendBroadcast(intent1);
+
                     startBTConnection(myBTDevice, myUUID);
                 }
                 lvPairedDevices.setAdapter(myPairedDeviceListAdapter);
@@ -310,7 +316,7 @@ public class Connect extends AppCompatActivity {
         unregisterReceiver(discoverabilityBroadcastReceiver);
         unregisterReceiver(discoveryBroadcastReceiver);
         unregisterReceiver(bondingBroadcastReceiver);
-        unregisterReceiver(btConnectionReceiver);
+        //unregisterReceiver(btConnectionReceiver);
         unregisterReceiver(discoveryStartedBroadcastReceiver);
         unregisterReceiver(discoveryEndedBroadcastReceiver);
         unregisterReceiver(enableBTBroadcastReceiver);
@@ -342,33 +348,28 @@ public class Connect extends AppCompatActivity {
                     stopService(connectIntent);
                 }
 
-                //RECONNECT DIALOG MSG
                 AlertDialog alertDialog = new AlertDialog.Builder(Connect.this).create();
                 alertDialog.setTitle("BLUETOOTH DISCONNECTED");
-                if (ActivityCompat.checkSelfPermission(Connect.this, android.Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
-                }
-                alertDialog.setMessage("Connection with device: '" + myBTConnectionDevice.getName() + "' has ended. Do you want to reconnect?");
-                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Yes",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                startBTConnection(myBTConnectionDevice, myUUID);
+                alertDialog.setMessage("Connection with device has ended. Attempting to reconnect");
+                try {
+                    Thread.sleep(5000);
+                    startBTConnection(myBTConnectionDevice, myUUID);
 
-                            }
-                        });
-                alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "No",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                alertDialog.show();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
+                alertDialog.cancel();
+
+
+
+                //RECONNECT DIALOG MSG
+                //START BT CONNECTION SERVICE
+                //Intent connectIntent = new Intent(Connect.this, BluetoothConnectionService.class);
+                //connectIntent.putExtra("serviceType", "connect");
+                //connectIntent.putExtra("device", myBTConnectionDevice);
+                //connectIntent.putExtra("id", myUUID);
+                //startService(connectIntent);
             }
 
             //SUCCESSFULLY CONNECTED TO BLUETOOTH DEVICE
@@ -865,38 +866,6 @@ public class Connect extends AppCompatActivity {
 
             Log.d(TAG, "NO PAIRED DEVICE!!");
         }
-    }
-
-    /*
-        CHECKING OF INCOMING MESSAGE TYPE (TO FILTER)
-    */
-    public String checkIncomingMsgType(String msg) {
-
-        String msgType = null;
-        String[] splitedMsg = msg.split(":");
-
-
-        switch (splitedMsg[0]) {
-
-            //RobotStatus
-            case "status":
-                // Statements
-                msgType = "robotstatus";
-                break; // optional
-
-            //Auto / Manual Refresh Of Map
-            case "maprefresh":
-                // Statements
-                msgType = "maprefresh";
-                break; // optional
-
-            default: // Optional
-                Log.d(TAG, "Checking Msg Type: Error - " + splitedMsg[0] + ":" + splitedMsg[1]);
-                break;
-            // Statements
-        }
-        return msgType;
-
     }
 
 
