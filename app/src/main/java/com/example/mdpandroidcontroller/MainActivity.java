@@ -1504,18 +1504,29 @@ public class MainActivity extends AppCompatActivity {
 
                 if (currentActivity) {
 
-                    try {
-                        Thread.sleep(10000);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
+                    //RECONNECT DIALOG MSG
+                    AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+                    alertDialog.setTitle("BLUETOOTH DISCONNECTED");
+                    alertDialog.setMessage("Connection with device: '" + myBTConnectionDevice.getName() + "' has ended. Do you want to reconnect?");
+                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Yes",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
 
-                    //START BT CONNECTION SERVICE
-                    Intent connectIntent = new Intent(MainActivity.this, BluetoothConnectionService.class);
-                    connectIntent.putExtra("serviceType", "connect");
-                    connectIntent.putExtra("device", myBTConnectionDevice);
-                    connectIntent.putExtra("id", myUUID);
-                    startService(connectIntent);
+                                    //START BT CONNECTION SERVICE
+                                    Intent connectIntent = new Intent(MainActivity.this, BluetoothConnectionService.class);
+                                    connectIntent.putExtra("serviceType", "connect");
+                                    connectIntent.putExtra("device", myBTConnectionDevice);
+                                    connectIntent.putExtra("id", myUUID);
+                                    startService(connectIntent);
+                                }
+                            });
+                    alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "No",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertDialog.show();
 
                 }
             }

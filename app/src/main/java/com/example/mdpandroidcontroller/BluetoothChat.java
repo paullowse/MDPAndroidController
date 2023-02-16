@@ -1,6 +1,8 @@
 package com.example.mdpandroidcontroller;
 
+import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothServerSocket;
 import android.bluetooth.BluetoothSocket;
 import android.content.Context;
 import android.content.Intent;
@@ -23,6 +25,15 @@ public class BluetoothChat {
     private static InputStream myInputStream;
     private static OutputStream myOutPutStream;
     private static BluetoothDevice myBluetoothConnectionDevice;
+
+    private BluetoothConnectionService.ReconnectThread mReconnectThread;
+    private boolean reconnecting = false;
+    private static String BLUETOOTH_CONNECTION_TAG = "Bluetooth (Connection)";
+    private int mState;
+    private boolean flag = true;
+    BluetoothSocket socket = null;
+    private BluetoothAdapter myBluetoothAdapter;
+    public BluetoothDevice myDevice;
 
     /*
            RESPONSIBLE FOR MAINTAINING THE BLUETOOTH CONNECTION, SENDING THE
@@ -144,7 +155,5 @@ public class BluetoothChat {
         write(out);
 
     }
-
-
 
 }

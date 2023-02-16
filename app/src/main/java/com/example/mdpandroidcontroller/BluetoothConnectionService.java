@@ -38,6 +38,18 @@ public class BluetoothConnectionService extends IntentService {
     Context myContext;
     ProgressDialog myProgressDialog;
 
+    private ReconnectThread mReconnectThread;
+    private boolean reconnecting = false;
+    private static String BLUETOOTH_CONNECTION_TAG = "Bluetooth (Connection)";
+    private int mState;
+
+    public interface ConnectionConstants {
+        // Constants that indicate the current connection state
+        int STATE_DISCONNECTED = 0;       // we're doing nothing
+        int STATE_CONNECTING = 1; // now initiating an outgoing connection
+        int STATE_CONNECTED = 2;  // now connected to a remote device
+    }
+
     //CONSTRUCTOR
     public BluetoothConnectionService() {
 
@@ -155,8 +167,80 @@ public class BluetoothConnectionService extends IntentService {
                 Log.d(TAG, "Cancel: Closing AcceptThread Failed. " + e.getMessage());
             }
         }
+    }
 
+    private void connectionFailed() {
+        // Send a failure message back to the Activity
+//        mHandler.obtainMessage(HandlerConstants.MESSAGE_TOAST, "Unable to connect device").sendToTarget();
+        Log.d(BLUETOOTH_CONNECTION_TAG, "Connection failed");
+        mState = ConnectionConstants.STATE_DISCONNECTED;
+        reconnecting = true;
+        if (mReconnectThread == null && myBluetoothAdapter.isEnabled()) {
+            mReconnectThread = new ReconnectThread(myDevice);
+            mReconnectThread.start();
+        } else if (!myBluetoothAdapter.isEnabled()){
+            if (mReconnectThread != null) {
+                mReconnectThread.cancel();
+            }
+            mReconnectThread = null;
+        }
+    }
 
+    public void connectionLost() {
+        // Send a failure message back to the Activity
+        Log.d(BLUETOOTH_CONNECTION_TAG, "Connection lost");
+        //mHandler.obtainMessage(HandlerConstants.MESSAGE_TOAST, "Device connection was lost").sendToTarget();
+        mState = ConnectionConstants.STATE_DISCONNECTED;
+        reconnecting = true;
+        if (mReconnectThread == null && myBluetoothAdapter.isEnabled()) {
+            mReconnectThread = new ReconnectThread(myDevice);
+            mReconnectThread.start();
+        } else if (!myBluetoothAdapter.isEnabled()){
+            if (mReconnectThread != null) {
+                mReconnectThread.cancel();
+            }
+            mReconnectThread = null;
+        }
+    }
+
+    public class ReconnectThread extends Thread {
+        private final BluetoothDevice myDevice;
+        private boolean flag = true;
+        BluetoothSocket socket = null;
+
+        private final BluetoothServerSocket myServerSocket;
+
+        ReconnectThread(BluetoothDevice device) {
+            BluetoothServerSocket temp = null;
+            myDevice = device;
+            myServerSocket = temp;
+        }
+
+        public void run() {
+            Log.i(BLUETOOTH_CONNECTION_TAG, "Attempting to reconnect");
+            while (mState != ConnectionConstants.STATE_CONNECTED && myBluetoothAdapter.isEnabled() && flag) {
+
+                //Blocking call which will only return on a successful connection / exception
+                try {
+                    socket = myServerSocket.accept();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
+                if (reconnecting) {
+                    BluetoothChat.connected(socket, myDevice, myContext);
+                }
+                reconnecting = false;
+                try {
+                    sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        void cancel() {
+            this.flag = false;
+        }
     }
 
     /*

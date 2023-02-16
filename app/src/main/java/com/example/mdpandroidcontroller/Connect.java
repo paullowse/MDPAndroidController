@@ -302,21 +302,13 @@ public class Connect extends AppCompatActivity {
     }*/
 
     @Override
-    public void onBackPressed() {
-
-        Intent intent = new Intent(Connect.this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-        startActivity(intent);
-    }
-
-    @Override
     protected void onDestroy() {
         Log.d(TAG, "ConnectActivity: onDestroyed: destroyed");
         super.onDestroy();
         unregisterReceiver(discoverabilityBroadcastReceiver);
         unregisterReceiver(discoveryBroadcastReceiver);
         unregisterReceiver(bondingBroadcastReceiver);
-        //unregisterReceiver(btConnectionReceiver);
+        unregisterReceiver(btConnectionReceiver);
         unregisterReceiver(discoveryStartedBroadcastReceiver);
         unregisterReceiver(discoveryEndedBroadcastReceiver);
         unregisterReceiver(enableBTBroadcastReceiver);
@@ -348,28 +340,24 @@ public class Connect extends AppCompatActivity {
                     stopService(connectIntent);
                 }
 
+                //RECONNECT DIALOG MSG
                 AlertDialog alertDialog = new AlertDialog.Builder(Connect.this).create();
                 alertDialog.setTitle("BLUETOOTH DISCONNECTED");
-                alertDialog.setMessage("Connection with device has ended. Attempting to reconnect");
-                try {
-                    Thread.sleep(5000);
-                    startBTConnection(myBTConnectionDevice, myUUID);
+                alertDialog.setMessage("Connection with device: '"+myBTConnectionDevice.getName()+"' has ended. Do you want to reconnect?");
+                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Yes",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                //startBTConnection(myBTConnectionDevice, myUUID);
 
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-
-                alertDialog.cancel();
-
-
-
-                //RECONNECT DIALOG MSG
-                //START BT CONNECTION SERVICE
-                //Intent connectIntent = new Intent(Connect.this, BluetoothConnectionService.class);
-                //connectIntent.putExtra("serviceType", "connect");
-                //connectIntent.putExtra("device", myBTConnectionDevice);
-                //connectIntent.putExtra("id", myUUID);
-                //startService(connectIntent);
+                            }
+                        });
+                alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "No",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.show();
             }
 
             //SUCCESSFULLY CONNECTED TO BLUETOOTH DEVICE
