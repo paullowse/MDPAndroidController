@@ -3,26 +3,22 @@ package com.example.mdpandroidcontroller;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-import android.hardware.SensorManager;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Handler;
@@ -54,7 +50,6 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import com.example.mdpandroidcontroller.databinding.ActivityMainBinding;
 
@@ -62,10 +57,8 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.Set;
 import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity {
@@ -745,12 +738,31 @@ public class MainActivity extends AppCompatActivity {
 
         //POPUP BUTTONS
         //JUST FOR OTHER TESTS rn nothing
-        Button test = (Button) findViewById(R.id.button_test);
-        test.setOnClickListener(new View.OnClickListener() {
+        Button startRobot = (Button) findViewById(R.id.start_robot);
+        startRobot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                executeInstruction();
+                //executeInstruction();
+                outputNotif = String.format("START ROBOT");
+                outputNotifView.setText(outputNotif);
+                if (Constants.connected) {
+                    byte[] bytes = outputNotif.getBytes(Charset.defaultCharset());
+                    BluetoothChat.writeMsg(bytes);
+                }
+            }
+        });
 
+        Button stopRobot = (Button) findViewById(R.id.calculate);
+        stopRobot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //executeInstruction();
+                outputNotif = String.format("CALCULATE");
+                outputNotifView.setText(outputNotif);
+                if (Constants.connected) {
+                    byte[] bytes = outputNotif.getBytes(Charset.defaultCharset());
+                    BluetoothChat.writeMsg(bytes);
+                }
             }
         });
 
@@ -963,17 +975,25 @@ public class MainActivity extends AppCompatActivity {
                         break;
                 }
 
+                int obstacleNum = getObstacleNumber(obstacleGroup);
                 //System.out.printf("Facing: %s, Col: %d, Row: %d, left: %d, top: %d\n", facing, (int) obstacleGroup.getX(), (int) obstacleGroup.getY(), (int) map.getLeft(), (int) map.getTop());
                 int[] currentColRow = map.getColRowFromXY(obstacleGroup.getX(), obstacleGroup.getY(), map.getLeft(), map.getTop());
-                outputNotif = String.format("Facing: %s, Col: %d, Row: %d\n", facing, currentColRow[0], currentColRow[1]);
-                System.out.printf(outputNotif);
-                outputNotifView.setText(outputNotif);
 
-                //SEND VALUE
-                if (Constants.connected) {
-                    byte[] bytes = outputNotif.getBytes(Charset.defaultCharset());
-                    BluetoothChat.writeMsg(bytes);
+                //FOR CHECKLIST
+                //outputNotif = String.format("Facing: %s, Col: %d, Row: %d\n", facing, currentColRow[0], currentColRow[1]);
+                outputNotif = String.format("Obstacle: %d, Facing: %s", obstacleNum, facing);
+                if (!facing.equals("error")) {
+                    System.out.printf(outputNotif);
+                    System.out.println();
+                    outputNotifView.setText(outputNotif);
+
+                    //SEND VALUE
+                    if (Constants.connected) {
+                        byte[] bytes = outputNotif.getBytes(Charset.defaultCharset());
+                        BluetoothChat.writeMsg(bytes);
+                    }
                 }
+
             }
         };
 
@@ -1024,8 +1044,9 @@ public class MainActivity extends AppCompatActivity {
                         int obstacleNum = getObstacleNumber(curObstacleGrp);
                         int col = newObstCoordColRow[2];
                         int row = newObstCoordColRow[3];
-                        outputNotif = String.format("Obstacle: %d, Col: %d, Row: %d\n", obstacleNum, col, row);
+                        outputNotif = String.format("Obstacle: %d, Col: %d, Row: %d", obstacleNum, col, row);
                         System.out.printf(outputNotif);
+                        System.out.println();
                         outputNotifView.setText(outputNotif);
 
 
@@ -1039,7 +1060,7 @@ public class MainActivity extends AppCompatActivity {
                             spinner.setSelection(obstacleNum - 1);
                             popup.setVisibility(View.VISIBLE);
                         } else {
-                            //SEND to RPI - if not a click!!
+                            //SEND to RPI - if not a ®click!! - MESSAGE
                             if (Constants.connected) {
                                 byte[] bytes = outputNotif.getBytes(Charset.defaultCharset());
                                 BluetoothChat.writeMsg(bytes);
