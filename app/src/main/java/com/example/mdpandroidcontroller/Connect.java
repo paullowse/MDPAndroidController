@@ -312,7 +312,7 @@ public class Connect extends AppCompatActivity {
         unregisterReceiver(discoveryStartedBroadcastReceiver);
         unregisterReceiver(discoveryEndedBroadcastReceiver);
         unregisterReceiver(enableBTBroadcastReceiver);
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(myReceiver);
+        //LocalBroadcastManager.getInstance(this).unregisterReceiver(myReceiver);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(btConnectionReceiver);
 
 
