@@ -1528,41 +1528,65 @@ public class MainActivity extends AppCompatActivity {
 
                 if (currentActivity) {
 
-                    //START BT CONNECTION SERVICE
-                    Intent connectIntent = new Intent(MainActivity.this, BluetoothConnectionService.class);
-                    connectIntent.putExtra("serviceType", "connect");
-                    connectIntent.putExtra("device", myBTConnectionDevice);
-                    connectIntent.putExtra("id", myUUID);
-                    startService(connectIntent);
+                    //RECONNECT DIALOG MSG
+                    AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+                    alertDialog.setTitle("BLUETOOTH DISCONNECTED");
+                    alertDialog.setMessage("Connection with device: '" + myBTConnectionDevice.getName() + "' has ended. Do you want to reconnect?");
+
+
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            //START BT CONNECTION SERVICE
+                            Intent connectIntent = new Intent(MainActivity.this, BluetoothConnectionService.class);
+                            connectIntent.putExtra("serviceType", "connect");
+                            connectIntent.putExtra("device", myBTConnectionDevice);
+                            connectIntent.putExtra("id", myUUID);
+                            startService(connectIntent);
+                        }
+                    }, 8000);
+
+                    alertDialog.show();
+
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            //CLOSE DIALOG
+                            alertDialog.cancel();
+                        }
+                    }, 1000);
+
+
 
                 }
-            }
-            //SUCCESSFULLY CONNECTED TO BLUETOOTH DEVICE
-            else if (connectionStatus.equals("connect")) {
 
-                if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
+                //SUCCESSFULLY CONNECTED TO BLUETOOTH DEVICE
+                else if (connectionStatus.equals("connect")) {
+
+                    if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                        // TODO: Consider calling
+                        //    ActivityCompat#requestPermissions
+                        // here to request the missing permissions, and then overriding
+                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                        //                                          int[] grantResults)
+                        // to handle the case where the user grants the permission. See the documentation
+                        // for ActivityCompat#requestPermissions for more details.
+                    }
+                    connectedDevice = myBTConnectionDevice.getName();
+                    connectedState = true;
+                    Log.d("MainActivity:", "Device Connected " + connectedState);
+                    Snackbar snackbar = Snackbar.make(getWindow().getDecorView(), "Connection Established: " + myBTConnectionDevice.getName(), Snackbar.LENGTH_SHORT);
+                    snackbar.show();
+                    //Toast.makeText(MainActivity.this, "Connection Established: " + myBTConnectionDevice.getName(), Toast.LENGTH_LONG).show();
                 }
-                connectedDevice = myBTConnectionDevice.getName();
-                connectedState = true;
-                Log.d("MainActivity:", "Device Connected " + connectedState);
-                Snackbar snackbar = Snackbar.make(getWindow().getDecorView(), "Connection Established: " + myBTConnectionDevice.getName(), Snackbar.LENGTH_SHORT);
-                snackbar.show();
-                //Toast.makeText(MainActivity.this, "Connection Established: " + myBTConnectionDevice.getName(), Toast.LENGTH_LONG).show();
-            }
 
-            //BLUETOOTH CONNECTION FAILED
-            else if (connectionStatus.equals("connectionFail")) {
-                Toast.makeText(MainActivity.this, "Connection Failed: " + myBTConnectionDevice.getName(),
-                        Toast.LENGTH_LONG).show();
+                //BLUETOOTH CONNECTION FAILED
+                else if (connectionStatus.equals("connectionFail")) {
+                    Toast.makeText(MainActivity.this, "Connection Failed: " + myBTConnectionDevice.getName(),
+                            Toast.LENGTH_LONG).show();
+                }
             }
-
         }
     };
 

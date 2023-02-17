@@ -347,7 +347,7 @@ public class Connect extends AppCompatActivity {
                 alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Yes",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
-                                //startBTConnection(myBTConnectionDevice, myUUID);
+                                startBTConnection(myBTConnectionDevice, myUUID);
 
                             }
                         });
