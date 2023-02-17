@@ -308,7 +308,7 @@ public class Connect extends AppCompatActivity {
         unregisterReceiver(discoverabilityBroadcastReceiver);
         unregisterReceiver(discoveryBroadcastReceiver);
         unregisterReceiver(bondingBroadcastReceiver);
-        unregisterReceiver(btConnectionReceiver);
+        //unregisterReceiver(btConnectionReceiver);
         unregisterReceiver(discoveryStartedBroadcastReceiver);
         unregisterReceiver(discoveryEndedBroadcastReceiver);
         unregisterReceiver(enableBTBroadcastReceiver);

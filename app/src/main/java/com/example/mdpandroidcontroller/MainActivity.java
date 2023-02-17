@@ -1,6 +1,7 @@
 package com.example.mdpandroidcontroller;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -9,6 +10,7 @@ import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -52,6 +54,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mdpandroidcontroller.databinding.ActivityMainBinding;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -1525,29 +1528,12 @@ public class MainActivity extends AppCompatActivity {
 
                 if (currentActivity) {
 
-                    //RECONNECT DIALOG MSG
-                    AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-                    alertDialog.setTitle("BLUETOOTH DISCONNECTED");
-                    alertDialog.setMessage("Connection with device: '" + myBTConnectionDevice.getName() + "' has ended. Do you want to reconnect?");
-                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Yes",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-
-                                    //START BT CONNECTION SERVICE
-                                    Intent connectIntent = new Intent(MainActivity.this, BluetoothConnectionService.class);
-                                    connectIntent.putExtra("serviceType", "connect");
-                                    connectIntent.putExtra("device", myBTConnectionDevice);
-                                    connectIntent.putExtra("id", myUUID);
-                                    startService(connectIntent);
-                                }
-                            });
-                    alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "No",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                    alertDialog.show();
+                    //START BT CONNECTION SERVICE
+                    Intent connectIntent = new Intent(MainActivity.this, BluetoothConnectionService.class);
+                    connectIntent.putExtra("serviceType", "connect");
+                    connectIntent.putExtra("device", myBTConnectionDevice);
+                    connectIntent.putExtra("id", myUUID);
+                    startService(connectIntent);
 
                 }
             }
@@ -1566,8 +1552,9 @@ public class MainActivity extends AppCompatActivity {
                 connectedDevice = myBTConnectionDevice.getName();
                 connectedState = true;
                 Log.d("MainActivity:", "Device Connected " + connectedState);
-                Toast.makeText(MainActivity.this, "Connection Established: " + myBTConnectionDevice.getName(),
-                        Toast.LENGTH_LONG).show();
+                Snackbar snackbar = Snackbar.make(getWindow().getDecorView(), "Connection Established: " + myBTConnectionDevice.getName(), Snackbar.LENGTH_SHORT);
+                snackbar.show();
+                //Toast.makeText(MainActivity.this, "Connection Established: " + myBTConnectionDevice.getName(), Toast.LENGTH_LONG).show();
             }
 
             //BLUETOOTH CONNECTION FAILED
@@ -1582,6 +1569,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+
+        //unregisterReceiver(btConnectionReceiver);
     }
 
     @Override
@@ -1593,6 +1582,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        //REGISTER BROADCAST RECEIVER FOR INCOMING MSG
+        LocalBroadcastManager.getInstance(this).registerReceiver(btConnectionReceiver, new IntentFilter("btConnectionStatus"));
 
         //CHECK FOR EXISTING CONNECTION
         if (connectedState) {
