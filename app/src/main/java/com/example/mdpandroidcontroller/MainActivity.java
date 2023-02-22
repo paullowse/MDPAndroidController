@@ -746,9 +746,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //executeInstruction();
-                outputNotif = String.format("START ROBOT");
+                outputNotif = String.format("run");
                 outputNotifView.setText(outputNotif);
+
                 if (Constants.connected) {
+                    Snackbar snackbar = Snackbar.make(getWindow().getDecorView(), "Start Robot", Snackbar.LENGTH_SHORT);
+                    snackbar.show();
+
                     byte[] bytes = outputNotif.getBytes(Charset.defaultCharset());
                     BluetoothChat.writeMsg(bytes);
                 }
@@ -760,9 +764,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //executeInstruction();
-                outputNotif = String.format("CALCULATE");
+                outputNotif = String.format("path");
                 outputNotifView.setText(outputNotif);
+
                 if (Constants.connected) {
+                    Snackbar snackbar = Snackbar.make(getWindow().getDecorView(), "Calculate path", Snackbar.LENGTH_SHORT);
+                    snackbar.show();
+
                     byte[] bytes = outputNotif.getBytes(Charset.defaultCharset());
                     BluetoothChat.writeMsg(bytes);
                 }
