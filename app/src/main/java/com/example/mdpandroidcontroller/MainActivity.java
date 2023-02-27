@@ -265,6 +265,8 @@ public class MainActivity extends AppCompatActivity {
         mOnBtn = findViewById(R.id.onBtn);
         mOffBtn = findViewById(R.id.offBtn);
         mDiscoverBtn = findViewById(R.id.discoverableBtn);
+        mOnBtn.setVisibility(View.GONE);
+        mOffBtn.setVisibility(View.GONE);
 
         //Check if bluetooth is available or not
         if (mBlueAdapter == null) {

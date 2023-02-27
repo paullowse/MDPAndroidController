@@ -722,16 +722,9 @@ public class Connect extends AppCompatActivity {
                 // for ActivityCompat#requestPermissions for more details.
             }
             startActivity(enableBTIntent);
-
-
         }
         //DEVICE'S BLUETOOTH ENABLED
         if (myBluetoothAdapter.isEnabled()) {
-              /*  Toast.makeText(MainActivity.this, "Bluetooth Disabled",
-                        Toast.LENGTH_LONG).show();
-                myBluetoothAdapter.disable();
-                IntentFilter BTIntent = new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED);
-                registerReceiver(enableBTBroadcastReceiver,BTIntent);*/
             //TURN DISCOVERABILITY ON
             discoverabilityON();
         }
@@ -757,9 +750,7 @@ public class Connect extends AppCompatActivity {
     }*/
 
 
-    /*
-      START DISCOVERING OTHER DEVICES
-  */
+    /* START DISCOVERING OTHER DEVICES */
     private void startSearch() {
         Log.d(TAG, "btnDiscover: Looking for unpaired devices.");
 
@@ -779,21 +770,16 @@ public class Connect extends AppCompatActivity {
 
             //check BT permission in manifest
             //checkBTPermission();
-
             myBluetoothAdapter.startDiscovery();
             Log.d(TAG, "BTDiscovery: enable discovery");
-
 
         }
         if (!myBluetoothAdapter.isDiscovering()) {
 
             //check BT permission in manifest
             //checkBTPermission();
-
             myBluetoothAdapter.startDiscovery();
             Log.d(TAG, "BTDiscovery: enable discovery");
-
-
         }
     }
 

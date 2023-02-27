@@ -117,14 +117,12 @@ public class BluetoothConnectionService extends IntentService {
         }
 
         public void run() {
-
             Log.d(TAG, "AcceptThread: Running");
 
             BluetoothSocket socket = null;
             Intent connectionStatusIntent;
 
             try {
-
                 Log.d(TAG, "Run: RFCOM server socket start....");
 
                 //Blocking call which will only return on a successful connection / exception
@@ -264,10 +262,7 @@ public class BluetoothConnectionService extends IntentService {
 
             Log.d(TAG, "Run: myConnectThread");
 
-            /*
-            Get a BluetoothSocket for a
-            connection with given BluetoothDevice
-            */
+            /* Get a BluetoothSocket for a connection with given BluetoothDevice */
             try {
                 Log.d(TAG, "ConnectThread: Trying to create InsecureRFcommSocket using UUID: " + myUUID);
                 if (ActivityCompat.checkSelfPermission(BluetoothConnectionService.this, android.Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
@@ -281,7 +276,6 @@ public class BluetoothConnectionService extends IntentService {
                 }
                 temp = myDevice.createRfcommSocketToServiceRecord(deviceUUID);
             } catch (IOException e) {
-
                 Log.d(TAG, "ConnectThread: Could not create InsecureRFcommSocket " + e.getMessage());
             }
 
@@ -291,11 +285,9 @@ public class BluetoothConnectionService extends IntentService {
             myBluetoothAdapter.cancelDiscovery();
 
             try {
-
                 Log.d(TAG, "Connecting to Device: " + myDevice);
                 //Blocking call and will only return on a successful connection / exception
                 mySocket.connect();
-
 
                 //BROADCAST CONNECTION MSG
                 connectionStatusIntent = new Intent("btConnectionStatus");
@@ -315,9 +307,7 @@ public class BluetoothConnectionService extends IntentService {
                 }
 
             } catch (IOException e) {
-
                 //Close socket on error
-
                 try {
                     mySocket.close();
 
@@ -338,12 +328,9 @@ public class BluetoothConnectionService extends IntentService {
                 //Dismiss Progress Dialog when connection established
                 //myProgressDialog.dismiss();
                 //mHandler.post(new DisplayToast(getApplicationContext(),"Connection Established With: "+myDevice.getName()));
-
-
             } catch (NullPointerException e) {
                 e.printStackTrace();
             }
-
         }
 
         public void cancel() {
@@ -373,15 +360,10 @@ public class BluetoothConnectionService extends IntentService {
         }
     }
 
-    /*
-    // CONNECTTHREAD STARTS AND ATTEMPT TO MAKE A CONNECTION WITH THE OTHER DEVICES
-    */
+    /* CONNECTTHREAD STARTS AND ATTEMPT TO MAKE A CONNECTION WITH THE OTHER DEVICES */
     public void startClientThread(BluetoothDevice device, UUID uuid) {
 
         Log.d(TAG, "startClient: Started");
-
-        //Progress Dialog
-        //myProgressDialog = ProgressDialog.show(this, "Connecting Bluetooth", "Please Wait...", true);
 
         myConnectThread = new ConnectThread(device, uuid);
         myConnectThread.start();
