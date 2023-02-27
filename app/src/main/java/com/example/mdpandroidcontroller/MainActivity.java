@@ -10,7 +10,6 @@ import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -471,7 +470,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        findViewById(R.id.button_first).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.connect_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 /*Intent intent = new Intent(getContext(), SecondFragment.class);
@@ -721,7 +720,7 @@ public class MainActivity extends AppCompatActivity {
         /**
          * finally works - resets all obstacles to the original coordinates
          */
-        Button resetObstacles = (Button) findViewById(R.id.resetObstacles);
+        ImageButton resetObstacles = (ImageButton) findViewById(R.id.resetObstacles);
         resetObstacles.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -732,7 +731,7 @@ public class MainActivity extends AppCompatActivity {
 
         //POPUP BUTTONS
         //JUST FOR OTHER TESTS rn nothing
-        Button startRobot = (Button) findViewById(R.id.start_robot);
+        ImageButton startRobot = (ImageButton) findViewById(R.id.start_robot);
         startRobot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -750,8 +749,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button stopRobot = (Button) findViewById(R.id.calculate);
-        stopRobot.setOnClickListener(new View.OnClickListener() {
+        ImageButton calculatePath = (ImageButton) findViewById(R.id.calculate);
+        calculatePath.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //executeInstruction();
@@ -772,7 +771,7 @@ public class MainActivity extends AppCompatActivity {
         /**
          * Create the robot button - make it visible and decide the coordinates.
          */
-        Button robotButton = (Button) findViewById(R.id.generateRobot);
+        ImageButton robotButton = (ImageButton) findViewById(R.id.generateRobot);
         robotButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
