@@ -517,6 +517,14 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+        findViewById(R.id.path).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println("PATH PATH PATH");
+            }
+        });
+
+
         // NEW Short press and Long Press for ALL BUTTONS
         ImageButton forwardButton = (ImageButton) findViewById(R.id.arrowForward);
         ImageButton rightButton = (ImageButton) findViewById(R.id.arrowRight);

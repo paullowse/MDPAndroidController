@@ -33,21 +33,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/circle_button"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginBottom="164dp"
-            android:background="@drawable/circlebutton"
-            android:drawableTop="@drawable/path"
-            android:drawableWidth="24dp"
-            android:drawableHeight="24dp"
-            android:gravity="center_vertical|center_horizontal"
-            android:textColor="#fff"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.486"
-            app:layout_constraintStart_toStartOf="parent" />
 
         <Button
             android:id="@+id/button_first"
@@ -151,6 +136,28 @@
             app:layout_constraintHorizontal_bias="0.2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/arrowBack" />
+
+
+
+        <ImageButton
+            android:id="@+id/path"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="21dp"
+            android:layout_marginBottom="26dp"
+            android:adjustViewBounds="true"
+            android:background="@null"
+            android:clickable="true"
+            android:focusable="true"
+            android:maxWidth="40dp"
+            android:maxHeight="40dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/path_button"
+            app:layout_constraintBottom_toTopOf="@+id/generateRobot"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.267"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintVertical_bias="0.7" />
 
         <ImageButton
             android:id="@+id/arrowForward"
@@ -553,6 +560,47 @@
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/imageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            app:layout_constraintBottom_toTopOf="@+id/resetObstacles"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <ImageView
+                android:layout_width="34px"
+                android:layout_height="34px"
+                android:src="@drawable/path"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:elevation="10dp"/>
+
+            <Button
+                android:id="@+id/circle_button"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_margin="0dp"
+                android:layout_marginBottom="164dp"
+                android:background="@drawable/circlebutton"
+                android:drawableTop="@drawable/path"
+                android:gravity="center_vertical|center_horizontal"
+                android:scaleType="fitXY"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:padding="8dp"
+                android:textColor="#fff"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.41"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
 
         <Button
             android:id="@+id/start_robot"
@@ -814,6 +862,9 @@
             app:layout_constraintEnd_toEndOf="@id/notifications"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/robot_location" />
+
+
+
 
 
 
