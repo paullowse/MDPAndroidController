@@ -268,18 +268,7 @@ public class MainActivity extends AppCompatActivity {
         mOnBtn.setVisibility(View.GONE);
         mOffBtn.setVisibility(View.GONE);
 
-        //Check if bluetooth is available or not
-        if (mBlueAdapter == null) {
-            mStatusBlueTv.setText("Bluetooth is NOT Available");
-        } else {
-            mStatusBlueTv.setText("Bluetooth is Available");
 
-            //mOnBtn.setOnClickListener(this::onClick);        // Turn on Bluetooth btn click
-            //mDiscoverBtn.setOnClickListener(this::onClick);    // Discover bluetooth btn click
-            //mOffBtn.setOnClickListener(this::onClick);         // Turn off Bluetooth btn click
-            //mPairedBtn.setOnClickListener(this::onClick);      // Get Paired devices button click
-        }
-        //mBluetoothConnection = new BluetoothConnectionService(MainActivity.this);
 
 
         //GUI
