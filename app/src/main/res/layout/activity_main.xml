@@ -33,50 +33,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/button_first"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Connect"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.083"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.976" />
+
 
         <!--    Discoverable button-->
 
         <!--    Get list of paired devices button-->
 
-        <Button
-            android:id="@+id/onBtn"
-            style="@style/Base.Widget.AppCompat.Button.Colored"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hapticFeedbackEnabled="true"
-            android:minWidth="100dp"
-            android:text="Turn On"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.9"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.976" />
 
-        <Button
-            android:id="@+id/offBtn"
-            style="@style/Base.Widget.AppCompat.Button.Colored"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:minWidth="100dp"
-            android:text="Turn Off"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.9"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.89" />
 
         <Button
             android:id="@+id/discoverableBtn"
@@ -231,6 +194,46 @@
                 android:layout_centerInParent="true"
                 android:gravity="center_horizontal|top"
                 android:text="@string/obstacle1ID_text"
+                android:textColor="#FFFFFF"
+                android:textSize="8sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/obstacle2Group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="32dp"
+            app:layout_constraintBottom_toTopOf="@+id/obstacle1Group"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <ImageView
+                android:id="@+id/obstacle2Box"
+                android:layout_width="34px"
+                android:layout_height="34px"
+                android:src="@drawable/obstacle"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/obstacle2Face"
+                android:layout_width="34px"
+                android:layout_height="34px"
+                android:layout_marginBottom="32dp"
+                android:src="@drawable/obstacle_face"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/obstacle2ID"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center_horizontal|top"
+                android:text="@string/obstacle2ID_text"
                 android:textColor="#FFFFFF"
                 android:textSize="8sp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -480,70 +483,9 @@
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/obstacle2Group"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
-            app:layout_constraintBottom_toTopOf="@+id/obstacle1Group"
-            app:layout_constraintStart_toStartOf="parent">
-
-            <ImageView
-                android:id="@+id/obstacle2Box"
-                android:layout_width="34px"
-                android:layout_height="34px"
-                android:src="@drawable/obstacle"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageView
-                android:id="@+id/obstacle2Face"
-                android:layout_width="34px"
-                android:layout_height="34px"
-                android:layout_marginBottom="32dp"
-                android:src="@drawable/obstacle_face"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/obstacle2ID"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:gravity="center_horizontal|top"
-                android:text="@string/obstacle2ID_text"
-                android:textColor="#FFFFFF"
-                android:textSize="8sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-        <Button
-            android:id="@+id/start_robot"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:text="Start"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/offBtn"
-            app:layout_constraintHorizontal_bias="0.896"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.89" />
 
-        <Button
-            android:id="@+id/calculate"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:text="Calc"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/offBtn"
-            app:layout_constraintHorizontal_bias="0.896"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.976" />
 
         <ImageView
             android:id="@+id/robotcar"
@@ -554,30 +496,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
-            android:id="@+id/generateRobot"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="148dp"
-            android:text="Generate"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/onBtn"
-            app:layout_constraintHorizontal_bias="0.10"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.976" />
 
-        <Button
-            android:id="@+id/resetObstacles"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Reset"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.083"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.89" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/popup_window"
@@ -822,15 +741,15 @@
 
         <TableLayout
             android:id="@+id/btnTableLayout"
-            android:layout_width="319dp"
-            android:layout_height="101dp"
+            android:layout_width="590dp"
+            android:layout_height="100dp"
             android:layout_marginTop="32dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.943"
+            app:layout_constraintHorizontal_bias="0.373"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.887"> <!-- stretch the second column of the layout-->
+            app:layout_constraintVertical_bias="0.98"> <!-- stretch the second column of the layout-->
 
             <!-- new first row of the table layout-->
 
@@ -855,7 +774,7 @@
                     android:src="@drawable/connect_button" />
 
                 <ImageButton
-                    android:id="@+id/reset_button"
+                    android:id="@+id/resetObstacles"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
@@ -869,7 +788,7 @@
                     android:src="@drawable/reset_button" />
 
                 <ImageButton
-                    android:id="@+id/generate_button"
+                    android:id="@+id/generateRobot"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
@@ -883,7 +802,7 @@
                     android:src="@drawable/generate_button" />
 
                 <ImageButton
-                    android:id="@+id/path_button"
+                    android:id="@+id/calculate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
@@ -897,7 +816,7 @@
                     android:src="@drawable/path_button" />
 
                 <ImageButton
-                    android:id="@+id/start_button"
+                    android:id="@+id/start_robot"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
