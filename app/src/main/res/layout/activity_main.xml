@@ -827,6 +827,75 @@
                 android:layout_height="wrap_content">
 
                 <!-- first element of the row-->
+                <ImageButton
+                    android:id="@+id/connect_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:adjustViewBounds="true"
+                    android:background="@null"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:maxWidth="40dp"
+                    android:maxHeight="40dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/connect_button" />
+
+                <ImageButton
+                    android:id="@+id/reset_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:adjustViewBounds="true"
+                    android:background="@null"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:maxWidth="40dp"
+                    android:maxHeight="40dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/reset_button" />
+
+                <ImageButton
+                    android:id="@+id/generate_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:adjustViewBounds="true"
+                    android:background="@null"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:maxWidth="40dp"
+                    android:maxHeight="40dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/generate_button" />
+
+                <ImageButton
+                    android:id="@+id/path_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:adjustViewBounds="true"
+                    android:background="@null"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:maxWidth="40dp"
+                    android:maxHeight="40dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/path_button" />
+
+                <ImageButton
+                    android:id="@+id/start_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:adjustViewBounds="true"
+                    android:background="@null"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:maxWidth="40dp"
+                    android:maxHeight="40dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/start_button" />
 
 
 
