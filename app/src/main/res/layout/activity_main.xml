@@ -34,22 +34,6 @@
         android:layout_height="match_parent">
 
         <Button
-            android:id="@+id/circle_button"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginBottom="164dp"
-            android:background="@drawable/circlebutton"
-            android:drawableTop="@drawable/path"
-            android:drawableWidth="24dp"
-            android:drawableHeight="24dp"
-            android:gravity="center_vertical|center_horizontal"
-            android:textColor="#fff"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.486"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <Button
             android:id="@+id/button_first"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -62,21 +46,6 @@
             app:layout_constraintVertical_bias="0.976" />
 
         <!--    Discoverable button-->
-        <TextView
-            android:id="@+id/statusBluetoothTv"
-            android:layout_width="223dp"
-            android:layout_height="41dp"
-            android:text="Bluetooth Status"
-            android:textAlignment="center"
-            android:textColor="#000"
-            android:textSize="20sp"
-            app:layout_anchorGravity="center"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.841"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.701" />
 
         <!--    Get list of paired devices button-->
 
@@ -132,13 +101,11 @@
             android:layout_height="0dp"
             android:layout_marginStart="50dp"
             android:layout_marginTop="100dp"
-            app:layout_constraintBottom_toTopOf="@+id/statusBluetoothTv"
             app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <Switch
             android:id="@+id/reverse_switch"
@@ -668,18 +635,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/obstacleFaceText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:gravity="center_horizontal|top"
-                android:text="@string/obstacle_face_text"
-                android:textColor="#000000"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+
 
             <Spinner
                 android:id="@+id/spinner"
@@ -772,50 +728,112 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <TextView
-            android:id="@+id/notifications"
-            android:layout_width="223dp"
-            android:layout_height="40dp"
-            android:text="@string/notifications"
-            android:textAlignment="center"
-            android:textColor="#000"
-            android:textSize="14sp"
-            app:layout_anchorGravity="center"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.841"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/statusBluetoothTv"
-            app:layout_constraintVertical_bias="0.493" />
 
-        <TextView
-            android:id="@+id/robot_location"
-            android:layout_width="100dp"
-            android:layout_height="40dp"
-            android:text="Location"
-            android:textAlignment="center"
-            android:textColor="#000"
-            android:textSize="15sp"
-            app:layout_anchorGravity="center"
+        <TableLayout
+            android:id="@+id/simpleTableLayout"
+            android:layout_width="341dp"
+            android:layout_height="285dp"
+            android:layout_marginTop="32dp"
+            android:stretchColumns="1"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/statusBluetoothTv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.788"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.701" />
+            app:layout_constraintVertical_bias="1.0"> <!-- stretch the second column of the layout-->
 
-        <TextView
-            android:id="@+id/robot_facing"
-            android:layout_width="100dp"
-            android:layout_height="40dp"
-            android:text="Facing"
-            android:textAlignment="center"
-            android:textColor="#000"
-            android:textSize="15sp"
-            app:layout_anchorGravity="center"
-            app:layout_constraintEnd_toEndOf="@id/notifications"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/robot_location" />
+            <!-- first row of the table layout-->
+
+            <TableRow
+
+                android:id="@+id/firstRow"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+                <!-- first element of the row-->
+                <TextView
+                    android:id="@+id/robot_location"
+                    android:layout_width="100dp"
+                    android:layout_height="40dp"
+                    android:text="Location"
+                    android:textAlignment="center"
+                    android:textColor="#000"
+                    android:textSize="15sp"
+                    app:layout_anchorGravity="center"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@id/statusBluetoothTv"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.701" />
+
+                <TextView
+                    android:id="@+id/obstacleFaceText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:gravity="center_horizontal|top"
+                    android:text="@string/obstacle_face_text"
+                    android:textColor="#000000"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </TableRow>
+
+            <!-- second row of the table layout-->
+            <TableRow
+
+                android:id="@+id/secondRow"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+                <!-- first element of the row-->
+                <TextView
+                    android:id="@+id/robot_facing"
+                    android:layout_width="100dp"
+                    android:layout_height="40dp"
+                    android:text="Facing"
+                    android:textAlignment="center"
+                    android:textColor="#000"
+                    android:textSize="15sp"
+                    app:layout_anchorGravity="center"
+                    app:layout_constraintEnd_toEndOf="@id/notifications"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/robot_location" />
+
+                <TextView
+                    android:id="@+id/notifications"
+                    android:layout_width="223dp"
+                    android:layout_height="40dp"
+                    android:text="@string/notifications"
+                    android:textAlignment="center"
+                    android:textColor="#000"
+                    android:textSize="14sp"
+                    app:layout_anchorGravity="center"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.841"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/statusBluetoothTv"
+                    app:layout_constraintVertical_bias="0.493" />
+
+            </TableRow>
+
+            <!-- third row of the table layout-->
+
+            <TableRow
+                android:id="@+id/thirdRow"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+                <!-- first element of the row-->
 
 
+
+
+            </TableRow>
+
+        </TableLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
