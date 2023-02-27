@@ -635,6 +635,19 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
+            <TextView
+                android:id="@+id/obstacleFaceText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center_horizontal|top"
+                android:text="@string/obstacle_face_text"
+                android:textColor="#000000"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
 
 
             <Spinner
@@ -730,17 +743,16 @@
 
 
         <TableLayout
-            android:id="@+id/simpleTableLayout"
-            android:layout_width="341dp"
-            android:layout_height="285dp"
-            android:layout_marginTop="32dp"
+            android:id="@+id/textTableLayout"
+            android:layout_width="366dp"
+            android:layout_height="106dp"
             android:stretchColumns="1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.788"
+            app:layout_constraintHorizontal_bias="0.931"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0"> <!-- stretch the second column of the layout-->
+            app:layout_constraintVertical_bias="0.772"> <!-- stretch the second column of the layout-->
 
             <!-- first row of the table layout-->
 
@@ -767,17 +779,20 @@
                     app:layout_constraintVertical_bias="0.701" />
 
                 <TextView
-                    android:id="@+id/obstacleFaceText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:gravity="center_horizontal|top"
-                    android:text="@string/obstacle_face_text"
-                    android:textColor="#000000"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:id="@+id/notifications"
+                    android:layout_width="223dp"
+                    android:layout_height="40dp"
+                    android:text="@string/notifications"
+                    android:textAlignment="center"
+                    android:textColor="#000"
+                    android:textSize="14sp"
+                    app:layout_anchorGravity="center"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.841"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@+id/statusBluetoothTv"
+                    app:layout_constraintVertical_bias="0.493" />
+
 
             </TableRow>
 
@@ -785,8 +800,8 @@
             <TableRow
 
                 android:id="@+id/secondRow"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
                 <!-- first element of the row-->
                 <TextView
@@ -802,27 +817,25 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/robot_location" />
 
-                <TextView
-                    android:id="@+id/notifications"
-                    android:layout_width="223dp"
-                    android:layout_height="40dp"
-                    android:text="@string/notifications"
-                    android:textAlignment="center"
-                    android:textColor="#000"
-                    android:textSize="14sp"
-                    app:layout_anchorGravity="center"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.841"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/statusBluetoothTv"
-                    app:layout_constraintVertical_bias="0.493" />
-
             </TableRow>
+        </TableLayout>
 
-            <!-- third row of the table layout-->
+        <TableLayout
+            android:id="@+id/btnTableLayout"
+            android:layout_width="319dp"
+            android:layout_height="101dp"
+            android:layout_marginTop="32dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.943"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.887"> <!-- stretch the second column of the layout-->
+
+            <!-- new first row of the table layout-->
 
             <TableRow
-                android:id="@+id/thirdRow"
+                android:id="@+id/btnfirstRow"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content">
 
@@ -896,8 +909,6 @@
                     android:maxHeight="40dp"
                     android:scaleType="fitCenter"
                     android:src="@drawable/start_button" />
-
-
 
 
             </TableRow>
