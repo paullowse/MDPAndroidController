@@ -34,11 +34,9 @@
         android:layout_height="match_parent">
 
 
-
         <!--    Discoverable button-->
 
         <!--    Get list of paired devices button-->
-
 
 
         <Button
@@ -484,9 +482,6 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-
-
-
         <ImageView
             android:id="@+id/robotcar"
             android:layout_width="138px"
@@ -495,7 +490,6 @@
             android:src="@drawable/robot"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
 
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -566,7 +560,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
 
 
             <Spinner
@@ -670,8 +663,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.931"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.772"> <!-- stretch the second column of the layout-->
+            app:layout_constraintTop_toBottomOf="@+id/gridView"
+            app:layout_constraintVertical_bias="0.292"> <!-- stretch the second column of the layout-->
 
             <!-- first row of the table layout-->
 
@@ -741,9 +734,10 @@
 
         <TableLayout
             android:id="@+id/btnTableLayout"
-            android:layout_width="590dp"
-            android:layout_height="100dp"
+            android:layout_width="560dp"
+            android:layout_height="61dp"
             android:layout_marginTop="32dp"
+            android:background="@color/teal_200"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.373"
@@ -752,16 +746,18 @@
             app:layout_constraintVertical_bias="0.98"> <!-- stretch the second column of the layout-->
 
             <!-- new first row of the table layout-->
-
             <TableRow
                 android:id="@+id/btnfirstRow"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
+                android:layout_width="575dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp">
 
                 <!-- first element of the row-->
                 <ImageButton
                     android:id="@+id/connect_button"
-                    android:layout_width="wrap_content"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
                     android:adjustViewBounds="true"
@@ -775,7 +771,7 @@
 
                 <ImageButton
                     android:id="@+id/resetObstacles"
-                    android:layout_width="wrap_content"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
                     android:adjustViewBounds="true"
@@ -789,7 +785,7 @@
 
                 <ImageButton
                     android:id="@+id/generateRobot"
-                    android:layout_width="wrap_content"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
                     android:adjustViewBounds="true"
@@ -803,7 +799,7 @@
 
                 <ImageButton
                     android:id="@+id/calculate"
-                    android:layout_width="wrap_content"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
                     android:adjustViewBounds="true"
@@ -817,7 +813,7 @@
 
                 <ImageButton
                     android:id="@+id/start_robot"
-                    android:layout_width="wrap_content"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="12dp"
                     android:adjustViewBounds="true"
@@ -836,7 +832,6 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

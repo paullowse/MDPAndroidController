@@ -261,12 +261,6 @@ public class MainActivity extends AppCompatActivity {
         //LocalBroadcastManager.getInstance(this).registerReceiver(incomingMsgReceiver, new IntentFilter("IncomingMsg"));
 
 
-        mOnBtn = findViewById(R.id.onBtn);
-        mOffBtn = findViewById(R.id.offBtn);
-        mDiscoverBtn = findViewById(R.id.discoverableBtn);
-        mOnBtn.setVisibility(View.GONE);
-        mOffBtn.setVisibility(View.GONE);
-
 
 
 
@@ -480,20 +474,6 @@ public class MainActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(MainActivity.this, Connect.class);
                 startActivity(intent);
-            }
-        });
-
-        findViewById(R.id.onBtn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                turnonbluetooth();   // ((MainActivity)getActivity()).turnonbluetooth();
-            }
-        });
-
-        findViewById(R.id.offBtn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                turnoffbluetooth();  // ((MainActivity)getActivity()).
             }
         });
 
