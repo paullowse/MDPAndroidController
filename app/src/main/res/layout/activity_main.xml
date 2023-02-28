@@ -679,7 +679,7 @@
                 <TextView
                     android:id="@+id/notificationsHeader"
                     android:layout_height="20dp"
-                    android:text="@string/notifications_header"
+                    android:text="Notifications"
                     android:textAlignment="center"
                     android:textColor="#000"
                     android:textSize="16sp"

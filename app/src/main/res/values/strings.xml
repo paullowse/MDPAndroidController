@@ -18,6 +18,7 @@
     <string name="obstacle6ID_text">6</string>
     <string name="obstacle7ID_text">7</string>
     <string name="obstacle8ID_text">8</string>
+    <string name="notifications">Notifications</string>
     <string name="notifications_header">Notifications</string>
     <string name="robot_location_header">Robot Location</string>
     <string name="robot_facing_header">Robot Facing</string>
