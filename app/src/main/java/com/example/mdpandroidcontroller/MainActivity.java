@@ -1297,6 +1297,7 @@ public class MainActivity extends AppCompatActivity {
         //map.printObstacleCoord();
         if (print) {
             outputNotifView.setText("Obstacles Reset");
+            map.reset();   //remove all cells.
         }
         map.removeAllObstacles();
 
@@ -1307,7 +1308,7 @@ public class MainActivity extends AppCompatActivity {
         //map.setOldRobotCoord(map.getCurCoord()[0],map.getCurCoord()[1]);
         //robot_popup.setVisibility(View.INVISIBLE);
 
-        map.reset();   //remove all cells.
+
         map.invalidate();
 
     }

@@ -33,7 +33,7 @@ public class Cell {
         obstacleColor.setColor(Color.BLACK);
         robotColor.setColor(Color.CYAN);
         testColor.setColor(Color.RED);
-        unexploredCellColor.setColor(Color.LTGRAY);
+        unexploredCellColor.setColor(Color.BLACK);  //Color.LTGRAY
         exploredCellColor.setColor(Color.WHITE);
     }
     public void setType(String type) {

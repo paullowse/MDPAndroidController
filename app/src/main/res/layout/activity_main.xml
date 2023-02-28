@@ -36,7 +36,7 @@
 
         <!--    Discoverable button-->
 
-        <!--    Get list of paired devices button-->
+        <!--    Get list of paired devices button #5FB6F3-->
 
 
 
@@ -69,11 +69,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <!--    COLOR #5FB6F3-->
         <ImageView
             android:id="@+id/robotcar"
             android:layout_width="138px"
             android:layout_height="138px"
-            android:background="#5FB6F3"
+            android:background="@color/teal_200"
             android:src="@drawable/robot"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -679,13 +680,14 @@
                 <TextView
                     android:id="@+id/notificationsHeader"
                     android:layout_height="20dp"
+                    android:layout_span="2"
+                    android:fontFamily="@font/open_sans"
                     android:text="@string/notifications_header"
                     android:textAlignment="center"
                     android:textColor="#000"
                     android:textSize="16sp"
-                    android:layout_span="2"
-                    app:layout_anchorGravity="center"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold"
+                    app:layout_anchorGravity="center" />
 
 
             </TableRow>
@@ -701,11 +703,12 @@
                 <TextView
                     android:id="@+id/notifications"
                     android:layout_height="40dp"
+                    android:layout_span="2"
+                    android:fontFamily="serif"
                     android:text=""
                     android:textAlignment="center"
                     android:textColor="#000"
                     android:textSize="14sp"
-                    android:layout_span="2"
                     app:layout_anchorGravity="center" />
 
 
@@ -722,6 +725,7 @@
                 <TextView
                     android:id="@+id/robot_location_header"
                     android:layout_height="20dp"
+                    android:fontFamily="@font/open_sans"
                     android:text="@string/robot_location_header"
                     android:textAlignment="center"
                     android:textColor="#000"
@@ -733,6 +737,7 @@
                 <TextView
                     android:id="@+id/robot_facing_header"
                     android:layout_height="20dp"
+                    android:fontFamily="@font/open_sans"
                     android:text="@string/robot_facing_header"
                     android:textAlignment="center"
                     android:textColor="#000"
@@ -752,15 +757,17 @@
                 <TextView
                     android:id="@+id/robot_location"
                     android:layout_height="40dp"
+                    android:fontFamily="serif"
                     android:text=""
                     android:textAlignment="center"
                     android:textColor="#000"
                     android:textSize="14sp"
-                    app:layout_anchorGravity="center"/>
+                    app:layout_anchorGravity="center" />
 
                 <TextView
                     android:id="@+id/robot_facing"
                     android:layout_height="40dp"
+                    android:fontFamily="serif"
                     android:text=""
                     android:textAlignment="center"
                     android:textColor="#000"
@@ -875,16 +882,20 @@
                     android:layout_width="100dp"
                     android:layout_height="40dp"
                     android:layout_marginStart="12dp"
+                    android:fontFamily="@font/open_sans"
                     android:text="Bluetooth"
                     android:textAlignment="center"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                     android:textColor="#000"
                     android:textSize="15sp"
                     app:layout_anchorGravity="center" />
+
                 <TextView
                     android:id="@+id/reset_Text"
                     android:layout_width="100dp"
                     android:layout_height="40dp"
                     android:layout_marginStart="12dp"
+                    android:fontFamily="@font/roboto"
                     android:text="Reset"
                     android:textAlignment="center"
                     android:textColor="#000"

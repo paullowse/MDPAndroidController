@@ -42,6 +42,7 @@ public class Map extends View { //implements Serializable
     private static int[] oldCoord = new int[]{-1, -1};
 
     private Paint black = new Paint();
+    private Paint white = new Paint();
     private Paint unexploredCellColor = new Paint();
     private Paint robotColor = new Paint();
 
@@ -50,8 +51,9 @@ public class Map extends View { //implements Serializable
         super(c);
         // init map???
         black.setStyle(Paint.Style.FILL_AND_STROKE);
-        unexploredCellColor.setColor(Color.LTGRAY);
+        unexploredCellColor.setColor(0xFF92E9DC); // Color.LTGRAY
         robotColor.setColor(Color.RED); //GREEN
+        white.setColor(Color.WHITE);
     }
 
     public Map(Context context, @Nullable AttributeSet attrs) {
@@ -60,8 +62,9 @@ public class Map extends View { //implements Serializable
         this.attrs = attrs;
 
         black.setStyle(Paint.Style.FILL_AND_STROKE);
-        unexploredCellColor.setColor(Color.LTGRAY);
+        unexploredCellColor.setColor(0xFF92E9DC);
         robotColor.setColor(Color.RED);
+        white.setColor(Color.WHITE);
 
     }
 
@@ -132,7 +135,7 @@ public class Map extends View { //implements Serializable
      */
     private void drawHorizontalLines(Canvas canvas) {
         for (int y = 0; y <= ROW; y++)
-            canvas.drawLine(cells[1][y].startX, cells[1][y].startY - (cellSize / 30), cells[ROW][y].endX, cells[15][y].startY - (cellSize / 30), black);
+            canvas.drawLine(cells[1][y].startX, cells[1][y].startY - (cellSize / 30), cells[ROW][y].endX, cells[15][y].startY - (cellSize / 30), white);
     }
 
     /**
@@ -141,7 +144,7 @@ public class Map extends View { //implements Serializable
      */
     private void drawVerticalLines(Canvas canvas) {
         for (int x = 0; x <= COL; x++)
-            canvas.drawLine(cells[x][0].startX - (cellSize / 30) + cellSize, cells[x][0].startY - (cellSize / 30), cells[x][0].startX - (cellSize / 30) + cellSize, cells[x][19].endY + (cellSize / 30), black);
+            canvas.drawLine(cells[x][0].startX - (cellSize / 30) + cellSize, cells[x][0].startY - (cellSize / 30), cells[x][0].startX - (cellSize / 30) + cellSize, cells[x][19].endY + (cellSize / 30), white);
     }
 
 
