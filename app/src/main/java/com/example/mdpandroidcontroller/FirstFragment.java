@@ -165,7 +165,7 @@ public class FirstFragment extends Fragment {
         //System.out.println(savedInstanceState == null);
 
 
-        incomingMessages = (TextView) view.findViewById(R.id.statusBluetoothTv);
+        //incomingMessages = (TextView) view.findViewById(R.id.statusBluetoothTv);
         messages = new StringBuilder();
         LocalBroadcastManager.getInstance(FirstFragment.this.getActivity()).registerReceiver(mReceiver, new IntentFilter("incomingMessage"));
 

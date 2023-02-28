@@ -250,7 +250,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
 
-        mStatusBlueTv = findViewById(R.id.statusBluetoothTv);
+        //mStatusBlueTv = findViewById(R.id.statusBluetoothTv);
 
         //REGISTER BROADCAST RECEIVER FOR INCOMING MSG
         LocalBroadcastManager.getInstance(this).registerReceiver(btConnectionReceiver, new IntentFilter("btConnectionStatus"));

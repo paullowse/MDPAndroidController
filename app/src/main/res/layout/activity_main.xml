@@ -73,7 +73,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="10dp"
             android:text="Reverse"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.2"
@@ -84,7 +84,7 @@
             android:id="@+id/arrowForward"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="21dp"
+            android:layout_marginTop="5dp"
             android:layout_marginBottom="26dp"
             android:adjustViewBounds="true"
             android:background="@null"
@@ -652,9 +652,9 @@
 
         <TableLayout
             android:id="@+id/textTableLayout"
-            android:layout_width="366dp"
-            android:layout_height="106dp"
-            android:stretchColumns="1"
+            android:layout_width="300dp"
+            android:layout_height="120dp"
+            android:stretchColumns="0,1"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.931"
@@ -670,36 +670,38 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content">
 
-                <!-- first element of the row-->
-                <TextView
-                    android:id="@+id/robot_location"
-                    android:layout_width="100dp"
-                    android:layout_height="40dp"
-                    android:text="Location"
-                    android:textAlignment="center"
-                    android:textColor="#000"
-                    android:textSize="15sp"
-                    app:layout_anchorGravity="center"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@id/statusBluetoothTv"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.701" />
+                <!-- first element of the row: 100,223-->
 
                 <TextView
-                    android:id="@+id/notifications"
-                    android:layout_width="223dp"
-                    android:layout_height="40dp"
+                    android:id="@+id/notificationsHeader"
+                    android:layout_height="20dp"
                     android:text="@string/notifications"
                     android:textAlignment="center"
                     android:textColor="#000"
                     android:textSize="14sp"
-                    app:layout_anchorGravity="center"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.841"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/statusBluetoothTv"
-                    app:layout_constraintVertical_bias="0.493" />
+                    android:layout_span="2"
+                    app:layout_anchorGravity="center" />
+
+
+            </TableRow>
+
+            <TableRow
+
+                android:id="@+id/secondRow"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+                <!-- first element of the row: 100,223-->
+
+                <TextView
+                    android:id="@+id/notifications"
+                    android:layout_height="40dp"
+                    android:text=""
+                    android:textAlignment="center"
+                    android:textColor="#000"
+                    android:textSize="14sp"
+                    android:layout_span="2"
+                    app:layout_anchorGravity="center" />
 
 
             </TableRow>
@@ -707,23 +709,55 @@
             <!-- second row of the table layout-->
             <TableRow
 
-                android:id="@+id/secondRow"
+                android:id="@+id/thirdRow"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <!-- first element of the row-->
                 <TextView
-                    android:id="@+id/robot_facing"
-                    android:layout_width="100dp"
-                    android:layout_height="40dp"
-                    android:text="Facing"
+                    android:id="@+id/robot_location_header"
+                    android:layout_height="20dp"
+                    android:text="Location"
                     android:textAlignment="center"
                     android:textColor="#000"
                     android:textSize="15sp"
                     app:layout_anchorGravity="center"
-                    app:layout_constraintEnd_toEndOf="@id/notifications"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/robot_location" />
+                    app:layout_constraintVertical_bias="0.701" />
+
+                <TextView
+                    android:id="@+id/robot_facing_header"
+                    android:layout_height="20dp"
+                    android:text="Facing"
+                    android:textAlignment="center"
+                    android:textColor="#000"
+                    android:textSize="15sp"
+                    app:layout_anchorGravity="center" />
+
+            </TableRow>
+
+            <TableRow
+
+                android:id="@+id/fourthRow"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <!-- first element of the row-->
+                <TextView
+                    android:id="@+id/robot_location"
+                    android:layout_height="40dp"
+                    android:text=""
+                    android:textAlignment="center"
+                    android:textColor="#000"
+                    android:textSize="15sp"
+                    app:layout_anchorGravity="center"/>
+
+                <TextView
+                    android:id="@+id/robot_facing"
+                    android:layout_height="40dp"
+                    android:text=""
+                    android:textAlignment="center"
+                    android:textColor="#000"
+                    android:textSize="15sp" />
 
             </TableRow>
         </TableLayout>
