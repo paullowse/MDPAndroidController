@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,7 +58,7 @@ public class Connect extends AppCompatActivity {
     //VIEWS ANN BUTTONS
     ListView lvNewDevices;
     static ListView lvPairedDevices;
-    Button btnSend;
+    ImageButton btnSend;
     EditText sendMessage;
     Button btnSearch;
     StringBuilder incomingMsg;
