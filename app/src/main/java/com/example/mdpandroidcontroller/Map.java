@@ -309,6 +309,18 @@ public class Map extends View { //implements Serializable
         //System.out.println(y);
         //System.out.println(column);
         //System.out.println(row);
+
+        if (column < 1) {
+            column = Math.max(column,0);
+        } else {
+            column = Math.min(column,COL-1);
+        }
+        if (row< 1) {
+            row = Math.max(row,0);
+        } else {
+            row = Math.min(row,ROW-1);
+        }
+
         cells[column][row].setType("obstacle");
 
         setObstacleCoord(new int[] {column, row});

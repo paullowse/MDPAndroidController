@@ -266,7 +266,7 @@ public class MainActivity extends AppCompatActivity {
 
         //GUI
 
-        map = findViewById(R.id.gridView);
+        map = findViewById(R.id.mapView);
         for (int i = 0; i < originalObstacleCoords.length; i++) {
             for (int j = 0; j < originalObstacleCoords[i].length; j++) {
                 originalObstacleCoords[i][j] = -1;
@@ -441,7 +441,7 @@ public class MainActivity extends AppCompatActivity {
                 //    obstacleViews.get(i).setY(originalObstacleCoords[i][1]);
                 //}
 
-                reset();
+                reset(false);
 
 
                 //System.out.println("obstacle1 dimensions");
@@ -704,7 +704,7 @@ public class MainActivity extends AppCompatActivity {
         resetObstacles.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                reset();
+                reset(true);
             }
         });
 
@@ -1016,6 +1016,8 @@ public class MainActivity extends AppCompatActivity {
                             //System.out.println("IN MAP");
                             map.removeObstacleUsingCoord(pastX - map.getX() + map.getCellSize() / 2, pastY - map.getY() + map.getCellSize() / 2);
                         }
+
+
                         // to add the new obstacle black square - returns the coordinates, col and row --> (x, y, col, row)
                         int[] newObstCoordColRow = map.updateObstacleOnBoard(x, y);
 
@@ -1160,7 +1162,7 @@ public class MainActivity extends AppCompatActivity {
         locationNotif = String.format("X: %d, Y: %d\n", robotImageCoord[0], robotImageCoord[1]);
         locationNotifView.setText(locationNotif);
 
-        facingNotif = String.format("Facing: %s\n", map.convertRotationToFacing(rotation));
+        facingNotif = String.format("%s\n", map.convertRotationToFacing(rotation));
         facingNotifView.setText(facingNotif);
     }
 
@@ -1273,7 +1275,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void reset() {
+    public void reset(boolean print) {
         for (int i = 0; i < obstacleViews.size(); i++) {
             obstacleViews.get(i).setX(originalObstacleCoords[i][0]);
             obstacleViews.get(i).setY(originalObstacleCoords[i][1]);
@@ -1293,6 +1295,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //map.printObstacleCoord();
+        if (print) {
+            outputNotifView.setText("Obstacles Reset");
+        }
         map.removeAllObstacles();
 
 
