@@ -20,6 +20,7 @@ public class Constants {
     public static final Integer FIVE = 5;
     public static final Integer FIFTEEN = 15;
     public static final Integer TWENTY = 20;
+    public static final Integer TWENTY_ONE = 21;
     public static final String NOT_AVAILABLE = "NOT AVAILABlE";
     public static final String MDF_ALL_F_STRING = "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
     public static final String NONE = "None";
