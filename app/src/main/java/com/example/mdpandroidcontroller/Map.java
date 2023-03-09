@@ -23,7 +23,7 @@ public class Map extends View { //implements Serializable
     private boolean mapDrawn = false;
     private static ArrayList<String[]> arrowCoord = new ArrayList<>();
     private static Cell[][] cells;
-    private static final int COL = Constants.TWENTY_ONE;
+    private static final int COL = Constants.TWENTY;
     private static final int ROW = Constants.TWENTY;
     private static float cellSize;   // IDK WHAT THIS SHOULD BE
     private static boolean canDrawRobot = false;  // why false? - at first cant do
@@ -316,7 +316,7 @@ public class Map extends View { //implements Serializable
         if (column < 1) {
             column = Math.max(column,0);
         } else {
-            column = Math.min(column,COL-1);
+            column = Math.min(column,COL);
         }
         if (row< 1) {
             row = Math.max(row,0);
