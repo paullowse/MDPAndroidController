@@ -316,7 +316,7 @@ public class Map extends View { //implements Serializable
         if (column < 1) {
             column = Math.max(column,0);
         } else {
-            column = Math.min(column,COL-1);
+            column = Math.min(column,COL);
         }
         if (row< 1) {
             row = Math.max(row,0);
