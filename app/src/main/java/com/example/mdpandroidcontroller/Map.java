@@ -1,8 +1,6 @@
 package com.example.mdpandroidcontroller;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -25,17 +23,17 @@ public class Map extends View { //implements Serializable
     private static Cell[][] cells;
     private static final int COL = Constants.TWENTY;
     private static final int ROW = Constants.TWENTY;
-    private static float cellSize;   // IDK WHAT THIS SHOULD BE
-    private static boolean canDrawRobot = false;  // why false? - at first cant do
+    private static float cellSize;
+    private static boolean canDrawRobot = false;
     private static String robotMovement = Constants.NONE; // the direction its going
     private static String robotFacing = Constants.NONE;
 
-    private static boolean robotReverse = false;  // at first alw move forward
+    private static boolean robotReverse = false;  // at first always move forward
     private static int robotSize = 3;
     private static int oldFacing;
     private static int newFacing;
     private static String[] robotFacingEnum = new String[] {Constants.NORTH, Constants.EAST, Constants.SOUTH, Constants.WEST};
-    private static int[] curCoord = new int[]{1, 1};     // CHANGE THIS WAY OF IMPLEMENTATION... - when u drag the robot thing
+    private static int[] curCoord = new int[]{1, 1};
 
     private static ArrayList<int[]> obstacleCoord = new ArrayList<>();
 
@@ -49,7 +47,6 @@ public class Map extends View { //implements Serializable
 
     public Map(Context c) {
         super(c);
-        // init map???
         black.setStyle(Paint.Style.FILL_AND_STROKE);
         unexploredCellColor.setColor(0xFFe2f2fc); // light teal: 0xFFD4F6F2
         robotColor.setColor(Color.RED); //GREEN
@@ -65,12 +62,11 @@ public class Map extends View { //implements Serializable
         unexploredCellColor.setColor(0xFFe2f2fc);
         robotColor.setColor(Color.RED);
         lineColor.setColor(0xFFBDBDBD);
-
     }
 
 
     /**
-     * where u start everything?
+     * where u start everything
      * @param canvas
      */
     @Override
@@ -85,12 +81,11 @@ public class Map extends View { //implements Serializable
 
         }
 
-        drawGridNumber(canvas);
+        drawGridAxes(canvas);
         drawObstacles(canvas, obstacleCoord);
         if (getCanDrawRobot()) {
             drawRobot(canvas, curCoord);
         }
-        //drawArrow(canvas, arrowCoord);
         drawCell(canvas);
         drawHorizontalLines(canvas);
         drawVerticalLines(canvas);
@@ -101,32 +96,42 @@ public class Map extends View { //implements Serializable
         this.calculateDimension();
         cellSize = this.getCellSize();
 
-        for (int x = 0; x <= COL; x++)
-            for (int y = 0; y <= ROW; y++)
+        for (int x = 0; x <= COL; x++) {
+            for (int y = 0; y <= ROW; y++) {
                 cells[x][y] = new Cell(x * cellSize + (cellSize / 30), y * cellSize + (cellSize / 30), (x + 1) * cellSize, (y + 1) * cellSize, unexploredCellColor, "unexplored");
+            }
+        }
     }
 
 
     /**
-     * I dont understand the image part,
-     * Believe that if: is for empty cells, so you just draw the rectangle.
-     * However for else: when there is an image (or obstacle?), then there is white text on it.
+     * Drawing of cells
      * @param canvas
      */
     public void drawCell(Canvas canvas) {
-        for (int x = 1; x <= COL; x++)
-            for (int y = 0; y < ROW; y++)
-                for (int i = 0; i < robotSize; i++)
-                    if (!cells[x][y].type.equals("image") && cells[x][y].getId() == -1) {
-                        canvas.drawRect(cells[x][y].startX, cells[x][y].startY, cells[x][y].endX, cells[x][y].endY, cells[x][y].paint);
-                    } else {
-                        Paint textPaint = new Paint();
-                        textPaint.setTextSize(20);
-                        textPaint.setColor(Color.WHITE);
-                        textPaint.setTextAlign(Paint.Align.CENTER);
-                        canvas.drawRect(cells[x][y].startX, cells[x][y].startY, cells[x][y].endX, cells[x][y].endY, cells[x][y].paint);
-                        canvas.drawText(String.valueOf(cells[x][y].getId()),(cells[x][y].startX+cells[x][y].endX)/2, cells[x][y].endY + (cells[x][y].startY-cells[x][y].endY)/4, textPaint);
-                    }
+        for (int x = 1; x <= COL; x++) {
+            for (int y = 0; y < ROW; y++) {
+                for (int i = 0; i < robotSize; i++) {
+                    Paint textPaint = new Paint();
+                    textPaint.setTextSize(20);
+                    textPaint.setColor(Color.WHITE);
+                    textPaint.setTextAlign(Paint.Align.CENTER);
+                    canvas.drawText(String.valueOf(cells[x][y].getId()),(cells[x][y].startX+cells[x][y].endX)/2, cells[x][y].endY + (cells[x][y].startY-cells[x][y].endY)/4, textPaint);
+                    canvas.drawRect(cells[x][y].startX, cells[x][y].startY, cells[x][y].endX, cells[x][y].endY, cells[x][y].paint);
+                }
+            }
+        }
+    }
+
+
+
+    /**
+     * Draws vertical lines for each of the cells
+     * @param canvas
+     */
+    private void drawVerticalLines(Canvas canvas) {
+        for (int x = 0; x <= COL; x++)
+            canvas.drawLine(cells[x][0].startX - (cellSize / 30) + cellSize, cells[x][0].startY - (cellSize / 30), cells[x][0].startX - (cellSize / 30) + cellSize, cells[x][19].endY + (cellSize / 30), lineColor);
     }
 
     /**
@@ -138,17 +143,18 @@ public class Map extends View { //implements Serializable
             canvas.drawLine(cells[1][y].startX, cells[1][y].startY - (cellSize / 30), cells[ROW][y].endX, cells[15][y].startY - (cellSize / 30), lineColor); // black lines
     }
 
-    /**
-     * Draws vertical lines for each of the cells
-     * @param canvas
-     */
-    private void drawVerticalLines(Canvas canvas) {
-        for (int x = 0; x <= COL; x++)
-            canvas.drawLine(cells[x][0].startX - (cellSize / 30) + cellSize, cells[x][0].startY - (cellSize / 30), cells[x][0].startX - (cellSize / 30) + cellSize, cells[x][19].endY + (cellSize / 30), lineColor);
+
+
+    public void drawRobot(Canvas canvas, int[] curCoord) {
+        int androidRowCoord = this.convertRow(curCoord[1]);
+
+        // for the shading of square - USED TO BE -1 to + 1
+        for (int x = curCoord[0]; x <= curCoord[0] + 2; x++)
+            for (int y = androidRowCoord - 2; y <= androidRowCoord; y++)
+                cells[x][y].setType("robot");
     }
 
-
-    private void drawGridNumber(Canvas canvas) {
+    private void drawGridAxes(Canvas canvas) {
         for (int x = 1; x <= COL; x++) {
             if (x > 9)
                 canvas.drawText(Integer.toString(x-1), cells[x][20].startX + (cellSize / 5), cells[x][20].startY + (cellSize / 3), black);
@@ -163,23 +169,7 @@ public class Map extends View { //implements Serializable
         }
     }
 
-    // RANDOM OLD FUNC
-    //private void drawArrow(Canvas canvas, ArrayList<String[]> arrowCoord)
-
-
-
-    // DOESNT WORK
-    public void drawRobot(Canvas canvas, int[] curCoord) {
-        int androidRowCoord = this.convertRow(curCoord[1]);
-
-        // for the shading of square - USED TO BE -1 to + 1
-        for (int x = curCoord[0]; x <= curCoord[0] + 2; x++)
-            for (int y = androidRowCoord - 2; y <= androidRowCoord; y++)
-                cells[x][y].setType("robot");
-    }
-
     public void drawObstacles(Canvas canvas, ArrayList<int[]> obstacles) {
-        //ArrayList<int[]> obstacles = getObstacleCoord();
         for (int i = 0; i < obstacles.size(); i++) {
             cells[obstacles.get(i)[0]][obstacles.get(i)[1]].setType("obstacle");
         }
@@ -288,8 +278,6 @@ public class Map extends View { //implements Serializable
      */
     public int[] setRobotImagePosition(int column, int row, float left, float top) {
 
-        // - 1 for col and row just to accomodate to the original code // change to 0 and -2?? LOOK INTO THIS...
-
         int[] newRobotLocation= {(int) ((column) * cellSize + left), (int) ((row - 2) * cellSize + top)};
 
         return newRobotLocation;
@@ -299,19 +287,8 @@ public class Map extends View { //implements Serializable
 
 
     public int[] updateObstacleOnBoard(int x, int y) {
-
-        // NOTES: one cell size worth is the grid...
-        //System.out.println(cells[1][0].startX + cellSize / 2);
-        //System.out.println(cells[1][0].startY + cellSize / 2);
-
         int column = (int) Math.floor(x / cellSize);
         int row = (int) Math.floor(y / cellSize);
-
-        //System.out.println("add obstacle");
-        //System.out.println(x);
-        //System.out.println(y);
-        //System.out.println(column);
-        //System.out.println(row);
 
         if (column < 1) {
             column = Math.max(column,0);
@@ -342,14 +319,7 @@ public class Map extends View { //implements Serializable
     public void removeObstacleUsingCoord(float originalX, float originalY) {
         int column = (int) Math.floor(originalX / cellSize);
         int row = (int) Math.floor(originalY / cellSize);
-
-        //System.out.println(originalX);
-        //System.out.println(originalY);
-        //System.out.println(column);
-        //System.out.println(row);
         removeObstacleCoord(new int[] {column, row});
-
-        //printObstacleCoord();
     }
 
     public int[] getColRowFromXY(float x, float y, float mapLeft, float mapTop) {
@@ -365,7 +335,7 @@ public class Map extends View { //implements Serializable
 
 
 
-    /** its to make the old tracks...
+    /** its to make the old tracks
      * Saves the old robot coords and also resets the cell to the old one
      * (a little inefficient as most of the robot cells will still be robot)
      */
@@ -377,9 +347,7 @@ public class Map extends View { //implements Serializable
             for (int y = oldRow - 2; y <= oldRow; y++)
                 cells[x][y].setType("explored");
     }
-
-
-
+    
 
     /**
      * Called when create cell called --> to set the size of the cells --> so that it will fit the size?
@@ -387,8 +355,7 @@ public class Map extends View { //implements Serializable
      */
     private void calculateDimension() {
         this.setCellSize(getWidth()/(COL+1));
-
-    } // removed col +1
+    }
 
     /**
      * cos row 5 is array[][15]

@@ -434,20 +434,7 @@ public class MainActivity extends AppCompatActivity {
                     originalObstacleCoords[i][1] = (int) obstacleViews.get(i).getTop();
                 }
                 printOriginalObstacleCoords();
-
-                //SET at correct place
-                //for (int i = 0; i < obstacleViews.size(); i++) {
-                //    obstacleViews.get(i).setX(originalObstacleCoords[i][0]);
-                //    obstacleViews.get(i).setY(originalObstacleCoords[i][1]);
-                //}
-
                 reset(false);
-
-
-                //System.out.println("obstacle1 dimensions");
-                //System.out.println(obstacle1Box.getLayoutParams().height);
-                //System.out.println(obstacle1Box.getLayoutParams().width);
-
             }
         });
 
@@ -480,7 +467,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.discoverableBtn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bluetooth_discoverable(); // ((MainActivity)getActivity()).
+                bluetooth_discoverable();
             }
         });
 
@@ -536,8 +523,6 @@ public class MainActivity extends AppCompatActivity {
                 }
                 handler.removeCallbacks(runnable);
                 handler.post(runnable);
-                //String longPress = "null";
-                //byte[] bytes = "f".getBytes(Charset.defaultCharset());
                 String instruction2 = "_";
 
                 switch (view.getId()) {
@@ -637,8 +622,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         //OBSTACLES
-
-
         View.OnTouchListener obstacleOnTouchListener = new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -710,7 +693,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         //POPUP BUTTONS
-        //JUST FOR OTHER TESTS rn nothing
         ImageButton startRobot = (ImageButton) findViewById(R.id.start_robot);
         startRobot.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -827,16 +809,14 @@ public class MainActivity extends AppCompatActivity {
         confirmRobot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //boolean pastDrawRobot = map.getCanDrawRobot();
-
                 if (robot.getVisibility() == View.VISIBLE) {
                     map.setOldRobotCoord(map.getCurCoord()[0], map.getCurCoord()[1]);
                 }
-                map.saveFacingWithRotation(rotation); // error: between this button and onresume, map's facing reset to 0
+                map.saveFacingWithRotation(rotation);
                 map.setCanDrawRobot(true);
                 map.setCurCoord(robotColPopup, robotRowPopup);
                 robot.setVisibility(View.VISIBLE);
-                rotation = map.convertFacingToRotation(robotFacingPopup); //- if issue check this
+                rotation = map.convertFacingToRotation(robotFacingPopup);
                 trackRobot();
                 map.invalidate();
 
@@ -847,7 +827,6 @@ public class MainActivity extends AppCompatActivity {
         removeRobot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // NEED TO CLEAR THE MAP ALSO -- ERROR FIX LATER
                 map.setCanDrawRobot(false);
                 robot.setVisibility(View.INVISIBLE);
                 map.setOldRobotCoord(map.getCurCoord()[0], map.getCurCoord()[1]);
@@ -903,7 +882,6 @@ public class MainActivity extends AppCompatActivity {
         Button southFace = (Button) findViewById(R.id.face_south);
         Button westFace = (Button) findViewById(R.id.face_west);
 
-        //obstacleFaceCur = obstacle2Face;
         /**
          * Relevant for all obstacles!
          * If u press the option again, the face will be invisible!
@@ -957,7 +935,6 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 int obstacleNum = getObstacleNumber(obstacleGroup);
-                //System.out.printf("Facing: %s, Col: %d, Row: %d, left: %d, top: %d\n", facing, (int) obstacleGroup.getX(), (int) obstacleGroup.getY(), (int) map.getLeft(), (int) map.getTop());
                 int[] currentColRow = map.getColRowFromXY(obstacleGroup.getX(), obstacleGroup.getY(), map.getLeft(), map.getTop());
 
                 //FOR CHECKLIST
@@ -1293,8 +1270,6 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < obstacleTextViews.size(); i++) {
             obstacleTextViews.get(i).setTextSize(TypedValue.COMPLEX_UNIT_SP, 8);
         }
-
-        //map.printObstacleCoord();
         if (print) {
             outputNotifView.setText("Obstacles Reset");
         }
@@ -1576,7 +1551,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-
         //unregisterReceiver(btConnectionReceiver);
     }
 
