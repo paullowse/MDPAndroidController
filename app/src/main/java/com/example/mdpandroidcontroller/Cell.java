@@ -45,9 +45,6 @@ public class Cell {
             case "robot":
                 this.paint = robotColor;
                 break;
-            case "test":
-                this.paint = testColor;
-                break;
             case "unexplored":
                 this.paint = unexploredCellColor;
                 break;

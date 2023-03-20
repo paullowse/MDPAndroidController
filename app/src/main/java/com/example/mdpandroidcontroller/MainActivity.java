@@ -809,16 +809,14 @@ public class MainActivity extends AppCompatActivity {
         confirmRobot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //boolean pastDrawRobot = map.getCanDrawRobot();
-
                 if (robot.getVisibility() == View.VISIBLE) {
                     map.setOldRobotCoord(map.getCurCoord()[0], map.getCurCoord()[1]);
                 }
-                map.saveFacingWithRotation(rotation); // error: between this button and onresume, map's facing reset to 0
+                map.saveFacingWithRotation(rotation);
                 map.setCanDrawRobot(true);
                 map.setCurCoord(robotColPopup, robotRowPopup);
                 robot.setVisibility(View.VISIBLE);
-                rotation = map.convertFacingToRotation(robotFacingPopup); //- if issue check this
+                rotation = map.convertFacingToRotation(robotFacingPopup);
                 trackRobot();
                 map.invalidate();
 
@@ -829,7 +827,6 @@ public class MainActivity extends AppCompatActivity {
         removeRobot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // NEED TO CLEAR THE MAP ALSO -- ERROR FIX LATER
                 map.setCanDrawRobot(false);
                 robot.setVisibility(View.INVISIBLE);
                 map.setOldRobotCoord(map.getCurCoord()[0], map.getCurCoord()[1]);
@@ -1273,8 +1270,6 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < obstacleTextViews.size(); i++) {
             obstacleTextViews.get(i).setTextSize(TypedValue.COMPLEX_UNIT_SP, 8);
         }
-
-        //map.printObstacleCoord();
         if (print) {
             outputNotifView.setText("Obstacles Reset");
         }
@@ -1556,7 +1551,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-
         //unregisterReceiver(btConnectionReceiver);
     }
 
