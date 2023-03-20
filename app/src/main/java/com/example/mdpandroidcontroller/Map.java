@@ -90,7 +90,6 @@ public class Map extends View { //implements Serializable
         if (getCanDrawRobot()) {
             drawRobot(canvas, curCoord);
         }
-        //drawArrow(canvas, arrowCoord);
         drawCell(canvas);
         drawHorizontalLines(canvas);
         drawVerticalLines(canvas);
@@ -108,7 +107,6 @@ public class Map extends View { //implements Serializable
 
 
     /**
-     * I dont understand the image part,
      * Believe that if: is for empty cells, so you just draw the rectangle.
      * However for else: when there is an image (or obstacle?), then there is white text on it.
      * @param canvas
@@ -163,12 +161,7 @@ public class Map extends View { //implements Serializable
         }
     }
 
-    // RANDOM OLD FUNC
-    //private void drawArrow(Canvas canvas, ArrayList<String[]> arrowCoord)
 
-
-
-    // DOESNT WORK
     public void drawRobot(Canvas canvas, int[] curCoord) {
         int androidRowCoord = this.convertRow(curCoord[1]);
 
@@ -179,7 +172,6 @@ public class Map extends View { //implements Serializable
     }
 
     public void drawObstacles(Canvas canvas, ArrayList<int[]> obstacles) {
-        //ArrayList<int[]> obstacles = getObstacleCoord();
         for (int i = 0; i < obstacles.size(); i++) {
             cells[obstacles.get(i)[0]][obstacles.get(i)[1]].setType("obstacle");
         }
